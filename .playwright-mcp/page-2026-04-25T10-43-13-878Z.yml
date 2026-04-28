@@ -1,0 +1,457 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - paragraph [ref=e4]: Get 20% OFF on Your First Order!
+    - generic [ref=e5]:
+      - button "Claim Offer" [ref=e6] [cursor=pointer]
+      - button [ref=e7] [cursor=pointer]:
+        - img [ref=e8]
+  - navigation [ref=e11]:
+    - generic [ref=e13]:
+      - link "gocart. plus" [ref=e14] [cursor=pointer]:
+        - /url: /
+        - text: gocart.
+        - paragraph [ref=e15]: plus
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - button "All" [ref=e19] [cursor=pointer]:
+            - generic [ref=e20]: All
+            - img [ref=e21]
+          - button "All locations" [ref=e25] [cursor=pointer]:
+            - img [ref=e26]
+            - generic [ref=e29]: All locations
+            - img [ref=e30]
+          - generic [ref=e33]:
+            - img [ref=e34]
+            - textbox "Search…" [ref=e37]
+        - button "Search" [ref=e38] [cursor=pointer]
+      - generic [ref=e39]:
+        - link "Post an ad" [ref=e40] [cursor=pointer]:
+          - /url: /sell
+          - img [ref=e42]
+          - generic [ref=e43]: Post an ad
+        - link "Cart" [ref=e44] [cursor=pointer]:
+          - /url: /cart
+          - img [ref=e45]
+        - link "Sign up" [ref=e49] [cursor=pointer]:
+          - /url: /signup
+          - img [ref=e50]
+    - separator [ref=e53]
+  - generic [ref=e54]:
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - generic [ref=e58]:
+          - heading "Home for all your ads." [level=2] [ref=e59]
+          - paragraph [ref=e60]: Sell what you no longer need. Find what you do.
+        - list [ref=e61]:
+          - listitem [ref=e62]:
+            - img [ref=e63]
+            - generic [ref=e65]: Free to list — no commissions
+          - listitem [ref=e66]:
+            - img [ref=e67]
+            - generic [ref=e69]: Chat directly with sellers
+          - listitem [ref=e70]:
+            - img [ref=e71]
+            - generic [ref=e73]: Verified profiles
+          - listitem [ref=e74]:
+            - img [ref=e75]
+            - generic [ref=e77]: Trusted by 30k daily users · 50k+ live ads
+        - link "Create a listing" [ref=e78] [cursor=pointer]:
+          - /url: /sell
+          - text: Create a listing
+          - img [ref=e79]
+      - generic [ref=e81]:
+        - img "Blue velvet sofa" [ref=e83]
+        - img "Mattress" [ref=e85]
+        - img "Mercedes sedan" [ref=e87]
+        - img "TV unit" [ref=e89]
+        - img "Mini fridge" [ref=e91]
+        - img "Cookware set" [ref=e93]
+        - img "Gas cooker" [ref=e95]
+        - img "Club sofa" [ref=e97]
+        - img "Pets" [ref=e99]
+        - generic [ref=e100]:
+          - button "Go to slide 1" [ref=e101] [cursor=pointer]
+          - button "Go to slide 2" [ref=e102] [cursor=pointer]
+          - button "Go to slide 3" [ref=e103] [cursor=pointer]
+          - button "Go to slide 4" [ref=e104] [cursor=pointer]
+          - button "Go to slide 5" [ref=e105] [cursor=pointer]
+          - button "Go to slide 6" [ref=e106] [cursor=pointer]
+          - button "Go to slide 7" [ref=e107] [cursor=pointer]
+          - button "Go to slide 8" [ref=e108] [cursor=pointer]
+          - button "Go to slide 9" [ref=e109] [cursor=pointer]
+    - generic [ref=e110]:
+      - generic [ref=e111]:
+        - heading "Discover top categories" [level=1] [ref=e112]
+        - generic [ref=e113]:
+          - link "Furniture" [ref=e114] [cursor=pointer]:
+            - /url: /shop?category=Furniture
+            - img [ref=e115]
+            - generic [ref=e118]: Furniture
+          - link "Appliances" [ref=e119] [cursor=pointer]:
+            - /url: /shop?category=Appliances
+            - img [ref=e120]
+            - generic [ref=e122]: Appliances
+          - link "Electronics" [ref=e123] [cursor=pointer]:
+            - /url: /shop?category=Electronics
+            - img [ref=e124]
+            - generic [ref=e127]: Electronics
+          - link "Phones" [ref=e128] [cursor=pointer]:
+            - /url: /shop?category=Phones
+            - img [ref=e129]
+            - generic [ref=e131]: Phones
+          - link "Cars & Vehicles" [ref=e132] [cursor=pointer]:
+            - /url: /shop?category=Cars
+            - img [ref=e133]
+            - generic [ref=e137]: Cars & Vehicles
+          - link "Home & Kitchen" [ref=e138] [cursor=pointer]:
+            - /url: /shop?category=Home
+            - img [ref=e139]
+            - generic [ref=e141]: Home & Kitchen
+      - generic [ref=e144]:
+        - button "Sofas" [ref=e145] [cursor=pointer]
+        - button "Beds" [ref=e146] [cursor=pointer]
+        - button "Mattresses" [ref=e147] [cursor=pointer]
+        - button "Wardrobes" [ref=e148] [cursor=pointer]
+        - button "Dining sets" [ref=e149] [cursor=pointer]
+        - button "Fridges" [ref=e150] [cursor=pointer]
+        - button "Washing machines" [ref=e151] [cursor=pointer]
+        - button "Microwaves" [ref=e152] [cursor=pointer]
+        - button "Gas cookers" [ref=e153] [cursor=pointer]
+        - button "Generators" [ref=e154] [cursor=pointer]
+        - button "TVs" [ref=e155] [cursor=pointer]
+        - button "Laptops" [ref=e156] [cursor=pointer]
+        - button "Speakers" [ref=e157] [cursor=pointer]
+        - button "Cameras" [ref=e158] [cursor=pointer]
+        - button "iPhones" [ref=e159] [cursor=pointer]
+        - button "Smartwatches" [ref=e160] [cursor=pointer]
+        - button "Sedans" [ref=e161] [cursor=pointer]
+        - button "SUVs" [ref=e162] [cursor=pointer]
+        - button "Motorcycles" [ref=e163] [cursor=pointer]
+        - button "Cookware" [ref=e164] [cursor=pointer]
+        - button "Decor" [ref=e165] [cursor=pointer]
+        - button "Rugs" [ref=e166] [cursor=pointer]
+        - button "Sofas" [ref=e167] [cursor=pointer]
+        - button "Beds" [ref=e168] [cursor=pointer]
+        - button "Mattresses" [ref=e169] [cursor=pointer]
+        - button "Wardrobes" [ref=e170] [cursor=pointer]
+        - button "Dining sets" [ref=e171] [cursor=pointer]
+        - button "Fridges" [ref=e172] [cursor=pointer]
+        - button "Washing machines" [ref=e173] [cursor=pointer]
+        - button "Microwaves" [ref=e174] [cursor=pointer]
+        - button "Gas cookers" [ref=e175] [cursor=pointer]
+        - button "Generators" [ref=e176] [cursor=pointer]
+        - button "TVs" [ref=e177] [cursor=pointer]
+        - button "Laptops" [ref=e178] [cursor=pointer]
+        - button "Speakers" [ref=e179] [cursor=pointer]
+        - button "Cameras" [ref=e180] [cursor=pointer]
+        - button "iPhones" [ref=e181] [cursor=pointer]
+        - button "Smartwatches" [ref=e182] [cursor=pointer]
+        - button "Sedans" [ref=e183] [cursor=pointer]
+        - button "SUVs" [ref=e184] [cursor=pointer]
+        - button "Motorcycles" [ref=e185] [cursor=pointer]
+        - button "Cookware" [ref=e186] [cursor=pointer]
+        - button "Decor" [ref=e187] [cursor=pointer]
+        - button "Rugs" [ref=e188] [cursor=pointer]
+        - button "Sofas" [ref=e189] [cursor=pointer]
+        - button "Beds" [ref=e190] [cursor=pointer]
+        - button "Mattresses" [ref=e191] [cursor=pointer]
+        - button "Wardrobes" [ref=e192] [cursor=pointer]
+        - button "Dining sets" [ref=e193] [cursor=pointer]
+        - button "Fridges" [ref=e194] [cursor=pointer]
+        - button "Washing machines" [ref=e195] [cursor=pointer]
+        - button "Microwaves" [ref=e196] [cursor=pointer]
+        - button "Gas cookers" [ref=e197] [cursor=pointer]
+        - button "Generators" [ref=e198] [cursor=pointer]
+        - button "TVs" [ref=e199] [cursor=pointer]
+        - button "Laptops" [ref=e200] [cursor=pointer]
+        - button "Speakers" [ref=e201] [cursor=pointer]
+        - button "Cameras" [ref=e202] [cursor=pointer]
+        - button "iPhones" [ref=e203] [cursor=pointer]
+        - button "Smartwatches" [ref=e204] [cursor=pointer]
+        - button "Sedans" [ref=e205] [cursor=pointer]
+        - button "SUVs" [ref=e206] [cursor=pointer]
+        - button "Motorcycles" [ref=e207] [cursor=pointer]
+        - button "Cookware" [ref=e208] [cursor=pointer]
+        - button "Decor" [ref=e209] [cursor=pointer]
+        - button "Rugs" [ref=e210] [cursor=pointer]
+        - button "Sofas" [ref=e211] [cursor=pointer]
+        - button "Beds" [ref=e212] [cursor=pointer]
+        - button "Mattresses" [ref=e213] [cursor=pointer]
+        - button "Wardrobes" [ref=e214] [cursor=pointer]
+        - button "Dining sets" [ref=e215] [cursor=pointer]
+        - button "Fridges" [ref=e216] [cursor=pointer]
+        - button "Washing machines" [ref=e217] [cursor=pointer]
+        - button "Microwaves" [ref=e218] [cursor=pointer]
+        - button "Gas cookers" [ref=e219] [cursor=pointer]
+        - button "Generators" [ref=e220] [cursor=pointer]
+        - button "TVs" [ref=e221] [cursor=pointer]
+        - button "Laptops" [ref=e222] [cursor=pointer]
+        - button "Speakers" [ref=e223] [cursor=pointer]
+        - button "Cameras" [ref=e224] [cursor=pointer]
+        - button "iPhones" [ref=e225] [cursor=pointer]
+        - button "Smartwatches" [ref=e226] [cursor=pointer]
+        - button "Sedans" [ref=e227] [cursor=pointer]
+        - button "SUVs" [ref=e228] [cursor=pointer]
+        - button "Motorcycles" [ref=e229] [cursor=pointer]
+        - button "Cookware" [ref=e230] [cursor=pointer]
+        - button "Decor" [ref=e231] [cursor=pointer]
+        - button "Rugs" [ref=e232] [cursor=pointer]
+    - generic [ref=e233]:
+      - generic [ref=e234]:
+        - heading "Top listings" [level=2] [ref=e235]
+        - link "Showing 4 of 12 listings View more" [ref=e236] [cursor=pointer]:
+          - /url: /shop
+          - paragraph [ref=e237]: Showing 4 of 12 listings
+          - button "View more" [ref=e238]:
+            - text: View more
+            - img [ref=e239]
+      - generic [ref=e241]:
+        - link "Modern table lamp $29" [ref=e242] [cursor=pointer]:
+          - /url: /product/prod_1
+          - generic [ref=e244]:
+            - generic [ref=e245]:
+              - paragraph [ref=e246]: Modern table lamp
+              - generic [ref=e247]:
+                - img [ref=e248]
+                - img [ref=e250]
+                - img [ref=e252]
+                - img [ref=e254]
+                - img [ref=e256]
+            - paragraph [ref=e258]: $29
+        - link "Smart speaker gray $29" [ref=e259] [cursor=pointer]:
+          - /url: /product/prod_2
+          - generic [ref=e261]:
+            - generic [ref=e262]:
+              - paragraph [ref=e263]: Smart speaker gray
+              - generic [ref=e264]:
+                - img [ref=e265]
+                - img [ref=e267]
+                - img [ref=e269]
+                - img [ref=e271]
+                - img [ref=e273]
+            - paragraph [ref=e275]: $29
+        - link "Smart watch white $29" [ref=e276] [cursor=pointer]:
+          - /url: /product/prod_3
+          - generic [ref=e278]:
+            - generic [ref=e279]:
+              - paragraph [ref=e280]: Smart watch white
+              - generic [ref=e281]:
+                - img [ref=e282]
+                - img [ref=e284]
+                - img [ref=e286]
+                - img [ref=e288]
+                - img [ref=e290]
+            - paragraph [ref=e292]: $29
+        - link "Wireless headphones $29" [ref=e293] [cursor=pointer]:
+          - /url: /product/prod_4
+          - generic [ref=e295]:
+            - generic [ref=e296]:
+              - paragraph [ref=e297]: Wireless headphones
+              - generic [ref=e298]:
+                - img [ref=e299]
+                - img [ref=e301]
+                - img [ref=e303]
+                - img [ref=e305]
+                - img [ref=e307]
+            - paragraph [ref=e309]: $29
+    - generic [ref=e310]:
+      - generic [ref=e311]:
+        - heading "Best Selling" [level=2] [ref=e312]
+        - link "Showing 8 of 12 products View more" [ref=e313] [cursor=pointer]:
+          - /url: /shop
+          - paragraph [ref=e314]: Showing 8 of 12 products
+          - button "View more" [ref=e315]:
+            - text: View more
+            - img [ref=e316]
+      - generic [ref=e318]:
+        - link "Smart watch black $29" [ref=e319] [cursor=pointer]:
+          - /url: /product/prod_5
+          - generic [ref=e321]:
+            - generic [ref=e322]:
+              - paragraph [ref=e323]: Smart watch black
+              - generic [ref=e324]:
+                - img [ref=e325]
+                - img [ref=e327]
+                - img [ref=e329]
+                - img [ref=e331]
+                - img [ref=e333]
+            - paragraph [ref=e335]: $29
+        - link "Security Camera $29" [ref=e336] [cursor=pointer]:
+          - /url: /product/prod_6
+          - generic [ref=e338]:
+            - generic [ref=e339]:
+              - paragraph [ref=e340]: Security Camera
+              - generic [ref=e341]:
+                - img [ref=e342]
+                - img [ref=e344]
+                - img [ref=e346]
+                - img [ref=e348]
+                - img [ref=e350]
+            - paragraph [ref=e352]: $29
+        - link "Smart Pen for iPad $29" [ref=e353] [cursor=pointer]:
+          - /url: /product/prod_7
+          - generic [ref=e355]:
+            - generic [ref=e356]:
+              - paragraph [ref=e357]: Smart Pen for iPad
+              - generic [ref=e358]:
+                - img [ref=e359]
+                - img [ref=e361]
+                - img [ref=e363]
+                - img [ref=e365]
+                - img [ref=e367]
+            - paragraph [ref=e369]: $29
+        - link "Home Theater $29" [ref=e370] [cursor=pointer]:
+          - /url: /product/prod_8
+          - generic [ref=e372]:
+            - generic [ref=e373]:
+              - paragraph [ref=e374]: Home Theater
+              - generic [ref=e375]:
+                - img [ref=e376]
+                - img [ref=e378]
+                - img [ref=e380]
+                - img [ref=e382]
+                - img [ref=e384]
+            - paragraph [ref=e386]: $29
+        - link "Apple Wireless Earbuds $29" [ref=e387] [cursor=pointer]:
+          - /url: /product/prod_9
+          - generic [ref=e389]:
+            - generic [ref=e390]:
+              - paragraph [ref=e391]: Apple Wireless Earbuds
+              - generic [ref=e392]:
+                - img [ref=e393]
+                - img [ref=e395]
+                - img [ref=e397]
+                - img [ref=e399]
+                - img [ref=e401]
+            - paragraph [ref=e403]: $29
+        - link "Apple Smart Watch $29" [ref=e404] [cursor=pointer]:
+          - /url: /product/prod_10
+          - generic [ref=e406]:
+            - generic [ref=e407]:
+              - paragraph [ref=e408]: Apple Smart Watch
+              - generic [ref=e409]:
+                - img [ref=e410]
+                - img [ref=e412]
+                - img [ref=e414]
+                - img [ref=e416]
+                - img [ref=e418]
+            - paragraph [ref=e420]: $29
+        - link "RGB Gaming Mouse $29" [ref=e421] [cursor=pointer]:
+          - /url: /product/prod_11
+          - generic [ref=e423]:
+            - generic [ref=e424]:
+              - paragraph [ref=e425]: RGB Gaming Mouse
+              - generic [ref=e426]:
+                - img [ref=e427]
+                - img [ref=e429]
+                - img [ref=e431]
+                - img [ref=e433]
+                - img [ref=e435]
+            - paragraph [ref=e437]: $29
+        - link "Smart Home Cleaner $29" [ref=e438] [cursor=pointer]:
+          - /url: /product/prod_12
+          - generic [ref=e440]:
+            - generic [ref=e441]:
+              - paragraph [ref=e442]: Smart Home Cleaner
+              - generic [ref=e443]:
+                - img [ref=e444]
+                - img [ref=e446]
+                - img [ref=e448]
+                - img [ref=e450]
+                - img [ref=e452]
+            - paragraph [ref=e454]: $29
+    - generic [ref=e455]:
+      - generic [ref=e456]:
+        - heading "Our Specifications" [level=2] [ref=e457]
+        - link "We offer top-tier service and convenience to ensure your shopping experience is smooth, secure and completely hassle-free." [ref=e458] [cursor=pointer]:
+          - /url: ""
+          - paragraph [ref=e459]: We offer top-tier service and convenience to ensure your shopping experience is smooth, secure and completely hassle-free.
+      - generic [ref=e460]:
+        - generic [ref=e461]:
+          - heading "Free Shipping" [level=3] [ref=e462]
+          - paragraph [ref=e463]: Enjoy fast, free delivery on every order no conditions, just reliable doorstep.
+          - img [ref=e465]
+        - generic [ref=e468]:
+          - heading "7 Days easy Return" [level=3] [ref=e469]
+          - paragraph [ref=e470]: Change your mind? No worries. Return any item within 7 days.
+          - img [ref=e472]
+        - generic [ref=e479]:
+          - heading "24/7 Customer Support" [level=3] [ref=e480]
+          - paragraph [ref=e481]: We're here for you. Get expert help with our customer support.
+          - img [ref=e483]
+    - generic [ref=e486]:
+      - generic [ref=e487]:
+        - heading "Join Newsletter" [level=2] [ref=e488]
+        - link "Subscribe to get exclusive deals, new arrivals, and insider updates delivered straight to your inbox every week." [ref=e489] [cursor=pointer]:
+          - /url: ""
+          - paragraph [ref=e490]: Subscribe to get exclusive deals, new arrivals, and insider updates delivered straight to your inbox every week.
+      - generic [ref=e491]:
+        - textbox "Enter your email address" [ref=e492]
+        - button "Get Updates" [ref=e493] [cursor=pointer]
+  - contentinfo [ref=e494]:
+    - generic [ref=e495]:
+      - generic [ref=e496]:
+        - generic [ref=e497]:
+          - link "gocart." [ref=e498] [cursor=pointer]:
+            - /url: /
+          - paragraph [ref=e499]: Welcome to gocart, your ultimate destination for the latest and smartest gadgets. From smartphones and smartwatches to essential accessories, we bring you the best in innovation — all in one place.
+          - generic [ref=e500]:
+            - link [ref=e501] [cursor=pointer]:
+              - /url: https://www.facebook.com
+              - img [ref=e502]
+            - link [ref=e504] [cursor=pointer]:
+              - /url: https://www.instagram.com
+              - img [ref=e505]
+            - link [ref=e507] [cursor=pointer]:
+              - /url: https://twitter.com
+              - img [ref=e508]
+            - link [ref=e510] [cursor=pointer]:
+              - /url: https://www.linkedin.com
+              - img [ref=e511]
+        - generic [ref=e515]:
+          - generic [ref=e516]:
+            - heading "PRODUCTS" [level=3] [ref=e517]
+            - list [ref=e518]:
+              - listitem [ref=e519]:
+                - link "Earphones" [ref=e520] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e521]:
+                - link "Headphones" [ref=e522] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e523]:
+                - link "Smartphones" [ref=e524] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e525]:
+                - link "Laptops" [ref=e526] [cursor=pointer]:
+                  - /url: /
+          - generic [ref=e527]:
+            - heading "WEBSITE?" [level=3] [ref=e528]
+            - list [ref=e529]:
+              - listitem [ref=e530]:
+                - link "Home" [ref=e531] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e532]:
+                - link "Privacy Policy" [ref=e533] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e534]:
+                - link "Become Plus Member" [ref=e535] [cursor=pointer]:
+                  - /url: /pricing
+              - listitem [ref=e536]:
+                - link "Create Your Store" [ref=e537] [cursor=pointer]:
+                  - /url: /create-store
+          - generic [ref=e538]:
+            - heading "CONTACT" [level=3] [ref=e539]
+            - list [ref=e540]:
+              - listitem [ref=e541]:
+                - img [ref=e542]
+                - link "+1-212-456-7890" [ref=e544] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e545]:
+                - img [ref=e546]
+                - link "contact@example.com" [ref=e548] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e549]:
+                - img [ref=e550]
+                - link "794 Francisco, 94102" [ref=e553] [cursor=pointer]:
+                  - /url: /
+      - paragraph [ref=e554]: Copyright 2025 © gocart All Right Reserved.

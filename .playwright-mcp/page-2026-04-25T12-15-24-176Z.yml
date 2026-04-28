@@ -1,0 +1,111 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - paragraph [ref=e4]: Get 20% OFF on Your First Order!
+    - generic [ref=e5]:
+      - button "Claim Offer" [ref=e6] [cursor=pointer]
+      - button [ref=e7] [cursor=pointer]:
+        - img [ref=e8]
+  - navigation [ref=e11]:
+    - generic [ref=e13]:
+      - link "gocart. plus" [ref=e14] [cursor=pointer]:
+        - /url: /
+        - text: gocart.
+        - paragraph [ref=e15]: plus
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - button "All" [ref=e19] [cursor=pointer]:
+            - generic [ref=e20]: All
+            - img [ref=e21]
+          - button "All locations" [ref=e25] [cursor=pointer]:
+            - img [ref=e26]
+            - generic [ref=e29]: All locations
+            - img [ref=e30]
+          - generic [ref=e33]:
+            - img [ref=e34]
+            - textbox "Search…" [ref=e37]
+        - button "Search" [ref=e38] [cursor=pointer]
+      - generic [ref=e39]:
+        - link "Post an ad" [ref=e40] [cursor=pointer]:
+          - /url: /sell
+          - img [ref=e42]
+          - generic [ref=e43]: Post an ad
+        - link "Cart" [ref=e44] [cursor=pointer]:
+          - /url: /cart
+          - img [ref=e45]
+        - link "Sign up" [ref=e49] [cursor=pointer]:
+          - /url: /signup
+          - img [ref=e50]
+    - separator [ref=e53]
+  - navigation [ref=e56]:
+    - link "Home" [ref=e58] [cursor=pointer]:
+      - /url: /
+    - text: /
+    - link "Listings" [ref=e60] [cursor=pointer]:
+      - /url: /shop
+  - contentinfo [ref=e61]:
+    - generic [ref=e62]:
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - link "gocart." [ref=e65] [cursor=pointer]:
+            - /url: /
+          - paragraph [ref=e66]: Welcome to gocart, your ultimate destination for the latest and smartest gadgets. From smartphones and smartwatches to essential accessories, we bring you the best in innovation — all in one place.
+          - generic [ref=e67]:
+            - link [ref=e68] [cursor=pointer]:
+              - /url: https://www.facebook.com
+              - img [ref=e69]
+            - link [ref=e71] [cursor=pointer]:
+              - /url: https://www.instagram.com
+              - img [ref=e72]
+            - link [ref=e74] [cursor=pointer]:
+              - /url: https://twitter.com
+              - img [ref=e75]
+            - link [ref=e77] [cursor=pointer]:
+              - /url: https://www.linkedin.com
+              - img [ref=e78]
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - heading "PRODUCTS" [level=3] [ref=e84]
+            - list [ref=e85]:
+              - listitem [ref=e86]:
+                - link "Earphones" [ref=e87] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e88]:
+                - link "Headphones" [ref=e89] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e90]:
+                - link "Smartphones" [ref=e91] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e92]:
+                - link "Laptops" [ref=e93] [cursor=pointer]:
+                  - /url: /
+          - generic [ref=e94]:
+            - heading "WEBSITE?" [level=3] [ref=e95]
+            - list [ref=e96]:
+              - listitem [ref=e97]:
+                - link "Home" [ref=e98] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e99]:
+                - link "Privacy Policy" [ref=e100] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e101]:
+                - link "Become Plus Member" [ref=e102] [cursor=pointer]:
+                  - /url: /pricing
+              - listitem [ref=e103]:
+                - link "Create Your Store" [ref=e104] [cursor=pointer]:
+                  - /url: /create-store
+          - generic [ref=e105]:
+            - heading "CONTACT" [level=3] [ref=e106]
+            - list [ref=e107]:
+              - listitem [ref=e108]:
+                - img [ref=e109]
+                - link "+1-212-456-7890" [ref=e111] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e112]:
+                - img [ref=e113]
+                - link "contact@example.com" [ref=e115] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e116]:
+                - img [ref=e117]
+                - link "794 Francisco, 94102" [ref=e120] [cursor=pointer]:
+                  - /url: /
+      - paragraph [ref=e121]: Copyright 2025 © gocart All Right Reserved.

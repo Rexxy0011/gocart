@@ -1,14 +1,27 @@
 'use client'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Provider } from 'react-redux'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { makeStore } from '../lib/store'
 
 export default function StoreProvider({ children }) {
-  const storeRef = useRef(undefined)
-  if (!storeRef.current) {
-    // Create the store instance the first time this renders
-    storeRef.current = makeStore()
-  }
+    const storeRef = useRef(undefined)
+    if (!storeRef.current) {
+        storeRef.current = makeStore()
+    }
 
-  return <Provider store={storeRef.current}>{children}</Provider>
+    const [queryClient] = useState(() => new QueryClient({
+        defaultOptions: {
+            queries: {
+                staleTime: 60_000,
+                refetchOnWindowFocus: false,
+            },
+        },
+    }))
+
+    return (
+        <QueryClientProvider client={queryClient}>
+            <Provider store={storeRef.current}>{children}</Provider>
+        </QueryClientProvider>
+    )
 }

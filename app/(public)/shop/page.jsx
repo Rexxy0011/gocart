@@ -12,7 +12,16 @@ import { useSelector } from "react-redux"
     const search = searchParams.get('search')
     const router = useRouter()
 
-    const products = useSelector(state => state.product.list)
+    const allProducts = useSelector(state => state.product.list)
+    const products = allProducts
+        .filter(p => !p.service)
+        .slice()
+        .sort((a, b) => {
+            const prio = (p) => p.featured ? 2 : (p.urgent || p.bulkSale) ? 1 : 0
+            const diff = prio(b) - prio(a)
+            if (diff !== 0) return diff
+            return new Date(b.createdAt) - new Date(a.createdAt)
+        })
 
     const filteredProducts = search
         ? products.filter(product =>

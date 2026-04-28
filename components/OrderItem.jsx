@@ -36,7 +36,7 @@ const OrderItem = ({ order }) => {
                                     <div>
                                         {ratings.find(rating => order.id === rating.orderId && item.product.id === rating.productId)
                                             ? <Rating value={ratings.find(rating => order.id === rating.orderId && item.product.id === rating.productId).rating} />
-                                            : <button onClick={() => setRatingModal({ orderId: order.id, productId: item.product.id })} className={`text-green-500 hover:bg-green-50 transition ${order.status !== "DELIVERED" && 'hidden'}`}>Rate Product</button>
+                                            : <button onClick={() => setRatingModal({ orderId: order.id, productId: item.product.id })} className={`text-slate-900 hover:bg-slate-100 transition ${order.status !== "DELIVERED" && 'hidden'}`}>Rate Product</button>
                                         }</div>
                                     {ratingModal && <RatingModal ratingModal={ratingModal} setRatingModal={setRatingModal} />}
                                 </div>
@@ -58,7 +58,7 @@ const OrderItem = ({ order }) => {
                         className={`flex items-center justify-center gap-1 rounded-full p-1 ${order.status === 'confirmed'
                             ? 'text-yellow-500 bg-yellow-100'
                             : order.status === 'delivered'
-                                ? 'text-green-500 bg-green-100'
+                                ? 'text-slate-900 bg-slate-100'
                                 : 'text-slate-500 bg-slate-100'
                             }`}
                     >
@@ -75,7 +75,7 @@ const OrderItem = ({ order }) => {
                     <p>{order.address.phone}</p>
                     <br />
                     <div className="flex items-center">
-                        <span className='text-center mx-auto px-6 py-1.5 rounded bg-green-100 text-green-700' >
+                        <span className='text-center mx-auto px-6 py-1.5 rounded bg-slate-100 text-slate-700' >
                             {order.status.replace(/_/g, ' ').toLowerCase()}
                         </span>
                     </div>
