@@ -2,11 +2,13 @@
 import { useMemo, useState } from "react"
 import { toast } from "react-hot-toast"
 import Image from "next/image"
-import Link from "next/link"
-import { ArrowUp, Sparkles } from "lucide-react"
+import { ArrowUp, Rocket } from "lucide-react"
 import { useDispatch, useSelector } from "react-redux"
 import { bumpProduct } from "@/lib/features/product/productSlice"
 import { formatDistanceToNow } from "date-fns"
+
+const BUMP_PRICE = 1500
+const BUMP_DURATION_DAYS = 7
 
 export default function StoreManageProducts() {
 
@@ -15,7 +17,6 @@ export default function StoreManageProducts() {
 
     // Demo: scope to first store (replace with logged-in store on backend wiring)
     const STORE_ID = 'store_1'
-    const STORE_USERNAME = 'happyshop'
 
     const allProducts = useSelector(state => state.product.list)
     const products = useMemo(
@@ -23,18 +24,13 @@ export default function StoreManageProducts() {
         [allProducts]
     )
 
-    const isPowerAccount = products[0]?.store?.powerAccount === true
-
     const [bumping, setBumping] = useState({})
 
     const onBump = (productId) => {
-        if (!isPowerAccount) {
-            toast.error('Bump up is a Power Account perk. Upgrade to use it.')
-            return
-        }
+        // Demo: skip the real Paystack handoff for now and treat the bump as paid.
         setBumping((b) => ({ ...b, [productId]: true }))
         dispatch(bumpProduct(productId))
-        toast.success('Listing bumped — back at the top of newest.')
+        toast.success(`Listing bumped — runs daily for ${BUMP_DURATION_DAYS} days.`)
         setTimeout(() => setBumping((b) => ({ ...b, [productId]: false })), 1500)
     }
 
@@ -48,15 +44,9 @@ export default function StoreManageProducts() {
                 <h1 className="text-2xl text-slate-500">
                     Manage <span className="text-slate-800 font-medium">Products</span>
                 </h1>
-                {isPowerAccount ? (
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-sky-700 bg-sky-100 ring-1 ring-sky-200 px-3 py-1 rounded-full">
-                        <Sparkles size={12} /> Power Account
-                    </span>
-                ) : (
-                    <Link href='/pricing' className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-700 bg-slate-100 ring-1 ring-slate-200 hover:ring-slate-400 px-3 py-1 rounded-full transition">
-                        <Sparkles size={12} /> Upgrade for Bump up
-                    </Link>
-                )}
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-50 ring-1 ring-slate-200 px-3 py-1 rounded-full">
+                    <Rocket size={12} className='text-sky-600' /> Bump up — ₦{BUMP_PRICE.toLocaleString()} · {BUMP_DURATION_DAYS} days
+                </span>
             </div>
 
             <table className="w-full max-w-5xl text-left ring ring-slate-200 rounded overflow-hidden text-sm">
@@ -97,15 +87,11 @@ export default function StoreManageProducts() {
                                         type='button'
                                         onClick={() => onBump(product.id)}
                                         disabled={isBumping}
-                                        title={isPowerAccount ? 'Bump to top of newest' : 'Power Account perk'}
-                                        className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full ring-1 transition ${
-                                            isPowerAccount
-                                                ? 'bg-white text-sky-700 ring-sky-200 hover:bg-sky-50 hover:ring-sky-400 disabled:opacity-50'
-                                                : 'bg-slate-50 text-slate-400 ring-slate-200 cursor-not-allowed'
-                                        }`}
+                                        title={`Bump up — ₦${BUMP_PRICE.toLocaleString()} for ${BUMP_DURATION_DAYS} days`}
+                                        className='inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full ring-1 bg-white text-sky-700 ring-sky-200 hover:bg-sky-50 hover:ring-sky-400 disabled:opacity-50 transition'
                                     >
                                         <ArrowUp size={12} />
-                                        {isBumping ? 'Bumped!' : 'Bump up'}
+                                        {isBumping ? 'Bumped!' : `Bump · ₦${BUMP_PRICE.toLocaleString()}`}
                                     </button>
                                 </td>
                             </tr>
@@ -113,15 +99,6 @@ export default function StoreManageProducts() {
                     })}
                 </tbody>
             </table>
-
-            {!isPowerAccount && (
-                <div className='mt-4 max-w-5xl bg-sky-50 ring-1 ring-sky-200 rounded-lg p-4 flex items-center gap-3'>
-                    <Sparkles size={18} className='text-sky-600 shrink-0' />
-                    <p className='text-sm text-slate-700'>
-                        Bump up is a Power Account perk. <Link href='/pricing' className='text-sky-700 font-medium hover:underline'>Upgrade →</Link>
-                    </p>
-                </div>
-            )}
         </>
     )
 }

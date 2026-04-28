@@ -8,7 +8,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart, deleteItemFromCart } from '@/lib/features/cart/cartSlice'
 import { Button } from '@/components/ui/button'
-import VerifiedTick from '@/components/VerifiedTick'
 import VerifiedCheck from '@/components/VerifiedCheck'
 import Dropdown from '@/components/Dropdown'
 import AddressInput from '@/components/AddressInput'
@@ -37,7 +36,6 @@ const ServicePage = ({ product }) => {
     const sellerName = product.store?.user?.name || product.store?.name || 'Provider'
     const sellerUsername = product.store?.username
     const sellerImage = product.store?.user?.image || product.store?.logo
-    const isPower = product.store?.powerAccount === true
     const isVerified = product.store?.status === 'approved'
     const portfolio = service.portfolio || []
     const ratings = product.rating || []
@@ -333,11 +331,7 @@ const ServicePage = ({ product }) => {
                                 <div className='min-w-0 flex-1'>
                                     <p className='inline-flex items-center gap-1 max-w-full'>
                                         <span className='text-base font-semibold text-slate-900 truncate group-hover:underline'>{sellerName}</span>
-                                        {isPower
-                                            ? <VerifiedTick size={14} />
-                                            : isVerified
-                                                ? <VerifiedCheck size={13} />
-                                                : null}
+                                        {isVerified && <VerifiedCheck size={13} />}
                                     </p>
                                     <div className='flex items-center gap-1.5 mt-1'>
                                         <p className='text-xs text-slate-500 truncate'>@{sellerUsername}</p>

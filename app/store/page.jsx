@@ -1,11 +1,10 @@
 'use client'
 import { dummyStoreDashboardData } from "@/assets/assets"
 import Loading from "@/components/Loading"
-import VerifiedTick from "@/components/VerifiedTick"
 import VerifiedCheck from "@/components/VerifiedCheck"
 import {
     ArrowUpRight, Eye, ListChecks, MessageSquareText,
-    Plus, Sparkles, Star, TrendingUp, BarChart3, Wrench,
+    Plus, Star, TrendingUp, BarChart3, Wrench,
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -50,7 +49,7 @@ export default function Dashboard() {
     if (loading) return <Loading />
 
     const sellerName = 'Great Stack'
-    const isPowerAccount = true
+    const isVerified = true
     const ratingCount = dashboardData.ratings.length
     const averageRating = ratingCount
         ? dashboardData.ratings.reduce((s, r) => s + r.rating, 0) / ratingCount
@@ -78,7 +77,6 @@ export default function Dashboard() {
             icon: Eye,
             tone: 'bg-violet-50 text-violet-600 ring-violet-200',
             trend: { dir: 'up', text: '+12% vs last week' },
-            powerOnly: true,
         },
         {
             title: 'Rating',
@@ -99,29 +97,12 @@ export default function Dashboard() {
                         <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Seller dashboard</p>
                         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1 inline-flex items-center gap-2">
                             Hi {sellerName.split(' ')[0]}
-                            {isPowerAccount && <VerifiedTick size={20} />}
+                            {isVerified && <VerifiedCheck size={20} />}
                         </h1>
                         <p className="text-sm text-slate-600 mt-1">
                             Listings, inquiries, and reviews — all in one place.
                         </p>
                     </div>
-
-                    {isPowerAccount ? (
-                        <div className="inline-flex items-center gap-2 bg-white ring-1 ring-sky-200 rounded-full px-3 py-1.5 shadow-sm">
-                            <span className="inline-flex items-center justify-center size-5 rounded-full bg-gradient-to-br from-sky-500 to-indigo-500 text-white">
-                                <Sparkles size={11} />
-                            </span>
-                            <span className="text-xs font-semibold text-slate-700">Power Account active</span>
-                        </div>
-                    ) : (
-                        <Link
-                            href="/pricing"
-                            className="inline-flex items-center gap-2 bg-slate-900 text-white text-xs font-medium rounded-full px-3 py-1.5 hover:bg-slate-800 transition"
-                        >
-                            <Sparkles size={12} />
-                            Upgrade
-                        </Link>
-                    )}
                 </div>
             </section>
 
@@ -133,11 +114,6 @@ export default function Dashboard() {
                             <span className={`inline-flex items-center justify-center size-10 rounded-xl ring-1 ${card.tone}`}>
                                 <card.icon size={18} />
                             </span>
-                            {card.powerOnly && (
-                                <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-sky-700 bg-sky-50 ring-1 ring-sky-200 px-2 py-0.5 rounded-full">
-                                    <Sparkles size={9} /> Power
-                                </span>
-                            )}
                         </div>
                         <p className="text-3xl font-bold text-slate-900 mt-4 leading-none">{card.value}</p>
                         <p className="text-sm text-slate-600 mt-1.5">{card.title}</p>
@@ -163,12 +139,7 @@ export default function Dashboard() {
                             <BarChart3 size={16} />
                         </span>
                         <div className="min-w-0">
-                            <p className="font-semibold text-slate-900 inline-flex items-center gap-1.5">
-                                Listing insights
-                                <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-violet-700 bg-violet-50 ring-1 ring-violet-200 px-1.5 py-0.5 rounded-full">
-                                    <Sparkles size={9} /> Power
-                                </span>
-                            </p>
+                            <p className="font-semibold text-slate-900">Listing insights</p>
                             <p className="text-xs text-slate-500">Your top listings — what&apos;s pulling buyer attention.</p>
                         </div>
                     </div>

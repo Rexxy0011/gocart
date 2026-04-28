@@ -1,0 +1,143 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "gocart. plus" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - text: gocart.
+        - paragraph [ref=e6]: plus
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - button "All" [ref=e10] [cursor=pointer]:
+            - generic [ref=e11]: All
+            - img [ref=e12]
+          - button "All locations" [ref=e16] [cursor=pointer]:
+            - img [ref=e17]
+            - generic [ref=e20]: All locations
+            - img [ref=e21]
+          - generic [ref=e24]:
+            - img [ref=e25]
+            - textbox "Search…" [ref=e28]
+        - button "Search" [ref=e29] [cursor=pointer]
+      - generic [ref=e30]:
+        - link "Post an ad" [ref=e31] [cursor=pointer]:
+          - /url: /store/add-product
+          - img [ref=e33]
+          - generic [ref=e34]: Post an ad
+        - link "Offer a service" [ref=e35] [cursor=pointer]:
+          - /url: /pro/apply
+          - img [ref=e37]
+          - generic [ref=e39]: Offer a service
+        - link "Cart" [ref=e40] [cursor=pointer]:
+          - /url: /cart
+          - img [ref=e41]
+        - link "Sign up" [ref=e45] [cursor=pointer]:
+          - /url: /signup
+          - img [ref=e46]
+    - separator [ref=e49]
+  - contentinfo [ref=e52]:
+    - generic [ref=e53]:
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - heading "About Us" [level=3] [ref=e56]
+          - list [ref=e57]:
+            - listitem [ref=e58]:
+              - link "About GoCart" [ref=e59] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=e60]:
+              - link "GoCart for Business" [ref=e61] [cursor=pointer]:
+                - /url: /business
+            - listitem [ref=e62]:
+              - link "Careers" [ref=e63] [cursor=pointer]:
+                - /url: /careers
+            - listitem [ref=e64]:
+              - link "Press" [ref=e65] [cursor=pointer]:
+                - /url: /press
+        - generic [ref=e66]:
+          - heading "Help & Contact" [level=3] [ref=e67]
+          - list [ref=e68]:
+            - listitem [ref=e69]:
+              - link "Help Centre" [ref=e70] [cursor=pointer]:
+                - /url: /help
+            - listitem [ref=e71]:
+              - link "Safety" [ref=e72] [cursor=pointer]:
+                - /url: /safety
+            - listitem [ref=e73]:
+              - link "Policies" [ref=e74] [cursor=pointer]:
+                - /url: /policies
+            - listitem [ref=e75]:
+              - link "Privacy Notice" [ref=e76] [cursor=pointer]:
+                - /url: /privacy
+            - listitem [ref=e77]:
+              - link "Contact Us" [ref=e78] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=e79]:
+          - heading "More From Us" [level=3] [ref=e80]
+          - list [ref=e81]:
+            - listitem [ref=e82]:
+              - link "GoCart Vehicles" [ref=e83] [cursor=pointer]:
+                - /url: /shop?category=Sedans
+            - listitem [ref=e84]:
+              - link "GoCart Property" [ref=e85] [cursor=pointer]:
+                - /url: /shop?category=Property
+            - listitem [ref=e86]:
+              - link "Buying Guides" [ref=e87] [cursor=pointer]:
+                - /url: /guides
+            - listitem [ref=e88]:
+              - link "Sell Your Car" [ref=e89] [cursor=pointer]:
+                - /url: /sell/car
+        - generic [ref=e90]:
+          - heading "Mobile Apps" [level=3] [ref=e91]
+          - generic [ref=e92]:
+            - link "Download on the App Store" [ref=e93] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e94]
+              - generic [ref=e97]:
+                - generic [ref=e98]: Download on the
+                - generic [ref=e99]: App Store
+            - link "Get it on Google Play" [ref=e100] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e101]
+              - generic [ref=e103]:
+                - generic [ref=e104]: Get it on
+                - generic [ref=e105]: Google Play
+            - link "More About Our Apps" [ref=e106] [cursor=pointer]:
+              - /url: /apps
+      - generic [ref=e107]:
+        - heading "Join GoCart Community" [level=3] [ref=e108]
+        - generic [ref=e109]:
+          - link "Facebook" [ref=e110] [cursor=pointer]:
+            - /url: https://facebook.com
+            - img [ref=e111]
+          - link "Instagram" [ref=e113] [cursor=pointer]:
+            - /url: https://instagram.com
+            - img [ref=e114]
+          - link "X" [ref=e117] [cursor=pointer]:
+            - /url: https://twitter.com
+            - img [ref=e118]
+          - link "YouTube" [ref=e120] [cursor=pointer]:
+            - /url: https://youtube.com
+            - img [ref=e121]
+      - generic [ref=e124]:
+        - paragraph [ref=e125]: © 2025–2026 GoCart Limited. All rights reserved.
+        - paragraph [ref=e126]:
+          - text: GoCart is a classifieds marketplace. We facilitate connections between buyers and sellers but are not a party to transactions. Sellers are responsible for the accuracy of their listings and for fulfilling any agreements made directly with buyers. See our
+          - link "Safety" [ref=e127] [cursor=pointer]:
+            - /url: /safety
+          - text: guidelines and
+          - link "Terms of Use" [ref=e128] [cursor=pointer]:
+            - /url: /terms
+          - text: .
+        - paragraph [ref=e129]: Verified business sellers may transact through embedded checkout flows operated by the seller or their payment provider. In those transactions, GoCart receives a commission disclosed at checkout. GoCart does not handle fulfilment or shipping; logistics are the responsibility of the seller.
+        - paragraph [ref=e130]: "GoCart Limited, registered company number TBD. Registered office: TBD."
+        - paragraph [ref=e131]:
+          - link "Terms of Use" [ref=e132] [cursor=pointer]:
+            - /url: /terms
+          - text: ","
+          - link "Privacy Notice" [ref=e133] [cursor=pointer]:
+            - /url: /privacy
+          - text: ","
+          - link "Privacy Settings" [ref=e134] [cursor=pointer]:
+            - /url: /privacy/settings
+          - text: "&"
+          - link "Cookies Policy" [ref=e135] [cursor=pointer]:
+            - /url: /cookies

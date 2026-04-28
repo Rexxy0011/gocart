@@ -113,8 +113,7 @@ export default function ProviderApply() {
                 <Info size={16} className="text-slate-500 mt-0.5 shrink-0" />
                 <p className="text-sm text-slate-600">
                     <span className="font-semibold text-slate-900">Verification is free.</span>{' '}
-                    The optional <span className="font-semibold">Power Account</span> upgrade adds the green Power tick, lead alerts, milestones, and other perks once verified.{' '}
-                    <Link href="/pricing" className="text-sky-700 font-medium hover:underline">See Power Account →</Link>
+                    Once approved, you get the verified tick, branded storefront, lead alerts, and access to milestone badges as you complete verified jobs.
                 </p>
             </div>
 

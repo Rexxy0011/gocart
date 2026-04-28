@@ -4,8 +4,55 @@ import Image from "next/image"
 import Link from "next/link"
 import { useMemo, useState } from "react"
 import { toast } from "react-hot-toast"
-import { BadgeCheck, Boxes, Car, Crown, Flame, Info, MapPin, Phone, X } from "lucide-react"
+import { BadgeCheck, Boxes, Car, Flame, Info, MapPin, Phone, Rocket, Star, TrendingUp, X, Zap } from "lucide-react"
 import Dropdown from "@/components/Dropdown"
+
+const BOOSTS = [
+    {
+        key: 'featured',
+        title: 'Featured ribbon',
+        price: 3000,
+        duration: '7 days',
+        why: 'Locks your listing at the top of its category and location, above every standard listing. Highest visibility per naira.',
+        Icon: Star,
+        tagClass: 'bg-sky-500 text-white',
+    },
+    {
+        key: 'urgent',
+        title: 'Urgent tag',
+        price: 2000,
+        duration: '7 days',
+        why: 'Yellow "Urgent" badge pulls attention. Right for time-sensitive sales — relocating, need it gone, price is firm.',
+        Icon: Flame,
+        tagClass: 'bg-yellow-300 text-yellow-950',
+    },
+    {
+        key: 'bulkSale',
+        title: 'Bulk sale',
+        price: 4000,
+        duration: '14 days',
+        why: 'Unlocks the multi-item listing format. List a flat, garage, or estate sale as one ad. Right for relocators and clear-outs.',
+        Icon: Boxes,
+        tagClass: 'bg-amber-300 text-amber-950',
+    },
+    {
+        key: 'bumpUp',
+        title: 'Bump up',
+        price: 1500,
+        duration: '7 days',
+        why: 'Auto-bumps your listing to the top of the feed once every day. Buyers re-discover it without you lifting a finger.',
+        Icon: TrendingUp,
+        tagClass: 'bg-emerald-500 text-white',
+    },
+]
+
+const BUNDLE = {
+    price: 5500,
+    duration: '14 days',
+    label: 'Boost bundle',
+    why: 'Featured + Urgent + 3 daily Bumps. Saves ~17% vs buying separately. The "must sell, can\'t fail" option.',
+    keys: ['featured', 'urgent', 'bumpUp'],
+}
 
 const SERVICES_GROUP_NAME = 'Repairs & Services'
 const VEHICLES_GROUP_NAME = 'Vehicles'
@@ -36,9 +83,6 @@ const PRICE_UNITS = [
 
 const LOCATIONS = Object.keys(stateAreas).map(c => ({ value: c, label: c }))
 
-// Demo: assume seller is on Power Account. Wire to real account state on backend.
-const HAS_POWER_ACCOUNT = true
-
 export default function StoreAddProduct() {
 
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
@@ -60,6 +104,8 @@ export default function StoreAddProduct() {
         urgent: false,
         urgencyReason: "",
         bulkSale: false,
+        featured: false,
+        bumpUp: false,
         specialties: [],
         responseTime: "",
         areaCovered: "",
@@ -311,69 +357,101 @@ export default function StoreAddProduct() {
                         </div>
                     )}
 
-                    {/* Sell quicker (Power Account, hidden when free) */}
-                    {!productInfo.free && (
-                        <section className="my-8 max-w-xl">
-                            <div className="flex items-center gap-2 mb-3">
-                                <Crown size={14} className="text-sky-600" />
-                                <h3 className="text-sm font-semibold text-slate-900">Sell quicker</h3>
-                                {!HAS_POWER_ACCOUNT && (
-                                    <Link href="/pricing" className="ml-auto text-xs font-semibold text-sky-700 hover:underline">
-                                        Power Account →
-                                    </Link>
-                                )}
-                            </div>
+                    {/* Boosts — optional paid add-ons, hidden when free */}
+                    {!productInfo.free && (() => {
+                        const selectedKeys = BOOSTS.filter(b => productInfo[b.key]).map(b => b.key)
+                        const allBundleSelected = BUNDLE.keys.every(k => selectedKeys.includes(k))
+                        const subtotal = allBundleSelected
+                            ? BUNDLE.price + BOOSTS.filter(b => !BUNDLE.keys.includes(b.key) && productInfo[b.key]).reduce((s, b) => s + b.price, 0)
+                            : BOOSTS.filter(b => productInfo[b.key]).reduce((s, b) => s + b.price, 0)
 
-                            <div className={`rounded-xl ring-1 ring-slate-200 divide-y divide-slate-100 bg-white ${!HAS_POWER_ACCOUNT ? 'opacity-60' : ''}`}>
-                                <div className="p-4">
-                                    <label className="flex items-center gap-3 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={productInfo.urgent}
-                                            disabled={!HAS_POWER_ACCOUNT}
-                                            onChange={(e) => setProductInfo({ ...productInfo, urgent: e.target.checked, urgencyReason: e.target.checked ? productInfo.urgencyReason || 'other' : '' })}
-                                            className="size-4"
-                                        />
-                                        <span className="inline-flex items-center gap-1.5 bg-yellow-300 text-yellow-950 text-[10px] font-bold uppercase tracking-wide rounded px-2 py-0.5">
-                                            <Flame size={11} /> Urgent
-                                        </span>
-                                        <span className="text-sm text-slate-700">Mark as urgent</span>
-                                    </label>
-                                    {productInfo.urgent && (
-                                        <div className="ml-7 mt-3 max-w-sm">
-                                            <p className="text-xs text-slate-500 mb-1.5">Why is this urgent? <span className="text-slate-400">(private — buyers see only the Urgent tag, not the reason)</span></p>
-                                            <Dropdown
-                                                value={productInfo.urgencyReason}
-                                                onChange={(v) => setProductInfo({ ...productInfo, urgencyReason: v })}
-                                                placeholder="Pick a reason"
-                                                options={URGENCY_REASONS}
-                                            />
+                        return (
+                            <section className="my-8 max-w-xl">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Rocket size={14} className="text-sky-600" />
+                                    <h3 className="text-sm font-semibold text-slate-900">Boost this listing</h3>
+                                    <span className="text-[10px] font-medium uppercase tracking-wide text-slate-400 ml-1">Optional</span>
+                                </div>
+                                <p className="text-xs text-slate-500 mb-4">
+                                    Pick any combination — pay once, runs for the duration shown. Skip and your listing is still free and live.
+                                </p>
+
+                                <div className="rounded-xl ring-1 ring-slate-200 divide-y divide-slate-100 bg-white">
+                                    {BOOSTS.map((boost) => {
+                                        const checked = productInfo[boost.key]
+                                        return (
+                                            <div key={boost.key} className="p-4">
+                                                <label className="flex items-start gap-3 cursor-pointer">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={checked}
+                                                        onChange={(e) => {
+                                                            const isChecking = e.target.checked
+                                                            setProductInfo((p) => ({
+                                                                ...p,
+                                                                [boost.key]: isChecking,
+                                                                ...(boost.key === 'urgent' && {
+                                                                    urgencyReason: isChecking ? p.urgencyReason || 'other' : '',
+                                                                }),
+                                                            }))
+                                                        }}
+                                                        className="size-4 mt-0.5 shrink-0"
+                                                    />
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="flex items-center gap-2 flex-wrap">
+                                                            <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide rounded px-2 py-0.5 ${boost.tagClass}`}>
+                                                                <boost.Icon size={11} /> {boost.title}
+                                                            </span>
+                                                            <span className="text-sm font-semibold text-slate-900">₦{boost.price.toLocaleString()}</span>
+                                                            <span className="text-xs text-slate-500">· {boost.duration}</span>
+                                                        </div>
+                                                        <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{boost.why}</p>
+                                                    </div>
+                                                </label>
+
+                                                {boost.key === 'urgent' && checked && (
+                                                    <div className="ml-7 mt-3 max-w-sm">
+                                                        <p className="text-xs text-slate-500 mb-1.5">
+                                                            Why is this urgent? <span className="text-slate-400">(private — buyers see only the Urgent tag)</span>
+                                                        </p>
+                                                        <Dropdown
+                                                            value={productInfo.urgencyReason}
+                                                            onChange={(v) => setProductInfo({ ...productInfo, urgencyReason: v })}
+                                                            placeholder="Pick a reason"
+                                                            options={URGENCY_REASONS}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+
+                                {/* Bundle suggestion when bundle-eligible boosts are selected */}
+                                {allBundleSelected && (
+                                    <div className="mt-3 bg-sky-50 ring-1 ring-sky-200 rounded-xl p-4 flex items-start gap-3">
+                                        <Zap size={16} className="text-sky-600 mt-0.5 shrink-0" />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-semibold text-slate-900">
+                                                {BUNDLE.label} — ₦{BUNDLE.price.toLocaleString()} · {BUNDLE.duration}
+                                            </p>
+                                            <p className="text-xs text-slate-600 mt-1">{BUNDLE.why}</p>
+                                            <p className="text-xs text-sky-700 font-medium mt-1.5">
+                                                Bundled cost ₦{BUNDLE.price.toLocaleString()} vs ₦{BUNDLE.keys.reduce((s, k) => s + BOOSTS.find(b => b.key === k).price, 0).toLocaleString()} separately.
+                                            </p>
                                         </div>
-                                    )}
-                                </div>
+                                    </div>
+                                )}
 
-                                <div className="p-4">
-                                    <label className="flex items-center gap-3 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={productInfo.bulkSale}
-                                            disabled={!HAS_POWER_ACCOUNT}
-                                            onChange={(e) => setProductInfo({ ...productInfo, bulkSale: e.target.checked })}
-                                            className="size-4"
-                                        />
-                                        <span className="inline-flex items-center gap-1.5 bg-amber-300 text-amber-950 text-[10px] font-bold uppercase tracking-wide rounded px-2 py-0.5">
-                                            <Boxes size={11} /> Bulk sale
-                                        </span>
-                                        <span className="text-sm text-slate-700">Selling multiple items as one ad</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            {!HAS_POWER_ACCOUNT && (
-                                <p className="text-xs text-slate-500 mt-2">Urgent &amp; Bulk sale are Power Account perks. <Link href="/pricing" className="text-sky-700 font-medium hover:underline">Upgrade →</Link></p>
-                            )}
-                        </section>
-                    )}
+                                {subtotal > 0 && (
+                                    <div className="mt-3 flex items-center justify-between text-sm">
+                                        <span className="text-slate-500">Boosts subtotal</span>
+                                        <span className="font-semibold text-slate-900">₦{subtotal.toLocaleString()}</span>
+                                    </div>
+                                )}
+                            </section>
+                        )
+                    })()}
                 </>
             )}
 

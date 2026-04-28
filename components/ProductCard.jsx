@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { formatDistanceToNow } from 'date-fns'
 import { addToCart, deleteItemFromCart } from '@/lib/features/cart/cartSlice'
-import VerifiedTick from '@/components/VerifiedTick'
 import VerifiedCheck from '@/components/VerifiedCheck'
 import {
     FeaturedRibbon, UrgentBulkTag, ConditionTag,
@@ -25,7 +24,6 @@ const ProductCard = ({ product }) => {
     const postedAgo = formatDistanceToNow(new Date(product.createdAt), { addSuffix: true })
     const sellerName = product.store?.user?.name || product.store?.name
     const sellerUsername = product.store?.username
-    const isPower = product.store?.powerAccount === true
     const isVerified = product.store?.status === 'approved'
 
     const toggleSave = (e) => {
@@ -102,11 +100,7 @@ const ProductCard = ({ product }) => {
                         className='inline-flex items-center gap-1 text-xs text-slate-600 min-w-0 self-start hover:text-slate-900 hover:underline'
                     >
                         <span className='truncate'>{sellerName}</span>
-                        {isPower
-                            ? <VerifiedTick size={14} />
-                            : isVerified
-                                ? <VerifiedCheck size={13} />
-                                : null}
+                        {isVerified && <VerifiedCheck size={13} />}
                     </button>
                 )}
                 <div className='flex items-center gap-2 text-[11px] text-slate-500 mt-1.5'>

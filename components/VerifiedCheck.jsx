@@ -1,5 +1,4 @@
-// Smaller, simpler green check — basic verified status (ID/phone/address passed).
-// Distinct from VerifiedTick which is the iconic blue Power Seller badge.
+// Single seller credential — earned through free verification (ID + phone).
 const VerifiedCheck = ({ size = 14, className = 'text-sky-500', title = 'Verified' }) => (
     <span
         className={`inline-flex items-center justify-center shrink-0 ${className}`}

@@ -1,19 +1,13 @@
-import { Crown, Flame, Boxes, Sparkles, Tag, BadgeCheck, Truck } from 'lucide-react'
+import { Crown, Flame, Boxes, Tag, BadgeCheck, Truck } from 'lucide-react'
 
 const sizeCls = (size) => size === 'sm' ? 'text-[9px] px-1.5 py-0.5' : 'text-[10px] px-2 py-1'
 const iconSize = (size) => size === 'sm' ? 9 : 11
 
-// ─── Paid badges (Power Account) ───────────────────────────────────────────
+// ─── Paid boost tags (per-listing, days-based) ─────────────────────────────
 
 export const FeaturedRibbon = ({ size = 'md' }) => (
     <span className={`inline-flex items-center gap-1 bg-sky-500 text-white font-bold uppercase tracking-wide rounded shadow-sm ${sizeCls(size)}`}>
         <Crown size={iconSize(size)} /> Featured
-    </span>
-)
-
-export const PowerSellerBadge = ({ size = 'md' }) => (
-    <span className={`inline-flex items-center gap-1 bg-gradient-to-r from-sky-500 to-indigo-500 text-white font-bold uppercase tracking-wide rounded shadow-sm ${sizeCls(size)}`}>
-        <Sparkles size={iconSize(size)} /> Power Seller
     </span>
 )
 
@@ -79,9 +73,3 @@ export const ConditionTag = ({ condition, size = 'md' }) => {
         </span>
     )
 }
-
-export const SellerTypeBadge = ({ type = 'private', size = 'md' }) => (
-    <span className={`inline-flex items-center bg-white text-slate-600 ring-1 ring-slate-200 font-semibold uppercase tracking-wide rounded ${sizeCls(size)}`}>
-        {type === 'trade' || type === 'business' ? 'Trade' : 'Private'}
-    </span>
-)

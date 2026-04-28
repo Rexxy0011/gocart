@@ -6,7 +6,6 @@ import { ShieldCheck, Star } from "lucide-react"
 import { differenceInMonths, differenceInYears } from "date-fns"
 import Loading from "@/components/Loading"
 import ProductRow from "@/components/ProductRow"
-import VerifiedTick from "@/components/VerifiedTick"
 import VerifiedCheck from "@/components/VerifiedCheck"
 import { categoryGroups, dummyStoreData, productDummyData } from "@/assets/assets"
 
@@ -37,7 +36,9 @@ export default function StoreShop() {
 
     useEffect(() => {
         setStoreInfo(dummyStoreData)
-        setProducts(productDummyData)
+        // Per services-separation rule: products only on a seller profile.
+        // Services have their own surface at /services and a dedicated provider profile.
+        setProducts(productDummyData.filter(p => !p.service))
         setLoading(false)
     }, [])
 
@@ -54,7 +55,6 @@ export default function StoreShop() {
     const initial = sellerName.charAt(0).toUpperCase()
     const avatar = storeInfo?.user?.image || storeInfo?.logo
     const postingDuration = formatPostingDuration(storeInfo?.createdAt)
-    const isPower = storeInfo?.powerAccount === true
     const isVerified = storeInfo?.status === 'approved'
     const reviews = useMemo(
         () => products.flatMap(p => (p.rating || []).map(r => ({ ...r, productName: p.name }))),
@@ -83,11 +83,7 @@ export default function StoreShop() {
                         <div className="min-w-0 flex-1">
                             <h1 className="inline-flex items-center gap-2 text-2xl sm:text-3xl font-bold text-slate-900">
                                 <span className="truncate">{sellerName}</span>
-                                {isPower
-                                    ? <VerifiedTick size={26} />
-                                    : isVerified
-                                        ? <VerifiedCheck size={22} />
-                                        : null}
+                                {isVerified && <VerifiedCheck size={22} />}
                             </h1>
                             <div className="flex items-center gap-2 mt-2">
                                 <div className="flex items-center">

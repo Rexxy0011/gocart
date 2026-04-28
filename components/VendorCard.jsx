@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, MapPin, Star } from 'lucide-react'
-import VerifiedTick from '@/components/VerifiedTick'
+import VerifiedCheck from '@/components/VerifiedCheck'
 
 const VendorCard = ({ store, productCount = 0, averageRating = 0, ratingCount = 0 }) => {
 
@@ -31,17 +31,11 @@ const VendorCard = ({ store, productCount = 0, averageRating = 0, ratingCount = 
                 <div className='min-w-0 flex-1'>
                     <p className='inline-flex items-center gap-1.5 font-semibold text-slate-900 max-w-full'>
                         <span className='truncate'>{sellerName}</span>
-                        {verified && <VerifiedTick size={16} />}
+                        {verified && <VerifiedCheck size={16} />}
                     </p>
                     <p className='text-xs text-slate-500 truncate'>@{store.username}</p>
                 </div>
             </div>
-
-            {verified && (
-                <span className='inline-flex items-center self-start gap-1 mt-3 text-[11px] font-semibold uppercase tracking-wide text-sky-700 bg-sky-50 ring-1 ring-sky-200 px-2 py-0.5 rounded-full'>
-                    Power seller
-                </span>
-            )}
 
             <div className='flex items-center gap-2 mt-3 text-xs text-slate-600'>
                 <div className='flex items-center'>

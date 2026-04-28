@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { Inbox, MessageSquareText, Sparkles } from 'lucide-react'
+import { Inbox, MessageSquareText } from 'lucide-react'
 
 export default function StoreInquiries() {
     return (
@@ -33,15 +33,6 @@ export default function StoreInquiries() {
                         Post an ad
                     </Link>
                 </div>
-            </div>
-
-            {/* Power Account hint — contextual, not pushy */}
-            <div className='mt-6 bg-sky-50 ring-1 ring-sky-200 rounded-xl p-4 flex items-start gap-3'>
-                <Sparkles size={16} className='text-sky-600 mt-0.5 shrink-0' />
-                <p className='text-sm text-slate-700'>
-                    <span className='font-semibold'>Lead alerts</span> are part of Power Account — get pinged the moment a buyer in your area searches your category, before they message anyone.{' '}
-                    <Link href='/pricing' className='text-sky-700 font-medium hover:underline'>How Power Account works →</Link>
-                </p>
             </div>
         </div>
     )

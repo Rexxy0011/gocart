@@ -7,7 +7,6 @@ const linkColumns = [
         links: [
             { text: "About GoCart", href: "/about" },
             { text: "GoCart for Business", href: "/business" },
-            { text: "Power Seller", href: "/pricing" },
             { text: "Careers", href: "/careers" },
             { text: "Press", href: "/press" },
         ],
@@ -123,7 +122,7 @@ const Footer = () => {
                     </p>
 
                     <p>
-                        Verified Power Sellers may transact through embedded checkout flows operated by the seller or their payment
+                        Verified business sellers may transact through embedded checkout flows operated by the seller or their payment
                         provider. In those transactions, GoCart receives a commission disclosed at checkout. GoCart does not handle
                         fulfilment or shipping; logistics are the responsibility of the seller.
                     </p>

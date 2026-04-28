@@ -1,7 +1,7 @@
 'use client'
 import { usePathname } from "next/navigation"
 import {
-    HomeIcon, MessageSquareTextIcon, CalendarDays, FileText, Trophy, ArrowUpRightIcon,
+    HomeIcon, MessageSquareTextIcon, CalendarDays, FileText, ShieldCheck, Trophy, ArrowUpRightIcon,
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -13,6 +13,7 @@ const ProSidebar = ({ providerInfo }) => {
     const sidebarLinks = [
         { name: 'Dashboard',     href: '/pro',           icon: HomeIcon },
         { name: 'Inquiries',     href: '/pro/inquiries', icon: MessageSquareTextIcon },
+        { name: 'Jobs',          href: '/pro/jobs',      icon: ShieldCheck },
         { name: 'Quote requests',href: '/pro/quotes',    icon: FileText },
         { name: 'Calendar',      href: '/pro/calendar',  icon: CalendarDays },
         { name: 'Milestones',    href: '/pro/milestones',icon: Trophy },

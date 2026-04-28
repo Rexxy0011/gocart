@@ -84,9 +84,15 @@ const ProductRow = ({ product }) => {
                 </p>
 
                 <div className='mt-auto pt-2 flex items-end justify-between gap-3'>
-                    <p className='text-lg sm:text-xl font-bold text-emerald-600'>
-                        {currency}{product.price.toLocaleString()}
-                    </p>
+                    {product.free || product.price === 0 ? (
+                        <span className='inline-flex items-center bg-emerald-500 text-white text-xs font-bold uppercase tracking-wide rounded px-2 py-1'>FREE</span>
+                    ) : product.price != null ? (
+                        <p className='text-lg sm:text-xl font-bold text-emerald-600'>
+                            {currency}{product.price.toLocaleString()}
+                        </p>
+                    ) : (
+                        <p className='text-sm text-slate-500 italic'>Quote on request</p>
+                    )}
                     <p className='text-xs text-slate-500 shrink-0'>{postedAgo}</p>
                 </div>
             </div>

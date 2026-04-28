@@ -1,12 +1,11 @@
 'use client'
 import {
     ArrowUpRight, Bell, CalendarDays, FileText, Flame, MessageSquareText,
-    Plus, Sparkles, Star, Trophy, Clock, ShieldCheck,
+    Plus, Star, Trophy, Clock, ShieldCheck,
 } from "lucide-react"
 import Link from "next/link"
 import { useMemo } from "react"
 import { useSelector } from "react-redux"
-import VerifiedTick from "@/components/VerifiedTick"
 import VerifiedCheck from "@/components/VerifiedCheck"
 import MilestoneBadge, { getMilestone } from "@/components/MilestoneBadge"
 
@@ -45,7 +44,6 @@ export default function ProviderDashboard() {
     const responseTime = providerListings[0]?.service?.responseTime || '—'
 
     const providerName = providerListings[0]?.store?.user?.name || 'Provider'
-    const isPower = providerListings[0]?.store?.powerAccount === true
     const isVerified = providerListings[0]?.store?.status === 'approved'
     const milestone = getMilestone(totalJobs)
 
@@ -90,25 +88,13 @@ export default function ProviderDashboard() {
                         <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Provider dashboard</p>
                         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1 inline-flex items-center gap-2 flex-wrap">
                             Hi {providerName.split(' ')[0]}
-                            {isPower
-                                ? <VerifiedTick size={20} />
-                                : isVerified
-                                    ? <VerifiedCheck size={18} />
-                                    : null}
+                            {isVerified && <VerifiedCheck size={18} />}
                             {milestone && <MilestoneBadge jobsCompleted={totalJobs} size="sm" />}
                         </h1>
                         <p className="text-sm text-slate-600 mt-1">
                             Services, inquiries, jobs and milestones — your provider hub.
                         </p>
                     </div>
-                    {isPower && (
-                        <div className="inline-flex items-center gap-2 bg-white ring-1 ring-sky-200 rounded-full px-3 py-1.5 shadow-sm">
-                            <span className="inline-flex items-center justify-center size-5 rounded-full bg-gradient-to-br from-sky-500 to-indigo-500 text-white">
-                                <Sparkles size={11} />
-                            </span>
-                            <span className="text-xs font-semibold text-slate-700">Power Account active</span>
-                        </div>
-                    )}
                 </div>
             </section>
 
@@ -126,7 +112,7 @@ export default function ProviderDashboard() {
                 ))}
             </section>
 
-            {/* Lead alerts (Power Account perk for service providers) */}
+            {/* Lead alerts — free perk for verified providers */}
             <section className="mt-8 bg-white border border-slate-200 rounded-2xl overflow-hidden">
                 <div className="p-5 border-b border-slate-100 flex items-center justify-between gap-3 flex-wrap">
                     <div className="flex items-center gap-3 min-w-0">
@@ -134,12 +120,7 @@ export default function ProviderDashboard() {
                             <Bell size={16} />
                         </span>
                         <div className="min-w-0">
-                            <p className="font-semibold text-slate-900 inline-flex items-center gap-1.5">
-                                Lead alerts
-                                <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-sky-700 bg-sky-50 ring-1 ring-sky-200 px-1.5 py-0.5 rounded-full">
-                                    <Sparkles size={9} /> Power
-                                </span>
-                            </p>
+                            <p className="font-semibold text-slate-900">Lead alerts</p>
                             <p className="text-xs text-slate-500">Buyers searching for your service, before they message anyone.</p>
                         </div>
                     </div>

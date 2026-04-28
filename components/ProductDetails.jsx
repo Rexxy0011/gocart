@@ -2,6 +2,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { format, formatDistanceToNow } from "date-fns"
 import {
     ChevronLeft, ChevronRight, ChevronDown, Heart, Flag, Camera, MapPin,
 } from "lucide-react"
@@ -11,6 +12,13 @@ import { Button } from "@/components/ui/button"
 import VehicleSpecs from "@/components/VehicleSpecs"
 import ServiceDetails from "@/components/ServiceDetails"
 import { categoryGroups } from "@/assets/assets"
+
+const CONDITION_LABEL = {
+    'new':    'New',
+    'as-new': 'As good as new',
+    'good':   'Good condition',
+    'fair':   'Fair condition',
+}
 
 const VEHICLE_CATEGORIES = new Set(
     categoryGroups.find(g => g.name === 'Vehicles')?.items || []
@@ -26,6 +34,11 @@ const ProductDetails = ({ product }) => {
 
     const isService = !!product.service
     const isVehicle = VEHICLE_CATEGORIES.has(product.category) && product.vehicle
+
+    // Stable 10-digit reference derived from product.id — buyers quote this when reporting.
+    const adId = `15${((parseInt(productId.replace(/\D/g, ''), 10) || 0) * 1357 + 4571).toString().padStart(8, '0')}`
+    const postedDate = product.createdAt ? new Date(product.createdAt) : null
+    const conditionLabel = CONDITION_LABEL[product.condition]
 
     const [imageIndex, setImageIndex] = useState(0)
     const [activeTab, setActiveTab] = useState('Images')
@@ -209,6 +222,28 @@ const ProductDetails = ({ product }) => {
                     )}
 
                     {isVehicle && <VehicleSpecs vehicle={product.vehicle} />}
+
+                    {/* Specs — universal facts. Vehicle-specific specs live in VehicleSpecs above. */}
+                    <section>
+                        <h2 className='text-lg font-semibold text-slate-900 mb-3'>Specs</h2>
+                        <dl className='grid grid-cols-1 sm:grid-cols-2 gap-x-8 text-sm'>
+                            {[
+                                { label: 'Ad ID', value: adId },
+                                postedDate && {
+                                    label: 'Posted',
+                                    value: `${format(postedDate, 'd MMM yyyy')} (${formatDistanceToNow(postedDate, { addSuffix: true })})`,
+                                },
+                                !isService && conditionLabel && { label: 'Condition', value: conditionLabel },
+                                product.category && { label: 'Category', value: product.category },
+                                { label: 'Location', value: location },
+                            ].filter(Boolean).map((s) => (
+                                <div key={s.label} className='flex justify-between gap-4 border-b border-slate-100 py-2.5'>
+                                    <dt className='text-slate-500'>{s.label}</dt>
+                                    <dd className='text-slate-900 font-medium text-right truncate'>{s.value}</dd>
+                                </div>
+                            ))}
+                        </dl>
+                    </section>
                 </div>
             </div>
         </div>
