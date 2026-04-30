@@ -59,7 +59,7 @@ const PlatformIntro = () => {
                     </ul>
 
                     <Link
-                        href='/sell'
+                        href='/store/add-product'
                         className='inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm py-3 px-6 rounded-full font-medium active:scale-95 transition shadow-md w-fit'
                     >
                         Create a listing <ArrowRight size={16} />
