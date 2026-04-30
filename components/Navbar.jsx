@@ -111,17 +111,15 @@ const Navbar = ({ user = null, providerStatus = null }) => {
                     >
                         <div className="flex-1 flex items-center text-sm bg-slate-100 rounded-full">
 
-                            {/* Category dropdown — hidden on mobile (filter
-                                via /shop sidebar after landing) so the search
-                                input has room to breathe */}
-                            <div className="relative shrink-0 hidden sm:block" ref={catDropdownRef}>
+                            {/* Category dropdown */}
+                            <div className="relative shrink-0" ref={catDropdownRef}>
                                 <button
                                     type="button"
                                     onClick={() => { setOpenCatDropdown((o) => !o); setOpenLocDropdown(false) }}
-                                    className="flex items-center gap-1 px-4 py-2.5 text-slate-700 hover:text-slate-900 rounded-l-full"
+                                    className="flex items-center gap-1 px-2.5 sm:px-4 py-2.5 text-slate-700 hover:text-slate-900 rounded-l-full"
                                 >
-                                    <span className="truncate max-w-[6rem]">{category}</span>
-                                    <ChevronDown size={14} className={`transition ${openCatDropdown ? 'rotate-180' : ''}`} />
+                                    <span className="truncate max-w-[3rem] sm:max-w-[6rem]">{category}</span>
+                                    <ChevronDown size={14} className={`shrink-0 transition ${openCatDropdown ? 'rotate-180' : ''}`} />
                                 </button>
                                 {openCatDropdown && (
                                     <div className="absolute top-full left-0 mt-2 z-50 w-60 bg-white rounded-xl shadow-lg ring-1 ring-slate-200 py-1 max-h-96 overflow-auto">
@@ -157,19 +155,18 @@ const Navbar = ({ user = null, providerStatus = null }) => {
                                 )}
                             </div>
 
-                            <span className="h-6 w-px bg-slate-300 shrink-0 hidden sm:block" />
+                            <span className="h-6 w-px bg-slate-300 shrink-0" />
 
-                            {/* Location dropdown — hidden on mobile too;
-                                user can pick city on /shop page filters */}
-                            <div className="relative shrink-0 hidden sm:block" ref={locDropdownRef}>
+                            {/* Location dropdown */}
+                            <div className="relative shrink-0" ref={locDropdownRef}>
                                 <button
                                     type="button"
                                     onClick={() => { setOpenLocDropdown((o) => !o); setOpenCatDropdown(false) }}
-                                    className="flex items-center gap-1.5 px-4 py-2.5 text-slate-700 hover:text-slate-900"
+                                    className="flex items-center gap-1.5 px-2.5 sm:px-4 py-2.5 text-slate-700 hover:text-slate-900"
                                 >
                                     <MapPin size={14} className="shrink-0" />
-                                    <span className="truncate max-w-[7rem]">{location === ALL_LOCATIONS ? 'All locations' : location}</span>
-                                    <ChevronDown size={14} className={`transition ${openLocDropdown ? 'rotate-180' : ''}`} />
+                                    <span className="truncate max-w-[4rem] sm:max-w-[7rem]">{location === ALL_LOCATIONS ? 'All locations' : location}</span>
+                                    <ChevronDown size={14} className={`shrink-0 transition ${openLocDropdown ? 'rotate-180' : ''}`} />
                                 </button>
                                 {openLocDropdown && (
                                     <div className="absolute top-full left-0 mt-2 z-50 w-56 bg-white rounded-xl shadow-lg ring-1 ring-slate-200 py-1 max-h-80 overflow-auto">
@@ -198,10 +195,10 @@ const Navbar = ({ user = null, providerStatus = null }) => {
                                 )}
                             </div>
 
-                            <span className="h-6 w-px bg-slate-300 shrink-0 hidden sm:block" />
+                            <span className="h-6 w-px bg-slate-300 shrink-0" />
 
                             {/* Input */}
-                            <div className="flex items-center gap-2 flex-1 px-4 text-slate-500">
+                            <div className="flex items-center gap-2 flex-1 px-3 sm:px-4 min-w-0 text-slate-500">
                                 <Search size={18} className="shrink-0" />
                                 <input
                                     className="w-full bg-transparent outline-none placeholder-slate-500 py-2"
@@ -242,16 +239,17 @@ const Navbar = ({ user = null, providerStatus = null }) => {
                             <span className="hidden sm:inline text-xs leading-none">Post an ad</span>
                         </Link>
 
-                        {/* Provider dashboard (or apply CTA for non-verified users) */}
+                        {/* Provider dashboard (or apply CTA for non-verified
+                            users). Label hidden on mobile to keep row 1 tight. */}
                         <Link
                             href={providerHref}
                             aria-label={providerLabel}
-                            className="group flex flex-col items-center gap-1 text-slate-600 hover:text-slate-900 transition max-sm:hidden"
+                            className="group flex flex-col items-center gap-1 text-slate-600 hover:text-slate-900 transition"
                         >
                             <span className="inline-flex items-center justify-center w-9 h-9 rounded-full ring-1 ring-slate-300 group-hover:ring-slate-500 transition">
                                 <Wrench size={17} />
                             </span>
-                            <span className="text-[10px] sm:text-xs leading-none whitespace-nowrap">{providerLabel}</span>
+                            <span className="hidden sm:inline text-xs leading-none whitespace-nowrap">{providerLabel}</span>
                         </Link>
 
                         {/* Messages — signed-in users only. Visible at all widths
