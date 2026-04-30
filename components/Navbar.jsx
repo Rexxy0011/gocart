@@ -91,7 +91,10 @@ const Navbar = ({ user = null, providerStatus = null }) => {
     return (
         <nav className="relative bg-white">
             <div className="mx-6">
-                <div className="flex items-center gap-4 sm:gap-6 max-w-7xl mx-auto py-4 transition-all">
+                {/* Mobile = two rows (logo+icons / search), Desktop = single row.
+                    flex-wrap + order utilities flip the layout at sm: on mobile
+                    the search form gets `w-full` and falls to a second line. */}
+                <div className="flex flex-wrap items-center gap-3 sm:gap-6 max-w-7xl mx-auto py-4 transition-all">
 
                     {/* Logo */}
                     <Link href="/" className="relative text-3xl sm:text-4xl font-semibold text-slate-700 shrink-0">
@@ -104,12 +107,14 @@ const Navbar = ({ user = null, providerStatus = null }) => {
                     {/* Search with category + location dropdowns + external Search button */}
                     <form
                         onSubmit={handleSearch}
-                        className="flex-1 flex items-center gap-2"
+                        className="order-3 w-full sm:order-2 sm:w-auto sm:flex-1 mt-2 sm:mt-0 flex items-center gap-2"
                     >
                         <div className="flex-1 flex items-center text-sm bg-slate-100 rounded-full">
 
-                            {/* Category dropdown */}
-                            <div className="relative shrink-0" ref={catDropdownRef}>
+                            {/* Category dropdown — hidden on mobile (filter
+                                via /shop sidebar after landing) so the search
+                                input has room to breathe */}
+                            <div className="relative shrink-0 hidden sm:block" ref={catDropdownRef}>
                                 <button
                                     type="button"
                                     onClick={() => { setOpenCatDropdown((o) => !o); setOpenLocDropdown(false) }}
@@ -152,10 +157,11 @@ const Navbar = ({ user = null, providerStatus = null }) => {
                                 )}
                             </div>
 
-                            <span className="h-6 w-px bg-slate-300 shrink-0" />
+                            <span className="h-6 w-px bg-slate-300 shrink-0 hidden sm:block" />
 
-                            {/* Location dropdown */}
-                            <div className="relative shrink-0" ref={locDropdownRef}>
+                            {/* Location dropdown — hidden on mobile too;
+                                user can pick city on /shop page filters */}
+                            <div className="relative shrink-0 hidden sm:block" ref={locDropdownRef}>
                                 <button
                                     type="button"
                                     onClick={() => { setOpenLocDropdown((o) => !o); setOpenCatDropdown(false) }}
@@ -192,7 +198,7 @@ const Navbar = ({ user = null, providerStatus = null }) => {
                                 )}
                             </div>
 
-                            <span className="h-6 w-px bg-slate-300 shrink-0" />
+                            <span className="h-6 w-px bg-slate-300 shrink-0 hidden sm:block" />
 
                             {/* Input */}
                             <div className="flex items-center gap-2 flex-1 px-4 text-slate-500">
@@ -207,17 +213,22 @@ const Navbar = ({ user = null, providerStatus = null }) => {
                             </div>
                         </div>
 
-                        {/* External Search button */}
+                        {/* External Search button — icon only on mobile to
+                            keep the row narrow */}
                         <button
                             type="submit"
-                            className="shrink-0 bg-slate-900 hover:bg-slate-800 text-white text-sm py-2.5 px-5 rounded-full active:scale-95 transition"
+                            aria-label="Search"
+                            className="shrink-0 inline-flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white text-sm py-2.5 px-3 sm:px-5 rounded-full active:scale-95 transition"
                         >
-                            Search
+                            <Search size={16} className="sm:hidden" />
+                            <span className="hidden sm:inline">Search</span>
                         </button>
                     </form>
 
-                    {/* Right-side icon cluster */}
-                    <div className="flex items-center gap-4 sm:gap-5 shrink-0">
+                    {/* Right-side icon cluster. On mobile: ml-auto pushes it
+                        next to the logo on row 1 (search wraps below).
+                        Labels under icons are hidden on mobile to save width. */}
+                    <div className="ml-auto sm:ml-0 sm:order-3 flex items-center gap-3 sm:gap-5 shrink-0">
 
                         {/* Post an ad */}
                         <Link
@@ -228,7 +239,7 @@ const Navbar = ({ user = null, providerStatus = null }) => {
                             <span className="inline-flex items-center justify-center w-9 h-9 rounded-full ring-1 ring-slate-300 group-hover:ring-slate-500 transition">
                                 <Plus size={18} />
                             </span>
-                            <span className="text-[10px] sm:text-xs leading-none">Post an ad</span>
+                            <span className="hidden sm:inline text-xs leading-none">Post an ad</span>
                         </Link>
 
                         {/* Provider dashboard (or apply CTA for non-verified users) */}
