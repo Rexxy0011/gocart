@@ -54,7 +54,7 @@ export default function Dashboard() {
     const averageRating = ratingCount
         ? dashboardData.ratings.reduce((s, r) => s + r.rating, 0) / ratingCount
         : 0
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
 
     const stats = [
         {

@@ -31,7 +31,7 @@ const BOOST_RESULT_TOASTS = {
 
 const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
 
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
     const router = useRouter()
     const searchParams = useSearchParams()
     const supabase = createClient()

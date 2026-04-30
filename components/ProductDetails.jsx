@@ -33,7 +33,7 @@ const VEHICLE_CATEGORIES = new Set(
 
 const ProductDetails = ({ product }) => {
 
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
     const productId = product.id
 
     const sellerName = product.store?.user?.name || product.store?.name || 'Seller'

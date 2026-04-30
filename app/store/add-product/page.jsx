@@ -80,7 +80,7 @@ export default function StoreAddProduct() {
     const router = useRouter()
     const supabase = createClient()
     const user = useUser()
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
 
     const [images, setImages] = useState({ 1: null, 2: null, 3: null, 4: null })
     const [portfolioImages, setPortfolioImages] = useState([])

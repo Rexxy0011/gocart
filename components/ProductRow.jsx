@@ -20,7 +20,7 @@ const buildSpecLine = (product) => {
 
 const ProductRow = ({ product }) => {
 
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
 
     const cart = useSelector(state => state.cart.cartItems)
     const dispatch = useDispatch()
