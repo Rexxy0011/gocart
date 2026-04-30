@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { formatDistanceToNow } from 'date-fns'
 import { addToCart, deleteItemFromCart } from '@/lib/features/cart/cartSlice'
 import VerifiedCheck from '@/components/VerifiedCheck'
+import { useAuthGate } from '@/hooks/useAuthGate'
 import {
     FeaturedRibbon, UrgentBulkTag, ConditionTag,
 } from '@/components/ListingBadges'
@@ -18,6 +19,7 @@ const ProductCard = ({ product }) => {
     const cart = useSelector(state => state.cart.cartItems)
     const dispatch = useDispatch()
     const router = useRouter()
+    const requireAuth = useAuthGate()
     const isSaved = !!cart[product.id]
 
     const location = product.location || 'Lagos'
@@ -29,8 +31,10 @@ const ProductCard = ({ product }) => {
     const toggleSave = (e) => {
         e.preventDefault()
         e.stopPropagation()
-        if (isSaved) dispatch(deleteItemFromCart({ productId: product.id }))
-        else dispatch(addToCart({ productId: product.id }))
+        requireAuth(() => {
+            if (isSaved) dispatch(deleteItemFromCart({ productId: product.id }))
+            else dispatch(addToCart({ productId: product.id }))
+        }, 'Sign in to save this listing.')
     }
 
     const goToSeller = (e) => {

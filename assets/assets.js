@@ -80,6 +80,34 @@ export const stateAreas = {
     'Enugu':         ['Independence Layout', 'Trans Ekulu', 'New Haven', 'Achara Layout', 'Coal Camp'],
 }
 
+// Popular makes + models in the Nigerian used-car market. Order within each
+// make is rough popularity. "Other" is always last so the dropdown stays
+// useful even when an obscure trim turns up.
+export const carMakesModels = {
+    'Toyota':         ['Corolla', 'Camry', 'Highlander', 'RAV4', 'Hilux', 'Sienna', 'Venza', 'Avalon', 'Avensis', 'Yaris', 'Hiace', 'Land Cruiser', 'Prado', '4Runner', 'Matrix', 'Other'],
+    'Honda':          ['Accord', 'Civic', 'CR-V', 'Pilot', 'Odyssey', 'City', 'Fit', 'Other'],
+    'Lexus':          ['RX 350', 'RX 300', 'ES 350', 'ES 330', 'GX 460', 'LX 570', 'IS 250', 'Other'],
+    'Mercedes-Benz':  ['C-Class', 'E-Class', 'S-Class', 'GLE', 'GLK', 'ML', 'GLA', 'GLC', 'CLS', 'Other'],
+    'BMW':            ['3 Series', '5 Series', '7 Series', 'X3', 'X5', 'X6', 'M3', 'M5', 'Other'],
+    'Hyundai':        ['Elantra', 'Sonata', 'Santa Fe', 'Tucson', 'Accent', 'Creta', 'Other'],
+    'Kia':            ['Rio', 'Optima', 'Sportage', 'Sorento', 'Picanto', 'Cerato', 'Other'],
+    'Nissan':         ['Altima', 'Sentra', 'Pathfinder', 'Murano', 'Rogue', 'Versa', 'Maxima', 'Other'],
+    'Ford':           ['Explorer', 'Edge', 'Escape', 'Focus', 'Fusion', 'Expedition', 'F-150', 'Other'],
+    'Mitsubishi':     ['Lancer', 'Outlander', 'Pajero', 'Galant', 'Endeavor', 'Other'],
+    'Mazda':          ['Mazda3', 'Mazda6', 'CX-5', 'CX-7', 'CX-9', 'Other'],
+    'Acura':          ['MDX', 'RDX', 'TL', 'ZDX', 'RL', 'Other'],
+    'Land Rover':     ['Range Rover Sport', 'Range Rover Vogue', 'Range Rover Evoque', 'Discovery', 'LR4', 'Other'],
+    'Infiniti':       ['QX56', 'QX60', 'FX35', 'FX45', 'M37', 'Other'],
+    'Volkswagen':     ['Passat', 'Golf', 'Tiguan', 'Touareg', 'Jetta', 'Beetle', 'Other'],
+    'Peugeot':        ['308', '408', '508', '3008', '5008', '206', '207', 'Other'],
+    'Innoson':        ['IVM 5000', 'IVM 6300', 'IVM 6490', 'IVM Carrier', 'Other'],
+    'Audi':           ['A4', 'A6', 'A8', 'Q5', 'Q7', 'Other'],
+    'Volvo':          ['XC60', 'XC90', 'S60', 'S80', 'Other'],
+    'Chevrolet':      ['Cruze', 'Malibu', 'Tahoe', 'Silverado', 'Impala', 'Other'],
+    'Suzuki':         ['Swift', 'Vitara', 'Baleno', 'Other'],
+    'Other':          ['Other'],
+}
+
 export const serviceSpecialties = {
     'Mechanic':         ['AC fixes', 'Engine diagnostics', 'Brake repair', 'Oil & servicing', 'Wheel alignment', 'Bodywork', 'Electrical faults', 'Tyres'],
     'Plumbing':         ['Emergency leaks', 'Bathroom plumbing', 'Kitchen plumbing', 'Drainage', 'Pipe installation', 'Boiler repair', 'Water heater'],
@@ -175,6 +203,40 @@ const electricianStore = {
     user: { id: "user_4", name: "Amaka Eze", email: "amaka@example.com", image: profile_pic3 },
 }
 
+const technestStore = {
+    id: "store_10",
+    userId: "user_10",
+    name: "TechNest Electronics",
+    username: "technest",
+    description: "Phones, audio, wearables, and small electronics across Nigeria. Authentic stock, photographs of every unit, returns within 7 days.",
+    address: "Computer Village, Ikeja, Lagos",
+    status: "approved",
+    isActive: true,
+    logo: profile_pic1,
+    email: "adaeze@technest.example.com",
+    contact: "+234 806 333 3333",
+    createdAt: "2024-11-15T08:00:00.000Z",
+    updatedAt: "2024-11-15T08:00:00.000Z",
+    user: { id: "user_10", name: "Adaeze Nnamdi", email: "adaeze@technest.example.com", image: profile_pic1 },
+}
+
+const lagosWheelsStore = {
+    id: "store_11",
+    userId: "user_11",
+    name: "Lagos Wheels",
+    username: "lagos-wheels",
+    description: "Independent used-car dealer based in Lagos. Cars inspected before listing, full service history available on request.",
+    address: "Lekki Phase 1, Lagos",
+    status: "approved",
+    isActive: true,
+    logo: profile_pic2,
+    email: "olumide@lagoswheels.example.com",
+    contact: "+234 807 444 4444",
+    createdAt: "2024-08-22T08:00:00.000Z",
+    updatedAt: "2024-08-22T08:00:00.000Z",
+    user: { id: "user_11", name: "Olumide Kazeem", email: "olumide@lagoswheels.example.com", image: profile_pic2 },
+}
+
 export const productDummyData = [
     {
         id: "prod_1",
@@ -185,7 +247,7 @@ export const productDummyData = [
         price: 29,
         images: [product_img1, product_img2, product_img3, product_img4],
         category: "Decoration",
-        storeId: "seller_1",
+        storeId: "store_1",
         inStock: true,
         store: dummyStoreData,
         condition: 'good',
@@ -201,9 +263,9 @@ export const productDummyData = [
         mrp: 50,
         price: 29,
         images: [product_img2],
-        storeId: "seller_1",
+        storeId: "store_10",
         inStock: true,
-        store: dummyStoreData,
+        store: technestStore,
         category: "Speakers",
         condition: 'as-new',
         deliveryAvailable: true,
@@ -219,9 +281,9 @@ export const productDummyData = [
         mrp: 60,
         price: 29,
         images: [product_img3],
-        storeId: "seller_1",
+        storeId: "store_10",
         inStock: true,
-        store: dummyStoreData,
+        store: technestStore,
         category: "Watch",
         condition: 'new',
         rating: dummyRatingsData,
@@ -236,9 +298,9 @@ export const productDummyData = [
         mrp: 70,
         price: 29,
         images: [product_img4],
-        storeId: "seller_1",
+        storeId: "store_10",
         inStock: true,
-        store: dummyStoreData,
+        store: technestStore,
         category: "Headphones",
         rating: dummyRatingsData,
         createdAt: 'Sat Jul 26 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -252,9 +314,9 @@ export const productDummyData = [
         mrp: 49,
         price: 29,
         images: [product_img5],
-        storeId: "seller_1",
+        storeId: "store_10",
         inStock: true,
-        store: dummyStoreData,
+        store: technestStore,
         category: "Watch",
         rating: [...dummyRatingsData,...dummyRatingsData],
         createdAt: 'Sat Jul 25 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -268,7 +330,7 @@ export const productDummyData = [
         mrp: 59,
         price: 29,
         images: [product_img6],
-        storeId: "seller_1",
+        storeId: "store_1",
         inStock: true,
         store: dummyStoreData,
         category: "Camera",
@@ -284,7 +346,7 @@ export const productDummyData = [
         mrp: 89,
         price: 29,
         images: [product_img7],
-        storeId: "seller_1",
+        storeId: "store_1",
         inStock: true,
         store: dummyStoreData,
         category: "Pen",
@@ -300,9 +362,9 @@ export const productDummyData = [
         mrp: 99,
         price: 29,
         images: [product_img8],
-        storeId: "seller_1",
+        storeId: "store_10",
         inStock: true,
-        store: dummyStoreData,
+        store: technestStore,
         category: "Theater",
         rating: [...dummyRatingsData,...dummyRatingsData],
         createdAt: 'Sat Jul 23 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -316,9 +378,9 @@ export const productDummyData = [
         mrp: 89,
         price: 29,
         images: [product_img9],
-        storeId: "seller_1",
+        storeId: "store_10",
         inStock: true,
-        store: dummyStoreData,
+        store: technestStore,
         category: "Earbuds",
         rating: [...dummyRatingsData,...dummyRatingsData],
         createdAt: 'Sat Jul 22 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -332,7 +394,7 @@ export const productDummyData = [
         mrp: 179,
         price: 29,
         images: [product_img10],
-        storeId: "seller_1",
+        storeId: "store_1",
         inStock: true,
         store: dummyStoreData,
         category: "Watch",
@@ -348,9 +410,9 @@ export const productDummyData = [
         mrp: 39,
         price: 29,
         images: [product_img11],
-        storeId: "seller_1",
+        storeId: "store_10",
         inStock: true,
-        store: dummyStoreData,
+        store: technestStore,
         category: "Mouse",
         rating: [...dummyRatingsData,...dummyRatingsData],
         createdAt: 'Sat Jul 20 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -364,7 +426,7 @@ export const productDummyData = [
         mrp: 199,
         price: 29,
         images: [product_img12],
-        storeId: "seller_1",
+        storeId: "store_1",
         inStock: true,
         store: dummyStoreData,
         category: "Cleaner",
@@ -380,9 +442,9 @@ export const productDummyData = [
         mrp: 3500,
         price: 2975,
         images: [hero_sedan],
-        storeId: "seller_1",
+        storeId: "store_11",
         inStock: true,
-        store: dummyStoreData,
+        store: lagosWheelsStore,
         category: "Sedans",
         vehicle: {
             year: 2014,
@@ -843,4 +905,20 @@ export const dummyStoreDashboardData = {
     "totalOrders": 2,
     "totalEarnings": 636,
     "totalProducts": 5
+}
+
+// All known stores keyed by username — used by /shop/[username] to resolve a profile.
+// When real auth lands, this comes from the `stores` table; the helper signature stays the same.
+const allStores = [
+    dummyStoreData,
+    plumberStore,
+    mechanicStore,
+    electricianStore,
+    technestStore,
+    lagosWheelsStore,
+]
+
+export const getStoreByUsername = (username) => {
+    if (!username) return null
+    return allStores.find(s => s.username === username) || null
 }

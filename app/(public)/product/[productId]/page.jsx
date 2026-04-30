@@ -1,23 +1,28 @@
-'use client'
-import ProductDetails from "@/components/ProductDetails";
-import RelatedListings from "@/components/RelatedListings";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { notFound } from "next/navigation"
+import Link from "next/link"
+import ProductDetails from "@/components/ProductDetails"
+import RelatedListings from "@/components/RelatedListings"
+import { createClient } from "@/lib/supabase/server"
+import { PRODUCT_WITH_STORE_SELECT, mapProductRow } from "@/lib/supabase/mappers"
 
-export default function Product() {
+export default async function Product({ params }) {
 
-    const { productId } = useParams();
-    const [product, setProduct] = useState();
-    const products = useSelector(state => state.product.list);
+    const { productId } = await params
+    const supabase = await createClient()
 
-    useEffect(() => {
-        if (products.length > 0) {
-            setProduct(products.find((p) => p.id === productId))
-        }
-        scrollTo(0, 0)
-    }, [productId, products]);
+    const { data: row } = await supabase
+        .from('products')
+        .select(PRODUCT_WITH_STORE_SELECT)
+        .eq('id', productId)
+        .is('removed_at', null)
+        .maybeSingle()
+
+    if (!row) notFound()
+
+    // Pending shops aren't listed publicly. We could 404 these too, but
+    // letting the seller themselves preview their own listing while it's
+    // under review is fine UX. RLS will tighten this down later.
+    const product = mapProductRow(row)
 
     return (
         <div className="mx-6">
@@ -28,7 +33,7 @@ export default function Product() {
                     <Link href="/" className="text-sky-700 hover:underline">Home</Link>
                     <span className="text-slate-400">/</span>
                     <Link href="/shop" className="text-sky-700 hover:underline">Listings</Link>
-                    {product?.category && (
+                    {product.category && (
                         <>
                             <span className="text-slate-400">/</span>
                             <Link href={`/shop?category=${encodeURIComponent(product.category)}`} className="text-sky-700 hover:underline">
@@ -38,13 +43,9 @@ export default function Product() {
                     )}
                 </nav>
 
-                {product && (
-                    <>
-                        <ProductDetails product={product} />
-                        <RelatedListings product={product} />
-                    </>
-                )}
+                <ProductDetails product={product} />
+                <RelatedListings product={product} />
             </div>
         </div>
-    );
+    )
 }

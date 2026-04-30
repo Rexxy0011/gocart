@@ -1,4 +1,3 @@
-'use client'
 import BestSelling from "@/components/BestSelling";
 import LatestProducts from "@/components/LatestProducts";
 import Newsletter from "@/components/Newsletter";

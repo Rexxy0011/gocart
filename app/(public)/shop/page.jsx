@@ -1,51 +1,66 @@
-'use client'
 import { Suspense } from "react"
 import ProductCard from "@/components/ProductCard"
-import { MoveLeftIcon } from "lucide-react"
-import { useRouter, useSearchParams } from "next/navigation"
-import { useSelector } from "react-redux"
+import { createClient } from "@/lib/supabase/server"
+import { PRODUCT_WITH_STORE_SELECT, mapProductRow } from "@/lib/supabase/mappers"
+import ShopHeader from "./ShopHeader"
 
- function ShopContent() {
+// Browse-everyone view. Reads only listings whose shop has been admin-approved
+// AND is active. Services are excluded (they live on /services). Sort order:
+// featured first, then most-recently-bumped, then newest.
+//
+// Server component so the initial render is the actual filtered set — no
+// loading flash. The header / search-back affordance is a tiny client child.
+export default async function Shop({ searchParams }) {
 
-    // get query params ?search=abc
-    const searchParams = useSearchParams()
-    const search = searchParams.get('search')
-    const router = useRouter()
+    const params = await searchParams
+    const search = (params?.search || '').toString().trim()
+    const category = (params?.category || '').toString().trim()
+    const location = (params?.location || '').toString().trim()
 
-    const allProducts = useSelector(state => state.product.list)
-    const products = allProducts
-        .filter(p => !p.service)
-        .slice()
-        .sort((a, b) => {
-            const prio = (p) => p.featured ? 2 : (p.urgent || p.bulkSale) ? 1 : 0
-            const diff = prio(b) - prio(a)
-            if (diff !== 0) return diff
-            return new Date(b.createdAt) - new Date(a.createdAt)
-        })
+    const supabase = await createClient()
 
-    const filteredProducts = search
-        ? products.filter(product =>
-            product.name.toLowerCase().includes(search.toLowerCase())
-        )
-        : products;
+    let query = supabase
+        .from('products')
+        .select(PRODUCT_WITH_STORE_SELECT)
+        .is('service', null)
+        .is('removed_at', null)
+        .eq('store.status', 'approved')
+        .eq('store.is_active', true)
+        .order('featured', { ascending: false })
+        .order('bumped_at', { ascending: false, nullsFirst: false })
+        .order('created_at', { ascending: false })
+        .limit(60)
+
+    if (search)   query = query.ilike('name', `%${search}%`)
+    if (category) query = query.eq('category', category)
+    // Prefix match — listings store "State · Area"; filtering by "Lagos"
+    // should still surface every Lagos area, not just bare-state listings.
+    if (location) query = query.ilike('location', `${location}%`)
+
+    const { data: rows } = await query
+    const products = (rows || []).map(mapProductRow)
 
     return (
         <div className="min-h-[70vh] mx-6">
-            <div className=" max-w-7xl mx-auto">
-                <h1 onClick={() => router.push('/shop')} className="text-2xl text-slate-500 my-6 flex items-center gap-2 cursor-pointer"> {search && <MoveLeftIcon size={20} />}  All <span className="text-slate-700 font-medium">Products</span></h1>
-                <div className="grid grid-cols-2 sm:flex flex-wrap gap-6 xl:gap-12 mx-auto mb-32">
-                    {filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)}
-                </div>
+            <div className="max-w-7xl mx-auto">
+                <Suspense fallback={null}>
+                    <ShopHeader search={search} />
+                </Suspense>
+                {products.length === 0 ? (
+                    <div className="border border-dashed border-slate-300 rounded-xl p-12 text-center bg-slate-50/60 my-10">
+                        <h2 className="text-lg font-semibold text-slate-900">No listings match</h2>
+                        <p className="text-sm text-slate-600 mt-2">
+                            {search || category || location
+                                ? 'Try widening your search — clear filters or pick a different category.'
+                                : 'Be the first — post an ad and it shows up here once reviewed.'}
+                        </p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 sm:flex flex-wrap gap-6 xl:gap-12 mx-auto mb-32">
+                        {products.map((product) => <ProductCard key={product.id} product={product} />)}
+                    </div>
+                )}
             </div>
         </div>
     )
-}
-
-
-export default function Shop() {
-  return (
-    <Suspense fallback={<div>Loading shop...</div>}>
-      <ShopContent />
-    </Suspense>
-  );
 }

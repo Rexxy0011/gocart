@@ -3,6 +3,8 @@ import { useState } from 'react'
 
 const sections = {
     Overview: [
+        ['Make',                       v => v.make],
+        ['Model',                      v => v.model],
         ['Year',                       v => v.year],
         ['Mileage',                    v => v.mileage != null ? `${v.mileage.toLocaleString()} miles` : null],
         ['Body Type',                  v => v.bodyType],

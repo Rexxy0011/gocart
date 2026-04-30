@@ -1,41 +1,56 @@
-'use client'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import ProductCard from './ProductCard'
+import { createClient } from '@/lib/supabase/server'
+import { PRODUCT_WITH_STORE_SELECT, mapProductRow } from '@/lib/supabase/mappers'
 
 const MAX_ITEMS = 4
 
-const RelatedListings = ({ product }) => {
+// "You may also like" — fetches a small pool from the same category as the
+// current product, excluding it. Same listing type (services don't bleed
+// into product pages and vice versa). Approved + active shops only.
+const RelatedListings = async ({ product }) => {
+    if (!product) return null
 
-    const allProducts = useSelector(state => state.product.list)
+    const isService = !!product.service
+    const supabase = await createClient()
 
-    const related = useMemo(() => {
-        if (!product) return []
-        const isService = !!product.service
+    // Postgres doesn't have an OR-on-different-tables filter that handles the
+    // service / non-service split cleanly via PostgREST, so we run two
+    // separate orderings client-side. Scope by category for the strongest
+    // signal, fall back to overall newest if there aren't enough matches.
+    let query = supabase
+        .from('products')
+        .select(PRODUCT_WITH_STORE_SELECT)
+        .neq('id', product.id)
+        .is('removed_at', null)
+        .eq('store.status', 'approved')
+        .eq('store.is_active', true)
+        .order('featured', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(MAX_ITEMS * 3)  // overshoot then re-rank in memory
 
-        // Same listing type only (don't mix services into a product page or vice versa)
-        const pool = allProducts.filter(p => p.id !== product.id && !!p.service === isService)
+    if (isService) query = query.not('service', 'is', null)
+    else           query = query.is('service', null)
 
-        // Score: same category + same location is best, then category, then location, then recency
-        const scored = pool.map(p => {
-            let score = 0
-            if (product.category && p.category === product.category) score += 4
-            if (product.location && p.location === product.location) score += 2
-            if (p.featured) score += 1
-            return { p, score, ts: new Date(p.createdAt).getTime() }
-        })
+    if (product.category) query = query.eq('category', product.category)
 
-        return scored
-            .sort((a, b) => b.score - a.score || b.ts - a.ts)
-            .slice(0, MAX_ITEMS)
-            .map(x => x.p)
-    }, [product, allProducts])
+    const { data: rows } = await query
 
-    if (related.length < 2) return null
+    // Re-rank: same category + same location > same category > recency
+    const ts = (r) => new Date(r.created_at).getTime()
+    const score = (r) => (
+        (product.location && r.location === product.location ? 2 : 0) +
+        (r.featured ? 1 : 0)
+    )
+    const sorted = (rows || [])
+        .sort((a, b) => score(b) - score(a) || ts(b) - ts(a))
+        .slice(0, MAX_ITEMS)
+        .map(mapProductRow)
 
-    const seeMoreHref = product?.category
+    if (sorted.length < 2) return null
+
+    const seeMoreHref = product.category
         ? `/shop?category=${encodeURIComponent(product.category)}`
         : '/shop'
 
@@ -56,7 +71,7 @@ const RelatedListings = ({ product }) => {
                 </Link>
             </div>
             <div className='grid grid-cols-2 sm:flex flex-wrap gap-6 sm:justify-start'>
-                {related.map(p => (
+                {sorted.map(p => (
                     <ProductCard key={p.id} product={p} />
                 ))}
             </div>

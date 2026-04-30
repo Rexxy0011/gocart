@@ -1,33 +1,37 @@
 import Link from "next/link";
 import { Apple, Facebook, Instagram, Play, Twitter, Youtube } from "lucide-react";
 
+// Every link below points to a route that actually resolves — either an
+// existing page (auth-gated routes redirect to /login, that's fine) or a
+// stub policy page in (public)/. Avoid adding links to pages that 404.
 const linkColumns = [
     {
-        title: "About Us",
+        title: "Browse",
+        links: [
+            { text: "All ads", href: "/shop" },
+            { text: "Services", href: "/services" },
+            { text: "Cars", href: "/shop?category=Sedans" },
+            { text: "Phones", href: "/shop?category=iPhones" },
+            { text: "Home & Appliances", href: "/shop?category=Sofas" },
+        ],
+    },
+    {
+        title: "Selling",
+        links: [
+            { text: "Post an ad", href: "/store/add-product" },
+            { text: "My listings", href: "/store/manage-product" },
+            { text: "Verified providers", href: "/pro" },
+            { text: "Messages", href: "/messages" },
+        ],
+    },
+    {
+        title: "Help & Trust",
         links: [
             { text: "About GoCart", href: "/about" },
-            { text: "GoCart for Business", href: "/business" },
-            { text: "Careers", href: "/careers" },
-            { text: "Press", href: "/press" },
-        ],
-    },
-    {
-        title: "Help & Contact",
-        links: [
-            { text: "Help Centre", href: "/help" },
-            { text: "Safety", href: "/safety" },
-            { text: "Policies", href: "/policies" },
+            { text: "Safety tips", href: "/safety" },
+            { text: "Contact us", href: "/contact" },
+            { text: "Terms of Use", href: "/terms" },
             { text: "Privacy Notice", href: "/privacy" },
-            { text: "Contact Us", href: "/contact" },
-        ],
-    },
-    {
-        title: "More From Us",
-        links: [
-            { text: "GoCart Vehicles", href: "/shop?category=Sedans" },
-            { text: "GoCart Property", href: "/shop?category=Property" },
-            { text: "Buying Guides", href: "/guides" },
-            { text: "Sell Your Car", href: "/sell/car" },
         ],
     },
 ];
@@ -62,32 +66,30 @@ const Footer = () => {
 
                     <div>
                         <h3 className="text-base font-bold text-slate-100 mb-4">Mobile Apps</h3>
+                        <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+                            Native apps coming soon — meanwhile GoCart works great on mobile browsers.
+                        </p>
                         <div className="space-y-3">
-                            <Link
-                                href="#"
-                                aria-label="Download on the App Store"
-                                className="flex items-center gap-3 bg-black hover:bg-slate-900 text-white rounded-lg px-3 py-2 ring-1 ring-slate-700 transition"
+                            <span
+                                aria-label="App Store coming soon"
+                                className="flex items-center gap-3 bg-black text-white rounded-lg px-3 py-2 ring-1 ring-slate-700 opacity-70 cursor-not-allowed"
                             >
                                 <Apple size={22} className="shrink-0" />
                                 <span className="leading-tight">
-                                    <span className="block text-[10px] text-slate-400">Download on the</span>
+                                    <span className="block text-[10px] text-slate-400">Coming soon to</span>
                                     <span className="block text-sm font-semibold">App Store</span>
                                 </span>
-                            </Link>
-                            <Link
-                                href="#"
-                                aria-label="Get it on Google Play"
-                                className="flex items-center gap-3 bg-black hover:bg-slate-900 text-white rounded-lg px-3 py-2 ring-1 ring-slate-700 transition"
+                            </span>
+                            <span
+                                aria-label="Google Play coming soon"
+                                className="flex items-center gap-3 bg-black text-white rounded-lg px-3 py-2 ring-1 ring-slate-700 opacity-70 cursor-not-allowed"
                             >
                                 <Play size={22} className="shrink-0" fill="currentColor" />
                                 <span className="leading-tight">
-                                    <span className="block text-[10px] text-slate-400">Get it on</span>
+                                    <span className="block text-[10px] text-slate-400">Coming soon to</span>
                                     <span className="block text-sm font-semibold">Google Play</span>
                                 </span>
-                            </Link>
-                            <Link href="/apps" className="block text-sm text-sky-200 hover:underline pt-1">
-                                More About Our Apps
-                            </Link>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -131,12 +133,10 @@ const Footer = () => {
 
                     <p className="text-slate-300">
                         <Link href="/terms" className="text-sky-200 hover:underline">Terms of Use</Link>
-                        <span className="text-slate-500">, </span>
+                        <span className="text-slate-500"> · </span>
                         <Link href="/privacy" className="text-sky-200 hover:underline">Privacy Notice</Link>
-                        <span className="text-slate-500">, </span>
-                        <Link href="/privacy/settings" className="text-sky-200 hover:underline">Privacy Settings</Link>
-                        <span className="text-slate-500"> & </span>
-                        <Link href="/cookies" className="text-sky-200 hover:underline">Cookies Policy</Link>
+                        <span className="text-slate-500"> · </span>
+                        <Link href="/contact" className="text-sky-200 hover:underline">Contact</Link>
                     </p>
                 </div>
             </div>

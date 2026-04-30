@@ -1,26 +1,25 @@
-'use client'
-import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { notFound } from "next/navigation"
 import ServicePage from "@/components/ServicePage"
+import { createClient } from "@/lib/supabase/server"
+import { PRODUCT_WITH_STORE_SELECT, mapProductRow } from "@/lib/supabase/mappers"
 
-export default function ServiceRoute() {
+export default async function ServiceRoute({ params }) {
 
-    const { id } = useParams()
-    const [product, setProduct] = useState()
-    const products = useSelector(state => state.product.list)
+    const { id } = await params
+    const supabase = await createClient()
 
-    useEffect(() => {
-        if (products.length > 0) {
-            setProduct(products.find((p) => p.id === id))
-        }
-        scrollTo(0, 0)
-    }, [id, products])
+    const { data: row } = await supabase
+        .from('products')
+        .select(PRODUCT_WITH_STORE_SELECT)
+        .eq('id', id)
+        .is('removed_at', null)
+        .maybeSingle()
 
-    if (!product) return null
-    if (!product.service) {
+    if (!row) notFound()
+    if (!row.service) {
         return <div className='p-12 text-center text-slate-500 text-sm'>This listing is not a service.</div>
     }
 
+    const product = mapProductRow(row)
     return <ServicePage product={product} />
 }

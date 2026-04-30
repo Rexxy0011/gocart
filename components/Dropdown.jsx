@@ -12,6 +12,7 @@ const Dropdown = ({
     menuClassName = '',
     buttonClassName = '',
     align = 'left',
+    disabled = false,
 }) => {
     const [open, setOpen] = useState(false)
     const ref = useRef(null)
@@ -35,8 +36,9 @@ const Dropdown = ({
         <div ref={ref} className={`relative ${className}`}>
             <button
                 type='button'
-                onClick={() => setOpen(o => !o)}
-                className={`w-full flex items-center gap-2 bg-white ring-1 ring-slate-200 rounded-full px-4 py-2 hover:ring-slate-400 focus:outline-none focus:ring-slate-400 transition ${buttonClassName}`}
+                disabled={disabled}
+                onClick={() => !disabled && setOpen(o => !o)}
+                className={`w-full flex items-center gap-2 bg-white ring-1 ring-slate-200 rounded-full px-4 py-2 hover:ring-slate-400 focus:outline-none focus:ring-slate-400 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:ring-slate-200 ${buttonClassName}`}
             >
                 {leftIcon}
                 <span className={`flex-1 text-sm text-left truncate min-w-0 ${current ? 'text-slate-700' : 'text-slate-400'}`}>

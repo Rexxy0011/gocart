@@ -1,4 +1,5 @@
 'use client'
+import dynamic from "next/dynamic"
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
@@ -12,6 +13,12 @@ import { Button } from "@/components/ui/button"
 import VehicleSpecs from "@/components/VehicleSpecs"
 import ServiceDetails from "@/components/ServiceDetails"
 import { categoryGroups } from "@/assets/assets"
+import { useAuthGate } from "@/hooks/useAuthGate"
+import { toast } from "react-hot-toast"
+import { startConversation } from "@/app/actions/messages"
+// Modal is dynamic-imported because it's only mounted on demand and only by
+// signed-in users — no need to ship its JS on first paint.
+const ReportModal = dynamic(() => import("@/components/ReportModal"), { ssr: false })
 
 const CONDITION_LABEL = {
     'new':    'New',
@@ -50,14 +57,43 @@ const ProductDetails = ({ product }) => {
 
     const cart = useSelector(state => state.cart.cartItems)
     const dispatch = useDispatch()
+    const requireAuth = useAuthGate()
     const isSaved = !!cart[productId]
+    const [reportOpen, setReportOpen] = useState(false)
+    const openReport = () => requireAuth(() => setReportOpen(true), 'Sign in to report a listing.')
 
     const prevImage = () => setImageIndex((i) => (i - 1 + product.images.length) % product.images.length)
     const nextImage = () => setImageIndex((i) => (i + 1) % product.images.length)
 
     const toggleSave = () => {
-        if (isSaved) dispatch(deleteItemFromCart({ productId }))
-        else dispatch(addToCart({ productId }))
+        requireAuth(() => {
+            if (isSaved) dispatch(deleteItemFromCart({ productId }))
+            else dispatch(addToCart({ productId }))
+        }, 'Sign in to save this listing.')
+    }
+
+    const handleSendMessage = () => {
+        requireAuth(async () => {
+            const result = await startConversation({ listingId: productId, message })
+            if (result?.error) {
+                toast.error(result.error)
+            }
+            // On success, startConversation redirects via next/navigation —
+            // no further action needed here.
+        }, `Sign in to message ${sellerName.split(' ')[0]}.`)
+    }
+
+    const handleSecondaryAction = () => {
+        // Quote request / Make offer reuses the same conversation flow with
+        // a slightly different opening message. We can split this into a
+        // structured "Quote" record later when there's a real reason to.
+        requireAuth(async () => {
+            const opener = isService
+                ? `Hi ${sellerName.split(' ')[0]}, can I get a quote for this service?`
+                : `Hi ${sellerName.split(' ')[0]}, would you take an offer on this?`
+            const result = await startConversation({ listingId: productId, message: opener })
+            if (result?.error) toast.error(result.error)
+        }, `Sign in to ${isService ? 'request a quote' : 'make an offer'}.`)
     }
 
     return (
@@ -181,10 +217,19 @@ const ProductDetails = ({ product }) => {
                         />
 
                         <div className='flex flex-col gap-2 mt-4'>
-                            <Button size='lg' className='w-full bg-slate-900 hover:bg-slate-800 text-white text-base'>
+                            <Button
+                                size='lg'
+                                onClick={handleSendMessage}
+                                className='w-full bg-slate-900 hover:bg-slate-800 text-white text-base'
+                            >
                                 Send Message
                             </Button>
-                            <Button size='lg' variant='outline' className='w-full justify-center text-base'>
+                            <Button
+                                size='lg'
+                                variant='outline'
+                                onClick={handleSecondaryAction}
+                                className='w-full justify-center text-base'
+                            >
                                 {isService ? 'Request quote' : 'Make offer'} <ChevronDown size={16} />
                             </Button>
                         </div>
@@ -199,8 +244,8 @@ const ProductDetails = ({ product }) => {
                             >
                                 <Heart size={16} fill={isSaved ? 'currentColor' : 'none'} /> {isSaved ? 'Saved' : 'Favourite'}
                             </Button>
-                            <Button variant='outline' className='justify-center'>
-                                <Flag size={16} /> Report <ChevronDown size={14} />
+                            <Button variant='outline' onClick={openReport} className='justify-center'>
+                                <Flag size={16} /> Report
                             </Button>
                         </div>
                     </div>
@@ -246,6 +291,13 @@ const ProductDetails = ({ product }) => {
                     </section>
                 </div>
             </div>
+
+            <ReportModal
+                open={reportOpen}
+                onClose={() => setReportOpen(false)}
+                listingId={productId}
+                listingName={product.name}
+            />
         </div>
     )
 }

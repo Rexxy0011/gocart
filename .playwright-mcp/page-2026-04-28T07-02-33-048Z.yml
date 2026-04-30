@@ -1,0 +1,696 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "gocart. plus" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - text: gocart.
+        - paragraph [ref=e6]: plus
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - button "All" [ref=e10] [cursor=pointer]:
+            - generic [ref=e11]: All
+            - img [ref=e12]
+          - button "All locations" [ref=e16] [cursor=pointer]:
+            - img [ref=e17]
+            - generic [ref=e20]: All locations
+            - img [ref=e21]
+          - generic [ref=e24]:
+            - img [ref=e25]
+            - textbox "Search…" [ref=e28]
+        - button "Search" [ref=e29] [cursor=pointer]
+      - generic [ref=e30]:
+        - link "Post an ad" [ref=e31] [cursor=pointer]:
+          - /url: /store/add-product
+          - img [ref=e33]
+          - generic [ref=e34]: Post an ad
+        - link "Offer a service" [ref=e35] [cursor=pointer]:
+          - /url: /pro/apply
+          - img [ref=e37]
+          - generic [ref=e39]: Offer a service
+        - link "Cart" [ref=e40] [cursor=pointer]:
+          - /url: /cart
+          - img [ref=e41]
+        - link "Sign up" [ref=e45] [cursor=pointer]:
+          - /url: /signup
+          - img [ref=e46]
+    - separator [ref=e49]
+  - generic [ref=e50]:
+    - generic [ref=e52]:
+      - generic [ref=e53]:
+        - generic [ref=e54]:
+          - heading "Home for all your ads." [level=2] [ref=e55]
+          - paragraph [ref=e56]: Sell what you no longer need. Find what you do.
+        - list [ref=e57]:
+          - listitem [ref=e58]:
+            - img [ref=e59]
+            - generic [ref=e61]: Free to list — no commissions
+          - listitem [ref=e62]:
+            - img [ref=e63]
+            - generic [ref=e65]: Chat directly with sellers
+          - listitem [ref=e66]:
+            - img [ref=e67]
+            - generic [ref=e69]: Verified profiles
+          - listitem [ref=e70]:
+            - img [ref=e71]
+            - generic [ref=e73]: Trusted by 30k daily users · 50k+ live ads
+        - link "Create a listing" [ref=e74] [cursor=pointer]:
+          - /url: /sell
+          - text: Create a listing
+          - img [ref=e75]
+      - generic [ref=e77]:
+        - img "Blue velvet sofa" [ref=e79]
+        - img "Mattress" [ref=e81]
+        - img "Mercedes sedan" [ref=e83]
+        - img "TV unit" [ref=e85]
+        - img "Mini fridge" [ref=e87]
+        - img "Cookware set" [ref=e89]
+        - img "Gas cooker" [ref=e91]
+        - img "Club sofa" [ref=e93]
+        - img "Pets" [ref=e95]
+        - generic [ref=e96]:
+          - button "Go to slide 1" [ref=e97] [cursor=pointer]
+          - button "Go to slide 2" [ref=e98] [cursor=pointer]
+          - button "Go to slide 3" [ref=e99] [cursor=pointer]
+          - button "Go to slide 4" [ref=e100] [cursor=pointer]
+          - button "Go to slide 5" [ref=e101] [cursor=pointer]
+          - button "Go to slide 6" [ref=e102] [cursor=pointer]
+          - button "Go to slide 7" [ref=e103] [cursor=pointer]
+          - button "Go to slide 8" [ref=e104] [cursor=pointer]
+          - button "Go to slide 9" [ref=e105] [cursor=pointer]
+    - generic [ref=e106]:
+      - generic [ref=e107]:
+        - generic [ref=e108]:
+          - heading "Discover top categories" [level=1] [ref=e109]
+          - paragraph [ref=e110]: Fresh listings updated every minute.
+        - generic [ref=e111]:
+          - link "Hot 🔥" [ref=e112] [cursor=pointer]:
+            - /url: /hot
+            - generic [ref=e113]: Hot 🔥
+          - link "Home & Appliances" [ref=e114] [cursor=pointer]:
+            - /url: /shop?category=Home+%26+Appliances
+            - generic [ref=e115]: Home & Appliances
+          - link "Electronics" [ref=e116] [cursor=pointer]:
+            - /url: /shop?category=Electronics
+            - generic [ref=e117]: Electronics
+          - link "Vehicles" [ref=e118] [cursor=pointer]:
+            - /url: /shop?category=Vehicles
+            - generic [ref=e119]: Vehicles
+          - link "Pets & Lifestyle" [ref=e120] [cursor=pointer]:
+            - /url: /shop?category=Pets+%26+Lifestyle
+            - generic [ref=e121]: Pets & Lifestyle
+          - link "Repairs & Services" [ref=e122] [cursor=pointer]:
+            - /url: /services
+            - generic [ref=e123]: Repairs & Services
+      - generic [ref=e126]:
+        - button "Sofas" [ref=e127] [cursor=pointer]
+        - button "Beds" [ref=e128] [cursor=pointer]
+        - button "Mattresses" [ref=e129] [cursor=pointer]
+        - button "Wardrobes" [ref=e130] [cursor=pointer]
+        - button "Dining sets" [ref=e131] [cursor=pointer]
+        - button "Fridges" [ref=e132] [cursor=pointer]
+        - button "Washing machines" [ref=e133] [cursor=pointer]
+        - button "Microwaves" [ref=e134] [cursor=pointer]
+        - button "Gas cookers" [ref=e135] [cursor=pointer]
+        - button "Generators" [ref=e136] [cursor=pointer]
+        - button "Cookware" [ref=e137] [cursor=pointer]
+        - button "Decor" [ref=e138] [cursor=pointer]
+        - button "Rugs" [ref=e139] [cursor=pointer]
+        - button "iPhones" [ref=e140] [cursor=pointer]
+        - button "Androids" [ref=e141] [cursor=pointer]
+        - button "Laptops" [ref=e142] [cursor=pointer]
+        - button "TVs" [ref=e143] [cursor=pointer]
+        - button "Speakers" [ref=e144] [cursor=pointer]
+        - button "Headphones" [ref=e145] [cursor=pointer]
+        - button "Cameras" [ref=e146] [cursor=pointer]
+        - button "Smartwatches" [ref=e147] [cursor=pointer]
+        - button "Sedans" [ref=e148] [cursor=pointer]
+        - button "SUVs" [ref=e149] [cursor=pointer]
+        - button "Motorcycles" [ref=e150] [cursor=pointer]
+        - button "Bicycles" [ref=e151] [cursor=pointer]
+        - button "Parts & accessories" [ref=e152] [cursor=pointer]
+        - button "Pets" [ref=e153] [cursor=pointer]
+        - button "Fashion" [ref=e154] [cursor=pointer]
+        - button "Books" [ref=e155] [cursor=pointer]
+        - button "Other" [ref=e156] [cursor=pointer]
+        - button "Plumbing" [ref=e157] [cursor=pointer]
+        - button "Electrician" [ref=e158] [cursor=pointer]
+        - button "Carpentry" [ref=e159] [cursor=pointer]
+        - button "Cleaning" [ref=e160] [cursor=pointer]
+        - button "Mechanic" [ref=e161] [cursor=pointer]
+        - button "Phone repair" [ref=e162] [cursor=pointer]
+        - button "AC Repair" [ref=e163] [cursor=pointer]
+        - button "Appliance repair" [ref=e164] [cursor=pointer]
+        - button "Moving" [ref=e165] [cursor=pointer]
+        - button "Courier" [ref=e166] [cursor=pointer]
+        - button "Sofas" [ref=e167] [cursor=pointer]
+        - button "Beds" [ref=e168] [cursor=pointer]
+        - button "Mattresses" [ref=e169] [cursor=pointer]
+        - button "Wardrobes" [ref=e170] [cursor=pointer]
+        - button "Dining sets" [ref=e171] [cursor=pointer]
+        - button "Fridges" [ref=e172] [cursor=pointer]
+        - button "Washing machines" [ref=e173] [cursor=pointer]
+        - button "Microwaves" [ref=e174] [cursor=pointer]
+        - button "Gas cookers" [ref=e175] [cursor=pointer]
+        - button "Generators" [ref=e176] [cursor=pointer]
+        - button "Cookware" [ref=e177] [cursor=pointer]
+        - button "Decor" [ref=e178] [cursor=pointer]
+        - button "Rugs" [ref=e179] [cursor=pointer]
+        - button "iPhones" [ref=e180] [cursor=pointer]
+        - button "Androids" [ref=e181] [cursor=pointer]
+        - button "Laptops" [ref=e182] [cursor=pointer]
+        - button "TVs" [ref=e183] [cursor=pointer]
+        - button "Speakers" [ref=e184] [cursor=pointer]
+        - button "Headphones" [ref=e185] [cursor=pointer]
+        - button "Cameras" [ref=e186] [cursor=pointer]
+        - button "Smartwatches" [ref=e187] [cursor=pointer]
+        - button "Sedans" [ref=e188] [cursor=pointer]
+        - button "SUVs" [ref=e189] [cursor=pointer]
+        - button "Motorcycles" [ref=e190] [cursor=pointer]
+        - button "Bicycles" [ref=e191] [cursor=pointer]
+        - button "Parts & accessories" [ref=e192] [cursor=pointer]
+        - button "Pets" [ref=e193] [cursor=pointer]
+        - button "Fashion" [ref=e194] [cursor=pointer]
+        - button "Books" [ref=e195] [cursor=pointer]
+        - button "Other" [ref=e196] [cursor=pointer]
+        - button "Plumbing" [ref=e197] [cursor=pointer]
+        - button "Electrician" [ref=e198] [cursor=pointer]
+        - button "Carpentry" [ref=e199] [cursor=pointer]
+        - button "Cleaning" [ref=e200] [cursor=pointer]
+        - button "Mechanic" [ref=e201] [cursor=pointer]
+        - button "Phone repair" [ref=e202] [cursor=pointer]
+        - button "AC Repair" [ref=e203] [cursor=pointer]
+        - button "Appliance repair" [ref=e204] [cursor=pointer]
+        - button "Moving" [ref=e205] [cursor=pointer]
+        - button "Courier" [ref=e206] [cursor=pointer]
+        - button "Sofas" [ref=e207] [cursor=pointer]
+        - button "Beds" [ref=e208] [cursor=pointer]
+        - button "Mattresses" [ref=e209] [cursor=pointer]
+        - button "Wardrobes" [ref=e210] [cursor=pointer]
+        - button "Dining sets" [ref=e211] [cursor=pointer]
+        - button "Fridges" [ref=e212] [cursor=pointer]
+        - button "Washing machines" [ref=e213] [cursor=pointer]
+        - button "Microwaves" [ref=e214] [cursor=pointer]
+        - button "Gas cookers" [ref=e215] [cursor=pointer]
+        - button "Generators" [ref=e216] [cursor=pointer]
+        - button "Cookware" [ref=e217] [cursor=pointer]
+        - button "Decor" [ref=e218] [cursor=pointer]
+        - button "Rugs" [ref=e219] [cursor=pointer]
+        - button "iPhones" [ref=e220] [cursor=pointer]
+        - button "Androids" [ref=e221] [cursor=pointer]
+        - button "Laptops" [ref=e222] [cursor=pointer]
+        - button "TVs" [ref=e223] [cursor=pointer]
+        - button "Speakers" [ref=e224] [cursor=pointer]
+        - button "Headphones" [ref=e225] [cursor=pointer]
+        - button "Cameras" [ref=e226] [cursor=pointer]
+        - button "Smartwatches" [ref=e227] [cursor=pointer]
+        - button "Sedans" [ref=e228] [cursor=pointer]
+        - button "SUVs" [ref=e229] [cursor=pointer]
+        - button "Motorcycles" [ref=e230] [cursor=pointer]
+        - button "Bicycles" [ref=e231] [cursor=pointer]
+        - button "Parts & accessories" [ref=e232] [cursor=pointer]
+        - button "Pets" [ref=e233] [cursor=pointer]
+        - button "Fashion" [ref=e234] [cursor=pointer]
+        - button "Books" [ref=e235] [cursor=pointer]
+        - button "Other" [ref=e236] [cursor=pointer]
+        - button "Plumbing" [ref=e237] [cursor=pointer]
+        - button "Electrician" [ref=e238] [cursor=pointer]
+        - button "Carpentry" [ref=e239] [cursor=pointer]
+        - button "Cleaning" [ref=e240] [cursor=pointer]
+        - button "Mechanic" [ref=e241] [cursor=pointer]
+        - button "Phone repair" [ref=e242] [cursor=pointer]
+        - button "AC Repair" [ref=e243] [cursor=pointer]
+        - button "Appliance repair" [ref=e244] [cursor=pointer]
+        - button "Moving" [ref=e245] [cursor=pointer]
+        - button "Courier" [ref=e246] [cursor=pointer]
+        - button "Sofas" [ref=e247] [cursor=pointer]
+        - button "Beds" [ref=e248] [cursor=pointer]
+        - button "Mattresses" [ref=e249] [cursor=pointer]
+        - button "Wardrobes" [ref=e250] [cursor=pointer]
+        - button "Dining sets" [ref=e251] [cursor=pointer]
+        - button "Fridges" [ref=e252] [cursor=pointer]
+        - button "Washing machines" [ref=e253] [cursor=pointer]
+        - button "Microwaves" [ref=e254] [cursor=pointer]
+        - button "Gas cookers" [ref=e255] [cursor=pointer]
+        - button "Generators" [ref=e256] [cursor=pointer]
+        - button "Cookware" [ref=e257] [cursor=pointer]
+        - button "Decor" [ref=e258] [cursor=pointer]
+        - button "Rugs" [ref=e259] [cursor=pointer]
+        - button "iPhones" [ref=e260] [cursor=pointer]
+        - button "Androids" [ref=e261] [cursor=pointer]
+        - button "Laptops" [ref=e262] [cursor=pointer]
+        - button "TVs" [ref=e263] [cursor=pointer]
+        - button "Speakers" [ref=e264] [cursor=pointer]
+        - button "Headphones" [ref=e265] [cursor=pointer]
+        - button "Cameras" [ref=e266] [cursor=pointer]
+        - button "Smartwatches" [ref=e267] [cursor=pointer]
+        - button "Sedans" [ref=e268] [cursor=pointer]
+        - button "SUVs" [ref=e269] [cursor=pointer]
+        - button "Motorcycles" [ref=e270] [cursor=pointer]
+        - button "Bicycles" [ref=e271] [cursor=pointer]
+        - button "Parts & accessories" [ref=e272] [cursor=pointer]
+        - button "Pets" [ref=e273] [cursor=pointer]
+        - button "Fashion" [ref=e274] [cursor=pointer]
+        - button "Books" [ref=e275] [cursor=pointer]
+        - button "Other" [ref=e276] [cursor=pointer]
+        - button "Plumbing" [ref=e277] [cursor=pointer]
+        - button "Electrician" [ref=e278] [cursor=pointer]
+        - button "Carpentry" [ref=e279] [cursor=pointer]
+        - button "Cleaning" [ref=e280] [cursor=pointer]
+        - button "Mechanic" [ref=e281] [cursor=pointer]
+        - button "Phone repair" [ref=e282] [cursor=pointer]
+        - button "AC Repair" [ref=e283] [cursor=pointer]
+        - button "Appliance repair" [ref=e284] [cursor=pointer]
+        - button "Moving" [ref=e285] [cursor=pointer]
+        - button "Courier" [ref=e286] [cursor=pointer]
+    - generic [ref=e287]:
+      - generic [ref=e288]:
+        - heading "Top listings" [level=2] [ref=e289]
+        - link "Showing 4 of 16 listings View more" [ref=e290] [cursor=pointer]:
+          - /url: /shop
+          - paragraph [ref=e291]: Showing 4 of 16 listings
+          - button "View more" [ref=e292]:
+            - text: View more
+            - img [ref=e293]
+      - generic [ref=e295]:
+        - link "House clearance — relocating to UK in 2 weeks Featured Urgent bulk sale Add to favorites $750,000$920,000 House clearance — relocating to UK in 2 weeks Great Stack Verified Lagos · 3 days ago Good condition" [ref=e296] [cursor=pointer]:
+          - /url: /product/prod_22
+          - generic [ref=e297]:
+            - img "House clearance — relocating to UK in 2 weeks" [ref=e298]
+            - generic [ref=e300]:
+              - img [ref=e301]
+              - text: Featured
+            - generic [ref=e304]:
+              - img [ref=e305]
+              - text: Urgent bulk sale
+            - button "Add to favorites" [ref=e307]:
+              - img [ref=e308]
+          - generic [ref=e310]:
+            - paragraph [ref=e311]:
+              - generic [ref=e312]: $750,000
+              - generic [ref=e313]: $920,000
+            - paragraph [ref=e314]: House clearance — relocating to UK in 2 weeks
+            - button "Great Stack Verified" [ref=e315]:
+              - generic [ref=e316]: Great Stack
+              - img "Verified" [ref=e317]:
+                - img [ref=e318]
+            - generic [ref=e320]:
+              - generic [ref=e321]:
+                - img [ref=e322]
+                - text: Lagos
+              - generic [ref=e325]: ·
+              - generic [ref=e326]:
+                - img [ref=e327]
+                - text: 3 days ago
+            - generic [ref=e331]:
+              - img [ref=e332]
+              - text: Good condition
+        - link "Closing my salon — equipment & furniture must go Urgent bulk sale Add to favorites $320,000$480,000 Closing my salon — equipment & furniture must go Great Stack Verified Abuja · 6 days ago Fair condition" [ref=e335] [cursor=pointer]:
+          - /url: /product/prod_23
+          - generic [ref=e336]:
+            - img "Closing my salon — equipment & furniture must go" [ref=e337]
+            - generic [ref=e339]:
+              - img [ref=e340]
+              - text: Urgent bulk sale
+            - button "Add to favorites" [ref=e342]:
+              - img [ref=e343]
+          - generic [ref=e345]:
+            - paragraph [ref=e346]:
+              - generic [ref=e347]: $320,000
+              - generic [ref=e348]: $480,000
+            - paragraph [ref=e349]: Closing my salon — equipment & furniture must go
+            - button "Great Stack Verified" [ref=e350]:
+              - generic [ref=e351]: Great Stack
+              - img "Verified" [ref=e352]:
+                - img [ref=e353]
+            - generic [ref=e355]:
+              - generic [ref=e356]:
+                - img [ref=e357]
+                - text: Abuja
+              - generic [ref=e360]: ·
+              - generic [ref=e361]:
+                - img [ref=e362]
+                - text: 6 days ago
+            - generic [ref=e366]:
+              - img [ref=e367]
+              - text: Fair condition
+        - link "Old microwave — free to good home, must collect Add to favorites FREE Old microwave — free to good home, must collect Great Stack Verified Lagos · 2 days ago Good condition" [ref=e370] [cursor=pointer]:
+          - /url: /product/prod_24
+          - generic [ref=e371]:
+            - img "Old microwave — free to good home, must collect" [ref=e372]
+            - button "Add to favorites" [ref=e373]:
+              - img [ref=e374]
+          - generic [ref=e376]:
+            - paragraph [ref=e377]:
+              - generic [ref=e378]: FREE
+            - paragraph [ref=e379]: Old microwave — free to good home, must collect
+            - button "Great Stack Verified" [ref=e380]:
+              - generic [ref=e381]: Great Stack
+              - img "Verified" [ref=e382]:
+                - img [ref=e383]
+            - generic [ref=e385]:
+              - generic [ref=e386]:
+                - img [ref=e387]
+                - text: Lagos
+              - generic [ref=e390]: ·
+              - generic [ref=e391]:
+                - img [ref=e392]
+                - text: 2 days ago
+            - generic [ref=e396]:
+              - img [ref=e397]
+              - text: Good condition
+        - link "Modern table lamp Add to favorites $29$40 Modern table lamp Great Stack Verified Lagos · 9 months ago Good condition" [ref=e400] [cursor=pointer]:
+          - /url: /product/prod_1
+          - generic [ref=e401]:
+            - img "Modern table lamp" [ref=e402]
+            - button "Add to favorites" [ref=e403]:
+              - img [ref=e404]
+          - generic [ref=e406]:
+            - paragraph [ref=e407]:
+              - generic [ref=e408]: $29
+              - generic [ref=e409]: $40
+            - paragraph [ref=e410]: Modern table lamp
+            - button "Great Stack Verified" [ref=e411]:
+              - generic [ref=e412]: Great Stack
+              - img "Verified" [ref=e413]:
+                - img [ref=e414]
+            - generic [ref=e416]:
+              - generic [ref=e417]:
+                - img [ref=e418]
+                - text: Lagos
+              - generic [ref=e421]: ·
+              - generic [ref=e422]:
+                - img [ref=e423]
+                - text: 9 months ago
+            - generic [ref=e427]:
+              - img [ref=e428]
+              - text: Good condition
+    - generic [ref=e431]:
+      - generic [ref=e432]:
+        - heading "Today's Deals" [level=2] [ref=e433]
+        - link "Showing 8 of 24 products View more" [ref=e434] [cursor=pointer]:
+          - /url: /shop
+          - paragraph [ref=e435]: Showing 8 of 24 products
+          - button "View more" [ref=e436]:
+            - text: View more
+            - img [ref=e437]
+      - generic [ref=e439]:
+        - link "Smart watch black Add to favorites $29$49 Smart watch black Adaeze Nnamdi Verified Ibadan · 9 months ago" [ref=e440] [cursor=pointer]:
+          - /url: /product/prod_5
+          - generic [ref=e441]:
+            - img "Smart watch black" [ref=e442]
+            - button "Add to favorites" [ref=e443]:
+              - img [ref=e444]
+          - generic [ref=e446]:
+            - paragraph [ref=e447]:
+              - generic [ref=e448]: $29
+              - generic [ref=e449]: $49
+            - paragraph [ref=e450]: Smart watch black
+            - button "Adaeze Nnamdi Verified" [ref=e451]:
+              - generic [ref=e452]: Adaeze Nnamdi
+              - img "Verified" [ref=e453]:
+                - img [ref=e454]
+            - generic [ref=e456]:
+              - generic [ref=e457]:
+                - img [ref=e458]
+                - text: Ibadan
+              - generic [ref=e461]: ·
+              - generic [ref=e462]:
+                - img [ref=e463]
+                - text: 9 months ago
+        - link "Security Camera Add to favorites $29$59 Security Camera Great Stack Verified Kano · 9 months ago" [ref=e466] [cursor=pointer]:
+          - /url: /product/prod_6
+          - generic [ref=e467]:
+            - img "Security Camera" [ref=e468]
+            - button "Add to favorites" [ref=e469]:
+              - img [ref=e470]
+          - generic [ref=e472]:
+            - paragraph [ref=e473]:
+              - generic [ref=e474]: $29
+              - generic [ref=e475]: $59
+            - paragraph [ref=e476]: Security Camera
+            - button "Great Stack Verified" [ref=e477]:
+              - generic [ref=e478]: Great Stack
+              - img "Verified" [ref=e479]:
+                - img [ref=e480]
+            - generic [ref=e482]:
+              - generic [ref=e483]:
+                - img [ref=e484]
+                - text: Kano
+              - generic [ref=e487]: ·
+              - generic [ref=e488]:
+                - img [ref=e489]
+                - text: 9 months ago
+        - link "Smart Pen for iPad Add to favorites $29$89 Smart Pen for iPad Great Stack Verified Lagos · 9 months ago" [ref=e492] [cursor=pointer]:
+          - /url: /product/prod_7
+          - generic [ref=e493]:
+            - img "Smart Pen for iPad" [ref=e494]
+            - button "Add to favorites" [ref=e495]:
+              - img [ref=e496]
+          - generic [ref=e498]:
+            - paragraph [ref=e499]:
+              - generic [ref=e500]: $29
+              - generic [ref=e501]: $89
+            - paragraph [ref=e502]: Smart Pen for iPad
+            - button "Great Stack Verified" [ref=e503]:
+              - generic [ref=e504]: Great Stack
+              - img "Verified" [ref=e505]:
+                - img [ref=e506]
+            - generic [ref=e508]:
+              - generic [ref=e509]:
+                - img [ref=e510]
+                - text: Lagos
+              - generic [ref=e513]: ·
+              - generic [ref=e514]:
+                - img [ref=e515]
+                - text: 9 months ago
+        - link "Home Theater Add to favorites $29$99 Home Theater Adaeze Nnamdi Verified Abuja · 9 months ago" [ref=e518] [cursor=pointer]:
+          - /url: /product/prod_8
+          - generic [ref=e519]:
+            - img "Home Theater" [ref=e520]
+            - button "Add to favorites" [ref=e521]:
+              - img [ref=e522]
+          - generic [ref=e524]:
+            - paragraph [ref=e525]:
+              - generic [ref=e526]: $29
+              - generic [ref=e527]: $99
+            - paragraph [ref=e528]: Home Theater
+            - button "Adaeze Nnamdi Verified" [ref=e529]:
+              - generic [ref=e530]: Adaeze Nnamdi
+              - img "Verified" [ref=e531]:
+                - img [ref=e532]
+            - generic [ref=e534]:
+              - generic [ref=e535]:
+                - img [ref=e536]
+                - text: Abuja
+              - generic [ref=e539]: ·
+              - generic [ref=e540]:
+                - img [ref=e541]
+                - text: 9 months ago
+        - link "Apple Wireless Earbuds Add to favorites $29$89 Apple Wireless Earbuds Adaeze Nnamdi Verified Port Harcourt · 9 months ago" [ref=e544] [cursor=pointer]:
+          - /url: /product/prod_9
+          - generic [ref=e545]:
+            - img "Apple Wireless Earbuds" [ref=e546]
+            - button "Add to favorites" [ref=e547]:
+              - img [ref=e548]
+          - generic [ref=e550]:
+            - paragraph [ref=e551]:
+              - generic [ref=e552]: $29
+              - generic [ref=e553]: $89
+            - paragraph [ref=e554]: Apple Wireless Earbuds
+            - button "Adaeze Nnamdi Verified" [ref=e555]:
+              - generic [ref=e556]: Adaeze Nnamdi
+              - img "Verified" [ref=e557]:
+                - img [ref=e558]
+            - generic [ref=e560]:
+              - generic [ref=e561]:
+                - img [ref=e562]
+                - text: Port Harcourt
+              - generic [ref=e565]: ·
+              - generic [ref=e566]:
+                - img [ref=e567]
+                - text: 9 months ago
+        - link "Apple Smart Watch Add to favorites $29$179 Apple Smart Watch Great Stack Verified Benin City · 9 months ago" [ref=e570] [cursor=pointer]:
+          - /url: /product/prod_10
+          - generic [ref=e571]:
+            - img "Apple Smart Watch" [ref=e572]
+            - button "Add to favorites" [ref=e573]:
+              - img [ref=e574]
+          - generic [ref=e576]:
+            - paragraph [ref=e577]:
+              - generic [ref=e578]: $29
+              - generic [ref=e579]: $179
+            - paragraph [ref=e580]: Apple Smart Watch
+            - button "Great Stack Verified" [ref=e581]:
+              - generic [ref=e582]: Great Stack
+              - img "Verified" [ref=e583]:
+                - img [ref=e584]
+            - generic [ref=e586]:
+              - generic [ref=e587]:
+                - img [ref=e588]
+                - text: Benin City
+              - generic [ref=e591]: ·
+              - generic [ref=e592]:
+                - img [ref=e593]
+                - text: 9 months ago
+        - link "RGB Gaming Mouse Add to favorites $29$39 RGB Gaming Mouse Adaeze Nnamdi Verified Enugu · 9 months ago" [ref=e596] [cursor=pointer]:
+          - /url: /product/prod_11
+          - generic [ref=e597]:
+            - img "RGB Gaming Mouse" [ref=e598]
+            - button "Add to favorites" [ref=e599]:
+              - img [ref=e600]
+          - generic [ref=e602]:
+            - paragraph [ref=e603]:
+              - generic [ref=e604]: $29
+              - generic [ref=e605]: $39
+            - paragraph [ref=e606]: RGB Gaming Mouse
+            - button "Adaeze Nnamdi Verified" [ref=e607]:
+              - generic [ref=e608]: Adaeze Nnamdi
+              - img "Verified" [ref=e609]:
+                - img [ref=e610]
+            - generic [ref=e612]:
+              - generic [ref=e613]:
+                - img [ref=e614]
+                - text: Enugu
+              - generic [ref=e617]: ·
+              - generic [ref=e618]:
+                - img [ref=e619]
+                - text: 9 months ago
+        - link "Smart Home Cleaner Add to favorites $29$199 Smart Home Cleaner Great Stack Verified Lagos · 9 months ago" [ref=e622] [cursor=pointer]:
+          - /url: /product/prod_12
+          - generic [ref=e623]:
+            - img "Smart Home Cleaner" [ref=e624]
+            - button "Add to favorites" [ref=e625]:
+              - img [ref=e626]
+          - generic [ref=e628]:
+            - paragraph [ref=e629]:
+              - generic [ref=e630]: $29
+              - generic [ref=e631]: $199
+            - paragraph [ref=e632]: Smart Home Cleaner
+            - button "Great Stack Verified" [ref=e633]:
+              - generic [ref=e634]: Great Stack
+              - img "Verified" [ref=e635]:
+                - img [ref=e636]
+            - generic [ref=e638]:
+              - generic [ref=e639]:
+                - img [ref=e640]
+                - text: Lagos
+              - generic [ref=e643]: ·
+              - generic [ref=e644]:
+                - img [ref=e645]
+                - text: 9 months ago
+    - generic [ref=e648]:
+      - generic [ref=e649]:
+        - heading "Join Newsletter" [level=2] [ref=e650]
+        - link "Subscribe to get exclusive deals, new arrivals, and insider updates delivered straight to your inbox every week." [ref=e651] [cursor=pointer]:
+          - /url: ""
+          - paragraph [ref=e652]: Subscribe to get exclusive deals, new arrivals, and insider updates delivered straight to your inbox every week.
+      - generic [ref=e653]:
+        - textbox "Enter your email address" [ref=e654]
+        - button "Get Updates" [ref=e655] [cursor=pointer]
+  - contentinfo [ref=e656]:
+    - generic [ref=e657]:
+      - generic [ref=e658]:
+        - generic [ref=e659]:
+          - heading "About Us" [level=3] [ref=e660]
+          - list [ref=e661]:
+            - listitem [ref=e662]:
+              - link "About GoCart" [ref=e663] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=e664]:
+              - link "GoCart for Business" [ref=e665] [cursor=pointer]:
+                - /url: /business
+            - listitem [ref=e666]:
+              - link "Careers" [ref=e667] [cursor=pointer]:
+                - /url: /careers
+            - listitem [ref=e668]:
+              - link "Press" [ref=e669] [cursor=pointer]:
+                - /url: /press
+        - generic [ref=e670]:
+          - heading "Help & Contact" [level=3] [ref=e671]
+          - list [ref=e672]:
+            - listitem [ref=e673]:
+              - link "Help Centre" [ref=e674] [cursor=pointer]:
+                - /url: /help
+            - listitem [ref=e675]:
+              - link "Safety" [ref=e676] [cursor=pointer]:
+                - /url: /safety
+            - listitem [ref=e677]:
+              - link "Policies" [ref=e678] [cursor=pointer]:
+                - /url: /policies
+            - listitem [ref=e679]:
+              - link "Privacy Notice" [ref=e680] [cursor=pointer]:
+                - /url: /privacy
+            - listitem [ref=e681]:
+              - link "Contact Us" [ref=e682] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=e683]:
+          - heading "More From Us" [level=3] [ref=e684]
+          - list [ref=e685]:
+            - listitem [ref=e686]:
+              - link "GoCart Vehicles" [ref=e687] [cursor=pointer]:
+                - /url: /shop?category=Sedans
+            - listitem [ref=e688]:
+              - link "GoCart Property" [ref=e689] [cursor=pointer]:
+                - /url: /shop?category=Property
+            - listitem [ref=e690]:
+              - link "Buying Guides" [ref=e691] [cursor=pointer]:
+                - /url: /guides
+            - listitem [ref=e692]:
+              - link "Sell Your Car" [ref=e693] [cursor=pointer]:
+                - /url: /sell/car
+        - generic [ref=e694]:
+          - heading "Mobile Apps" [level=3] [ref=e695]
+          - generic [ref=e696]:
+            - link "Download on the App Store" [ref=e697] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e698]
+              - generic [ref=e701]:
+                - generic [ref=e702]: Download on the
+                - generic [ref=e703]: App Store
+            - link "Get it on Google Play" [ref=e704] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e705]
+              - generic [ref=e707]:
+                - generic [ref=e708]: Get it on
+                - generic [ref=e709]: Google Play
+            - link "More About Our Apps" [ref=e710] [cursor=pointer]:
+              - /url: /apps
+      - generic [ref=e711]:
+        - heading "Join GoCart Community" [level=3] [ref=e712]
+        - generic [ref=e713]:
+          - link "Facebook" [ref=e714] [cursor=pointer]:
+            - /url: https://facebook.com
+            - img [ref=e715]
+          - link "Instagram" [ref=e717] [cursor=pointer]:
+            - /url: https://instagram.com
+            - img [ref=e718]
+          - link "X" [ref=e721] [cursor=pointer]:
+            - /url: https://twitter.com
+            - img [ref=e722]
+          - link "YouTube" [ref=e724] [cursor=pointer]:
+            - /url: https://youtube.com
+            - img [ref=e725]
+      - generic [ref=e728]:
+        - paragraph [ref=e729]: © 2025–2026 GoCart Limited. All rights reserved.
+        - paragraph [ref=e730]:
+          - text: GoCart is a classifieds marketplace. We facilitate connections between buyers and sellers but are not a party to transactions. Sellers are responsible for the accuracy of their listings and for fulfilling any agreements made directly with buyers. See our
+          - link "Safety" [ref=e731] [cursor=pointer]:
+            - /url: /safety
+          - text: guidelines and
+          - link "Terms of Use" [ref=e732] [cursor=pointer]:
+            - /url: /terms
+          - text: .
+        - paragraph [ref=e733]: Verified business sellers may transact through embedded checkout flows operated by the seller or their payment provider. In those transactions, GoCart receives a commission disclosed at checkout. GoCart does not handle fulfilment or shipping; logistics are the responsibility of the seller.
+        - paragraph [ref=e734]: "GoCart Limited, registered company number TBD. Registered office: TBD."
+        - paragraph [ref=e735]:
+          - link "Terms of Use" [ref=e736] [cursor=pointer]:
+            - /url: /terms
+          - text: ","
+          - link "Privacy Notice" [ref=e737] [cursor=pointer]:
+            - /url: /privacy
+          - text: ","
+          - link "Privacy Settings" [ref=e738] [cursor=pointer]:
+            - /url: /privacy/settings
+          - text: "&"
+          - link "Cookies Policy" [ref=e739] [cursor=pointer]:
+            - /url: /cookies

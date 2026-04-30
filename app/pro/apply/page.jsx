@@ -1,16 +1,18 @@
 'use client'
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useDispatch } from "react-redux"
 import {
     ShieldCheck, Upload, Camera, BadgeCheck, MapPin, Phone, FileText, ArrowRight, Info, X,
+    Hourglass, ShieldAlert,
 } from "lucide-react"
 import { toast } from "react-hot-toast"
 import { categoryGroups, serviceSpecialties, stateAreas } from "@/assets/assets"
 import Dropdown from "@/components/Dropdown"
 import VerifiedCheck from "@/components/VerifiedCheck"
-import { approveProvider } from "@/lib/features/provider/providerSlice"
+import { createClient } from "@/lib/supabase/client"
+import { uploadProviderDoc } from "@/lib/supabase/storage"
+import { useUser } from "@/lib/auth/UserContext"
 
 const SERVICES_GROUP_NAME = 'Repairs & Services'
 const serviceCategories = (categoryGroups.find(g => g.name === SERVICES_GROUP_NAME)?.items || [])
@@ -28,7 +30,8 @@ const LOCATIONS = Object.keys(stateAreas).map(c => ({ value: c, label: c }))
 export default function ProviderApply() {
 
     const router = useRouter()
-    const dispatch = useDispatch()
+    const supabase = createClient()
+    const user = useUser()
 
     const [form, setForm] = useState({
         fullName: '',
@@ -46,6 +49,48 @@ export default function ProviderApply() {
     })
     const [submitting, setSubmitting] = useState(false)
 
+    // Existing application status — drives the banner and whether the form
+    // is editable. Fetched once on mount via the client SDK.
+    const [existing, setExisting] = useState(null)
+    const [loadingExisting, setLoadingExisting] = useState(true)
+
+    useEffect(() => {
+        if (!user) {
+            setLoadingExisting(false)
+            return
+        }
+        let active = true
+        ;(async () => {
+            const { data } = await supabase
+                .from('provider_applications')
+                .select('id, status, full_name, phone, id_type, primary_category, specialties, location, area_covered, years_experience, bio, certifications, rejection_reason')
+                .eq('user_id', user.id)
+                .maybeSingle()
+            if (!active) return
+            setExisting(data)
+            // Prefill the form when there's a previous (rejected) application
+            // so the seller doesn't have to retype everything to resubmit.
+            if (data?.status === 'rejected') {
+                setForm({
+                    fullName: data.full_name || '',
+                    phone: data.phone || '',
+                    idType: data.id_type || '',
+                    idDocument: null,
+                    selfie: null,
+                    primaryCategory: data.primary_category || '',
+                    specialties: data.specialties || [],
+                    location: data.location || '',
+                    areaCovered: data.area_covered || '',
+                    yearsExperience: data.years_experience != null ? String(data.years_experience) : '',
+                    bio: data.bio || '',
+                    certifications: data.certifications || '',
+                })
+            }
+            setLoadingExisting(false)
+        })()
+        return () => { active = false }
+    }, [user, supabase])
+
     const availableSpecialties = serviceSpecialties[form.primaryCategory] || []
 
     const set = (k, v) => setForm({ ...form, [k]: v })
@@ -58,22 +103,62 @@ export default function ProviderApply() {
         }))
     }
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault()
+        if (!user) {
+            toast.error('You need to be signed in to apply.')
+            return
+        }
         setSubmitting(true)
-        // Demo: auto-approve and drop the user on the provider dashboard.
-        // Real impl: POST to /api/provider-applications → admin review queue → user notified on approval.
-        setTimeout(() => {
-            dispatch(approveProvider({
-                fullName: form.fullName,
-                phone: form.phone,
-                primaryCategory: form.primaryCategory,
-                location: form.location,
-            }))
-            toast.success('Verification approved — welcome to your provider dashboard.')
-            setSubmitting(false)
+
+        try {
+            // 1. Upload ID + selfie to the private provider-docs bucket. Paths
+            // (not public URLs) are stored — admin generates signed URLs at
+            // view time. Skip uploads if the user reused a re-submit and
+            // didn't pick new files; we'll keep whatever was already there.
+            let idDocPath = null
+            let selfiePath = null
+            if (form.idDocument) {
+                idDocPath = await uploadProviderDoc(form.idDocument, user.id, 'id-document')
+            }
+            if (form.selfie) {
+                selfiePath = await uploadProviderDoc(form.selfie, user.id, 'selfie')
+            }
+
+            // 2. Upsert the provider_applications row. user_id is unique so
+            // re-submitting after a rejection updates the existing row.
+            const payload = {
+                user_id: user.id,
+                full_name: form.fullName.trim(),
+                phone: form.phone.trim(),
+                id_type: form.idType || null,
+                id_document_url: idDocPath,
+                selfie_url: selfiePath,
+                primary_category: form.primaryCategory,
+                specialties: form.specialties,
+                location: form.location || null,
+                area_covered: form.areaCovered.trim() || null,
+                years_experience: form.yearsExperience ? Number(form.yearsExperience) : null,
+                bio: form.bio.trim(),
+                certifications: form.certifications.trim() || null,
+                status: 'pending',
+                rejection_reason: null,
+            }
+
+            const { error } = await supabase
+                .from('provider_applications')
+                .upsert(payload, { onConflict: 'user_id' })
+
+            if (error) throw error
+
+            toast.success('Application submitted — admin will review within 24 hours.')
             router.push('/pro')
-        }, 800)
+            router.refresh()
+        } catch (err) {
+            toast.error(err?.message || 'Could not submit application.')
+        } finally {
+            setSubmitting(false)
+        }
     }
 
     return (
@@ -117,6 +202,37 @@ export default function ProviderApply() {
                 </p>
             </div>
 
+            {/* Existing-application banner */}
+            {existing?.status === 'pending' && (
+                <div className="mt-6 bg-amber-50 ring-1 ring-amber-200 rounded-xl p-4 flex items-start gap-3">
+                    <Hourglass size={16} className="text-amber-600 mt-0.5 shrink-0" />
+                    <div className="flex-1">
+                        <p className="text-sm font-semibold text-amber-900">Application under review</p>
+                        <p className="text-sm text-amber-800 mt-0.5">
+                            Submitted — admin is reviewing your details. Usually approved within 24 hours. You can&apos;t edit while it&apos;s pending; reach out to support if you need to change something urgent.
+                        </p>
+                    </div>
+                </div>
+            )}
+            {existing?.status === 'rejected' && (
+                <div className="mt-6 bg-rose-50 ring-1 ring-rose-200 rounded-xl p-4 flex items-start gap-3">
+                    <ShieldAlert size={16} className="text-rose-600 mt-0.5 shrink-0" />
+                    <div className="flex-1">
+                        <p className="text-sm font-semibold text-rose-900">Application rejected</p>
+                        {existing.rejection_reason && (
+                            <p className="text-sm text-rose-800 mt-0.5">
+                                <span className="font-medium">Reason:</span> {existing.rejection_reason}
+                            </p>
+                        )}
+                        <p className="text-xs text-rose-700 mt-2">
+                            Edit the details below and resubmit — your form is pre-filled with what you submitted last time.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {/* Form is hidden while a pending application is in review */}
+            {existing?.status !== 'pending' && (
             <form onSubmit={onSubmit} className="mt-10 space-y-10">
 
                 {/* About you */}
@@ -314,11 +430,12 @@ export default function ProviderApply() {
                         disabled={submitting}
                         className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-full px-6 py-3 transition disabled:opacity-50"
                     >
-                        {submitting ? 'Submitting…' : 'Submit for verification'}
+                        {submitting ? 'Submitting…' : (existing?.status === 'rejected' ? 'Resubmit' : 'Submit for verification')}
                         {!submitting && <ArrowRight size={15} />}
                     </button>
                 </div>
             </form>
+            )}
         </div>
     )
 }

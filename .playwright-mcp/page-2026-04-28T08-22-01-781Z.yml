@@ -1,0 +1,187 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "gocart. plus" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - text: gocart.
+        - paragraph [ref=e6]: plus
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - button "All" [ref=e10] [cursor=pointer]:
+            - generic [ref=e11]: All
+            - img [ref=e12]
+          - button "All locations" [ref=e16] [cursor=pointer]:
+            - img [ref=e17]
+            - generic [ref=e20]: All locations
+            - img [ref=e21]
+          - generic [ref=e24]:
+            - img [ref=e25]
+            - textbox "Search…" [ref=e28]
+        - button "Search" [ref=e29] [cursor=pointer]
+      - generic [ref=e30]:
+        - link "Post an ad" [ref=e31] [cursor=pointer]:
+          - /url: /store/add-product
+          - img [ref=e33]
+          - generic [ref=e34]: Post an ad
+        - link "Offer a service" [ref=e35] [cursor=pointer]:
+          - /url: /pro/apply
+          - img [ref=e37]
+          - generic [ref=e39]: Offer a service
+        - link "Cart" [ref=e40] [cursor=pointer]:
+          - /url: /cart
+          - img [ref=e41]
+        - generic [ref=e45]:
+          - link "Sign in" [ref=e46] [cursor=pointer]:
+            - /url: /login
+          - link "Sign up" [ref=e47] [cursor=pointer]:
+            - /url: /signup
+            - img [ref=e48]
+            - generic [ref=e51]: Sign up
+    - separator [ref=e52]
+  - generic [ref=e54]:
+    - generic [ref=e55]:
+      - heading "Create your account" [level=1] [ref=e56]
+      - paragraph [ref=e57]: Free forever. List your stuff, message buyers directly, no commission on offline deals.
+    - generic [ref=e58]:
+      - generic [ref=e59]:
+        - generic [ref=e60]: Full name
+        - generic [ref=e61]:
+          - img [ref=e62]
+          - textbox "Full name" [ref=e65]:
+            - /placeholder: Your full name
+      - generic [ref=e66]:
+        - generic [ref=e67]: Email
+        - generic [ref=e68]:
+          - img [ref=e69]
+          - textbox "Email" [ref=e72]:
+            - /placeholder: you@example.com
+      - generic [ref=e73]:
+        - generic [ref=e74]: Password
+        - generic [ref=e75]:
+          - img [ref=e76]
+          - textbox "Password Show password" [ref=e79]:
+            - /placeholder: At least 6 characters
+          - button "Show password" [ref=e80] [cursor=pointer]:
+            - img [ref=e81]
+      - button "Create account" [ref=e84] [cursor=pointer]:
+        - text: Create account
+        - img [ref=e85]
+      - paragraph [ref=e87]:
+        - text: By signing up, you agree to our
+        - link "Safety guidelines" [ref=e88] [cursor=pointer]:
+          - /url: /safety
+        - text: and
+        - link "Terms of Use" [ref=e89] [cursor=pointer]:
+          - /url: /terms
+        - text: .
+    - paragraph [ref=e90]:
+      - text: Already have an account?
+      - link "Sign in" [ref=e91] [cursor=pointer]:
+        - /url: /login
+  - contentinfo [ref=e92]:
+    - generic [ref=e93]:
+      - generic [ref=e94]:
+        - generic [ref=e95]:
+          - heading "About Us" [level=3] [ref=e96]
+          - list [ref=e97]:
+            - listitem [ref=e98]:
+              - link "About GoCart" [ref=e99] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=e100]:
+              - link "GoCart for Business" [ref=e101] [cursor=pointer]:
+                - /url: /business
+            - listitem [ref=e102]:
+              - link "Careers" [ref=e103] [cursor=pointer]:
+                - /url: /careers
+            - listitem [ref=e104]:
+              - link "Press" [ref=e105] [cursor=pointer]:
+                - /url: /press
+        - generic [ref=e106]:
+          - heading "Help & Contact" [level=3] [ref=e107]
+          - list [ref=e108]:
+            - listitem [ref=e109]:
+              - link "Help Centre" [ref=e110] [cursor=pointer]:
+                - /url: /help
+            - listitem [ref=e111]:
+              - link "Safety" [ref=e112] [cursor=pointer]:
+                - /url: /safety
+            - listitem [ref=e113]:
+              - link "Policies" [ref=e114] [cursor=pointer]:
+                - /url: /policies
+            - listitem [ref=e115]:
+              - link "Privacy Notice" [ref=e116] [cursor=pointer]:
+                - /url: /privacy
+            - listitem [ref=e117]:
+              - link "Contact Us" [ref=e118] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=e119]:
+          - heading "More From Us" [level=3] [ref=e120]
+          - list [ref=e121]:
+            - listitem [ref=e122]:
+              - link "GoCart Vehicles" [ref=e123] [cursor=pointer]:
+                - /url: /shop?category=Sedans
+            - listitem [ref=e124]:
+              - link "GoCart Property" [ref=e125] [cursor=pointer]:
+                - /url: /shop?category=Property
+            - listitem [ref=e126]:
+              - link "Buying Guides" [ref=e127] [cursor=pointer]:
+                - /url: /guides
+            - listitem [ref=e128]:
+              - link "Sell Your Car" [ref=e129] [cursor=pointer]:
+                - /url: /sell/car
+        - generic [ref=e130]:
+          - heading "Mobile Apps" [level=3] [ref=e131]
+          - generic [ref=e132]:
+            - link "Download on the App Store" [ref=e133] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e134]
+              - generic [ref=e137]:
+                - generic [ref=e138]: Download on the
+                - generic [ref=e139]: App Store
+            - link "Get it on Google Play" [ref=e140] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e141]
+              - generic [ref=e143]:
+                - generic [ref=e144]: Get it on
+                - generic [ref=e145]: Google Play
+            - link "More About Our Apps" [ref=e146] [cursor=pointer]:
+              - /url: /apps
+      - generic [ref=e147]:
+        - heading "Join GoCart Community" [level=3] [ref=e148]
+        - generic [ref=e149]:
+          - link "Facebook" [ref=e150] [cursor=pointer]:
+            - /url: https://facebook.com
+            - img [ref=e151]
+          - link "Instagram" [ref=e153] [cursor=pointer]:
+            - /url: https://instagram.com
+            - img [ref=e154]
+          - link "X" [ref=e157] [cursor=pointer]:
+            - /url: https://twitter.com
+            - img [ref=e158]
+          - link "YouTube" [ref=e160] [cursor=pointer]:
+            - /url: https://youtube.com
+            - img [ref=e161]
+      - generic [ref=e164]:
+        - paragraph [ref=e165]: © 2025–2026 GoCart Limited. All rights reserved.
+        - paragraph [ref=e166]:
+          - text: GoCart is a classifieds marketplace. We facilitate connections between buyers and sellers but are not a party to transactions. Sellers are responsible for the accuracy of their listings and for fulfilling any agreements made directly with buyers. See our
+          - link "Safety" [ref=e167] [cursor=pointer]:
+            - /url: /safety
+          - text: guidelines and
+          - link "Terms of Use" [ref=e168] [cursor=pointer]:
+            - /url: /terms
+          - text: .
+        - paragraph [ref=e169]: Verified business sellers may transact through embedded checkout flows operated by the seller or their payment provider. In those transactions, GoCart receives a commission disclosed at checkout. GoCart does not handle fulfilment or shipping; logistics are the responsibility of the seller.
+        - paragraph [ref=e170]: "GoCart Limited, registered company number TBD. Registered office: TBD."
+        - paragraph [ref=e171]:
+          - link "Terms of Use" [ref=e172] [cursor=pointer]:
+            - /url: /terms
+          - text: ","
+          - link "Privacy Notice" [ref=e173] [cursor=pointer]:
+            - /url: /privacy
+          - text: ","
+          - link "Privacy Settings" [ref=e174] [cursor=pointer]:
+            - /url: /privacy/settings
+          - text: "&"
+          - link "Cookies Policy" [ref=e175] [cursor=pointer]:
+            - /url: /cookies

@@ -1,16 +1,22 @@
 'use client'
-import { Search, ShoppingCart, UserPlus, ChevronDown, Plus, MapPin, Wrench } from "lucide-react";
+import { Search, Heart, UserPlus, ChevronDown, Plus, MapPin, Wrench, LogOut, MessageSquareText } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { categoryGroups } from "@/assets/assets";
+import { signOut } from "@/app/actions/auth";
 
 const ALL_LOCATIONS = 'All locations'
 
-const Navbar = () => {
+const Navbar = ({ user = null, providerStatus = null }) => {
 
     const router = useRouter();
+    const [openUserMenu, setOpenUserMenu] = useState(false)
+    const userMenuRef = useRef(null)
+
+    const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || ''
+    const userInitial = (userName || 'U').charAt(0).toUpperCase()
 
     const [search, setSearch] = useState('')
     const [category, setCategory] = useState('All')
@@ -22,10 +28,12 @@ const Navbar = () => {
 
     const cartCount = useSelector(state => state.cart.total)
     const products = useSelector(state => state.product.list)
-    const providerStatus = useSelector(state => state.provider.status)
 
-    const providerHref = providerStatus === 'verified' ? '/pro' : '/pro/apply'
-    const providerLabel = providerStatus === 'verified' ? 'Provider' : 'Offer a service'
+    // 'approved' takes them to the live /pro dashboard. Anything else
+    // (pending / rejected / no application yet) routes through /pro/apply
+    // where they see their status and can submit / resubmit.
+    const providerHref = providerStatus === 'approved' ? '/pro' : '/pro/apply'
+    const providerLabel = providerStatus === 'approved' ? 'Provider' : 'Offer a service'
 
     const locations = useMemo(() => {
         const counts = {}
@@ -44,6 +52,9 @@ const Navbar = () => {
             }
             if (locDropdownRef.current && !locDropdownRef.current.contains(e.target)) {
                 setOpenLocDropdown(false)
+            }
+            if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+                setOpenUserMenu(false)
             }
         }
         document.addEventListener('mousedown', onClickOutside)
@@ -232,24 +243,77 @@ const Navbar = () => {
                             <span className="text-[10px] sm:text-xs leading-none whitespace-nowrap">{providerLabel}</span>
                         </Link>
 
-                        {/* Cart */}
-                        <Link href="/cart" aria-label="Cart" className="relative text-slate-600 hover:text-slate-900 transition">
-                            <ShoppingCart size={22} />
+                        {/* Messages — signed-in users only. Visible at all widths
+                            because messaging is core to the marketplace. */}
+                        {user && (
+                            <Link href="/messages" aria-label="Messages" className="text-slate-600 hover:text-slate-900 transition">
+                                <MessageSquareText size={22} />
+                            </Link>
+                        )}
+
+                        {/* Saved items — heart icon. Route stays /cart for now since the
+                            cart slice is reused as the favourites/saved store. */}
+                        <Link href="/cart" aria-label="Saved items" className="relative text-slate-600 hover:text-slate-900 transition">
+                            <Heart size={22} />
                             {cartCount > 0 && (
-                                <span className="absolute -top-1.5 -right-2 text-[10px] text-white bg-slate-700 min-w-4 h-4 px-1 rounded-full flex items-center justify-center">
+                                <span className="absolute -top-1.5 -right-2 text-[10px] text-white bg-rose-500 min-w-4 h-4 px-1 rounded-full flex items-center justify-center">
                                     {cartCount}
                                 </span>
                             )}
                         </Link>
 
-                        {/* Signup */}
-                        <Link
-                            href="/signup"
-                            aria-label="Sign up"
-                            className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 hover:bg-slate-800 text-white transition active:scale-95"
-                        >
-                            <UserPlus size={18} />
-                        </Link>
+                        {/* Auth: signed-out shows Sign in / Sign up; signed-in shows user menu */}
+                        {user ? (
+                            <div className="relative" ref={userMenuRef}>
+                                <button
+                                    type="button"
+                                    onClick={() => setOpenUserMenu((o) => !o)}
+                                    className="inline-flex items-center gap-2 ring-1 ring-slate-300 hover:ring-slate-500 rounded-full pl-1 pr-3 py-1 transition"
+                                    aria-label="Account menu"
+                                >
+                                    <span className="inline-flex items-center justify-center size-7 rounded-full bg-slate-900 text-white text-xs font-bold">
+                                        {userInitial}
+                                    </span>
+                                    <span className="text-sm font-medium text-slate-700 max-sm:hidden">{userName.split(' ')[0]}</span>
+                                    <ChevronDown size={13} className={`text-slate-500 transition ${openUserMenu ? 'rotate-180' : ''}`} />
+                                </button>
+                                {openUserMenu && (
+                                    <div className="absolute top-full right-0 mt-2 z-50 w-56 bg-white rounded-xl shadow-lg ring-1 ring-slate-200 py-1.5">
+                                        <div className="px-4 py-2 border-b border-slate-100">
+                                            <p className="text-sm font-semibold text-slate-900 truncate">{userName}</p>
+                                            <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                                        </div>
+                                        <Link href="/store" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">My listings</Link>
+                                        <Link href="/messages" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Messages</Link>
+                                        <Link href="/orders" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">My orders</Link>
+                                        <Link href="/cart" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Saved items</Link>
+                                        <form action={signOut} className="border-t border-slate-100 mt-1 pt-1">
+                                            <button type="submit" className="w-full inline-flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
+                                                <LogOut size={14} className="text-slate-400" />
+                                                Sign out
+                                            </button>
+                                        </form>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                <Link
+                                    href="/login"
+                                    className="text-sm font-medium text-slate-700 hover:text-slate-900 max-sm:hidden"
+                                >
+                                    Sign in
+                                </Link>
+                                <Link
+                                    href="/signup"
+                                    aria-label="Sign up"
+                                    className="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-full px-4 py-2 transition active:scale-95"
+                                >
+                                    <UserPlus size={15} />
+                                    <span className="max-sm:hidden">Sign up</span>
+                                </Link>
+                            </div>
+                        )}
 
                     </div>
 

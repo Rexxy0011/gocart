@@ -1,4 +1,5 @@
 'use client'
+import dynamic from 'next/dynamic'
 import { useMemo, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -13,6 +14,9 @@ import Dropdown from '@/components/Dropdown'
 import AddressInput from '@/components/AddressInput'
 import MilestoneBadge from '@/components/MilestoneBadge'
 import { stateAreas } from '@/assets/assets'
+import { useAuthGate } from '@/hooks/useAuthGate'
+
+const ReportModal = dynamic(() => import('@/components/ReportModal'), { ssr: false })
 
 const PARCEL_SIZE_OPTIONS = [
     { value: 'small',  label: 'Small (parcel / docs)' },
@@ -49,6 +53,9 @@ const ServicePage = ({ product }) => {
     const allProducts = useSelector(state => state.product.list)
     const dispatch = useDispatch()
     const isSaved = !!cart[product.id]
+    const requireAuth = useAuthGate()
+    const [reportOpen, setReportOpen] = useState(false)
+    const openReport = () => requireAuth(() => setReportOpen(true), 'Sign in to report a listing.')
 
     const marketContext = useMemo(() => {
         if (!service?.priceRange?.min || !service?.priceRange?.max) return null
@@ -441,14 +448,21 @@ const ServicePage = ({ product }) => {
                                 >
                                     <Heart size={16} fill={isSaved ? 'currentColor' : 'none'} /> {isSaved ? 'Saved' : 'Favourite'}
                                 </Button>
-                                <Button variant='outline' className='justify-center'>
-                                    <Flag size={16} /> Report <ChevronDown size={14} />
+                                <Button variant='outline' onClick={openReport} className='justify-center'>
+                                    <Flag size={16} /> Report
                                 </Button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <ReportModal
+                open={reportOpen}
+                onClose={() => setReportOpen(false)}
+                listingId={product.id}
+                listingName={product.name}
+            />
         </div>
     )
 }

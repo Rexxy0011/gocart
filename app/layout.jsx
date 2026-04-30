@@ -1,6 +1,9 @@
 import { Outfit, Geist } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import StoreProvider from "@/app/StoreProvider";
+import AuthModal from "@/components/AuthModal";
+import { UserProvider } from "@/lib/auth/UserContext";
+import { createClient } from "@/lib/supabase/server";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -13,13 +16,20 @@ export const metadata = {
     description: "GoCart. - Shop smarter",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
     return (
         <html lang="en" className={cn("font-sans", geist.variable)}>
             <body className={`${outfit.className} antialiased`}>
                 <StoreProvider>
-                    <Toaster />
-                    {children}
+                    <UserProvider user={user}>
+                        <Toaster />
+                        {children}
+                        <AuthModal />
+                    </UserProvider>
                 </StoreProvider>
             </body>
         </html>

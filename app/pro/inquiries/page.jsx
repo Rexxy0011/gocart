@@ -1,34 +1,39 @@
-'use client'
-import Link from 'next/link'
-import { Inbox, MessageSquareText, Sparkles } from 'lucide-react'
+import { Inbox } from 'lucide-react'
+import { createClient } from '@/lib/supabase/server'
+import { fetchConversationsForUser } from '@/lib/supabase/conversations'
+import ConversationList from '@/components/messages/ConversationList'
 
-export default function ProInquiries() {
+// Provider-side inquiries — only conversations on the user's service
+// listings. Clicking a row drops them on /messages/[id], the same shared
+// thread view as the unified /messages inbox.
+export default async function ProInquiries() {
+
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    const { conversations, lastMessages } = await fetchConversationsForUser(
+        supabase, user.id, 'selling-services'
+    )
+
     return (
         <div className='text-slate-700 mb-28 max-w-4xl'>
-            <h1 className='text-2xl text-slate-900 font-semibold mb-1'>Inquiries</h1>
-            <p className='text-sm text-slate-600 mb-8'>Buyer messages on your service listings.</p>
-
-            <div className='border border-dashed border-slate-300 rounded-xl p-10 text-center bg-slate-50/60'>
-                <span className='inline-flex items-center justify-center size-14 rounded-full bg-white ring-1 ring-slate-200'>
-                    <Inbox size={22} className='text-slate-400' />
+            <div className='flex items-center gap-3 mb-6'>
+                <span className='inline-flex items-center justify-center size-10 rounded-xl bg-sky-50 ring-1 ring-sky-200 text-sky-600'>
+                    <Inbox size={18} />
                 </span>
-                <h2 className='text-lg font-semibold text-slate-900 mt-5'>No inquiries yet</h2>
-                <p className='text-sm text-slate-600 mt-2 max-w-md mx-auto'>
-                    When a buyer contacts you on a service listing, the conversation lands here. Reply directly — GoCart never takes a cut on offline jobs.
-                </p>
-                <div className='mt-6 inline-flex items-center gap-2 text-xs text-slate-500 bg-white ring-1 ring-slate-200 rounded-full px-3 py-1.5'>
-                    <MessageSquareText size={12} className='text-slate-400' />
-                    In-app messaging is rolling out.
+                <div>
+                    <h1 className='text-2xl text-slate-900 font-semibold'>Inquiries</h1>
+                    <p className='text-sm text-slate-500'>Buyer messages on your service listings. Reply directly — GoCart never takes a cut on offline jobs.</p>
                 </div>
             </div>
 
-            <div className='mt-6 bg-sky-50 ring-1 ring-sky-200 rounded-xl p-4 flex items-start gap-3'>
-                <Sparkles size={16} className='text-sky-600 mt-0.5 shrink-0' />
-                <p className='text-sm text-slate-700'>
-                    <span className='font-semibold'>Lead alerts</span> on your dashboard show buyers searching for your service before they message anyone — get there first.{' '}
-                    <Link href='/pro' className='text-sky-700 font-medium hover:underline'>Open dashboard →</Link>
-                </p>
-            </div>
+            <ConversationList
+                conversations={conversations}
+                lastMessages={lastMessages}
+                currentUserId={user.id}
+                emptyTitle='No inquiries yet'
+                emptyHint='When a buyer messages you about one of your service listings, the conversation lands here.'
+            />
         </div>
     )
 }

@@ -1,58 +1,21 @@
 'use client'
-import { assets, categoryGroups, serviceSpecialties, stateAreas } from "@/assets/assets"
+import { assets, carMakesModels, categoryGroups, serviceSpecialties, stateAreas } from "@/assets/assets"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
 import { toast } from "react-hot-toast"
-import { BadgeCheck, Boxes, Car, Flame, Info, MapPin, Phone, Rocket, Star, TrendingUp, X, Zap } from "lucide-react"
+import { BadgeCheck, Car, Info, MapPin, Phone, Rocket, X } from "lucide-react"
 import Dropdown from "@/components/Dropdown"
+import { createClient } from "@/lib/supabase/client"
+import { uploadProductImages } from "@/lib/supabase/storage"
+import { useUser } from "@/lib/auth/UserContext"
 
-const BOOSTS = [
-    {
-        key: 'featured',
-        title: 'Featured ribbon',
-        price: 3000,
-        duration: '7 days',
-        why: 'Locks your listing at the top of its category and location, above every standard listing. Highest visibility per naira.',
-        Icon: Star,
-        tagClass: 'bg-sky-500 text-white',
-    },
-    {
-        key: 'urgent',
-        title: 'Urgent tag',
-        price: 2000,
-        duration: '7 days',
-        why: 'Yellow "Urgent" badge pulls attention. Right for time-sensitive sales — relocating, need it gone, price is firm.',
-        Icon: Flame,
-        tagClass: 'bg-yellow-300 text-yellow-950',
-    },
-    {
-        key: 'bulkSale',
-        title: 'Bulk sale',
-        price: 4000,
-        duration: '14 days',
-        why: 'Unlocks the multi-item listing format. List a flat, garage, or estate sale as one ad. Right for relocators and clear-outs.',
-        Icon: Boxes,
-        tagClass: 'bg-amber-300 text-amber-950',
-    },
-    {
-        key: 'bumpUp',
-        title: 'Bump up',
-        price: 1500,
-        duration: '7 days',
-        why: 'Auto-bumps your listing to the top of the feed once every day. Buyers re-discover it without you lifting a finger.',
-        Icon: TrendingUp,
-        tagClass: 'bg-emerald-500 text-white',
-    },
-]
-
-const BUNDLE = {
-    price: 5500,
-    duration: '14 days',
-    label: 'Boost bundle',
-    why: 'Featured + Urgent + 3 daily Bumps. Saves ~17% vs buying separately. The "must sell, can\'t fail" option.',
-    keys: ['featured', 'urgent', 'bumpUp'],
-}
+const VEHICLE_NUMERIC_FIELDS = new Set([
+    'year', 'mileage', 'seats', 'doors', 'luggageCapacity',
+    'enginePower', 'engineSize', 'topSpeed', 'acceleration',
+    'fuelConsumption', 'fuelCapacity', 'co2Emissions',
+])
 
 const SERVICES_GROUP_NAME = 'Repairs & Services'
 const VEHICLES_GROUP_NAME = 'Vehicles'
@@ -66,25 +29,57 @@ const CONDITIONS = [
     { value: 'fair',   label: 'Fair condition' },
 ]
 
-const URGENCY_REASONS = [
-    { value: 'leaving-country', label: 'Leaving the country' },
-    { value: 'closing-down',    label: 'Closing down / business winding up' },
-    { value: 'didnt-fit',       label: "Didn't fit my purpose" },
-    { value: 'upgrading',       label: 'Upgrading to newer version' },
-    { value: 'gift-not-needed', label: 'Gift, not needed' },
-    { value: 'other',           label: 'Other reason' },
-]
-
 const PRICE_UNITS = [
     { value: 'job',   label: 'per job' },
     { value: 'hour',  label: 'per hour' },
     { value: 'quote', label: 'quote on request' },
 ]
 
-const LOCATIONS = Object.keys(stateAreas).map(c => ({ value: c, label: c }))
+const LOCATION_STATES = Object.keys(stateAreas).map(c => ({ value: c, label: c }))
+
+const TRANSMISSIONS = [
+    { value: 'Manual',    label: 'Manual' },
+    { value: 'Automatic', label: 'Automatic' },
+    { value: 'Semi-Auto', label: 'Semi-automatic' },
+    { value: 'CVT',       label: 'CVT' },
+]
+
+const BODY_TYPES = [
+    { value: 'Hatchback', label: 'Hatchback' },
+    { value: 'Sedan',     label: 'Sedan' },
+    { value: 'SUV',       label: 'SUV' },
+    { value: 'Coupe',     label: 'Coupe' },
+    { value: 'Estate',    label: 'Estate / Wagon' },
+    { value: 'Convertible', label: 'Convertible' },
+    { value: 'Pickup',    label: 'Pickup' },
+    { value: 'Van',       label: 'Van' },
+    { value: 'Bus',       label: 'Bus' },
+    { value: 'Motorbike', label: 'Motorbike' },
+]
+
+const FUEL_TYPES = [
+    { value: 'Petrol',  label: 'Petrol' },
+    { value: 'Diesel',  label: 'Diesel' },
+    { value: 'Hybrid',  label: 'Hybrid' },
+    { value: 'Electric', label: 'Electric' },
+    { value: 'CNG',     label: 'CNG' },
+    { value: 'LPG',     label: 'LPG' },
+]
+
+const EURO_EMISSIONS_LEVELS = [
+    { value: 'Euro 6', label: 'Euro 6' },
+    { value: 'Euro 5', label: 'Euro 5' },
+    { value: 'Euro 4', label: 'Euro 4' },
+    { value: 'Euro 3', label: 'Euro 3' },
+    { value: 'Euro 2', label: 'Euro 2' },
+    { value: 'Euro 1', label: 'Euro 1' },
+]
 
 export default function StoreAddProduct() {
 
+    const router = useRouter()
+    const supabase = createClient()
+    const user = useUser()
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
 
     const [images, setImages] = useState({ 1: null, 2: null, 3: null, 4: null })
@@ -101,18 +96,28 @@ export default function StoreAddProduct() {
         category: "",
         condition: "",
         deliveryAvailable: false,
-        urgent: false,
-        urgencyReason: "",
-        bulkSale: false,
-        featured: false,
-        bumpUp: false,
         specialties: [],
         responseTime: "",
         areaCovered: "",
-        location: "",
+        locationState: "",
+        locationArea: "",
         phone: "",
+        // Vehicle-specific — only filled when category is a vehicle.
+        // Mirrors the fields rendered by VehicleSpecs on the product detail page.
+        vehicle: {
+            make: "", model: "",
+            year: "", mileage: "", bodyType: "", transmission: "",
+            colour: "", seats: "", doors: "", luggageCapacity: "",
+            fuelType: "", enginePower: "", engineSize: "", topSpeed: "", acceleration: "",
+            fuelConsumption: "", fuelCapacity: "", insuranceGroup: "", co2Emissions: "", euroEmissions: "",
+        },
     })
+
+    const setVehicleField = (key, value) => {
+        setProductInfo((p) => ({ ...p, vehicle: { ...p.vehicle, [key]: value } }))
+    }
     const [loading, setLoading] = useState(false)
+    const [uploadProgress, setUploadProgress] = useState(null)
 
     const isService = useMemo(() => serviceSet.has(productInfo.category), [productInfo.category])
     const isVehicle = useMemo(() => vehicleSet.has(productInfo.category), [productInfo.category])
@@ -144,16 +149,172 @@ export default function StoreAddProduct() {
         setPortfolioImages(portfolioImages.filter((_, i) => i !== idx))
     }
 
+    // Generate a /shop/ URL handle from a name. Strips diacritics, lowercases,
+    // collapses non-alphanumeric runs into hyphens, trims, caps at 14 chars,
+    // appends a 4-char random suffix to keep collisions vanishingly rare.
+    const generateUsername = (raw) => {
+        const slug = (raw || 'seller')
+            .toLowerCase()
+            .normalize('NFKD').replace(/[̀-ͯ]/g, '')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+            .slice(0, 14) || 'seller'
+        const suffix = Math.random().toString(36).slice(2, 6)
+        return `${slug}-${suffix}`
+    }
+
+    // Resolve the seller's store, creating one on first post if it doesn't
+    // exist. Individual sellers don't go through a separate "shop setup"
+    // ceremony — their /shop/[username] profile is born the moment they
+    // post their first listing.
+    const resolveOrCreateStore = async () => {
+        const existing = await supabase
+            .from('stores')
+            .select('id')
+            .eq('user_id', user.id)
+            .maybeSingle()
+
+        if (existing.data) return { store: existing.data, error: null }
+        if (existing.error) return { store: null, error: existing.error }
+
+        const displayName = user.user_metadata?.name || (user.email?.split('@')[0]) || 'Seller'
+        const created = await supabase
+            .from('stores')
+            .insert({
+                user_id: user.id,
+                name: displayName,
+                username: generateUsername(displayName),
+                // NOT NULL columns we don't yet collect — sensible empty
+                // defaults; user can edit later in /store profile.
+                description: '',
+                address: [productInfo.locationState, productInfo.locationArea].filter(Boolean).join(' · '),
+                email: user.email || '',
+                contact: productInfo.phone || '',
+                logo: '',
+                // Admin reviews each shop once via /admin/approve. Until then
+                // status stays 'pending' (the DB default) and listings carry
+                // a "Pending review" badge in buyer-facing UI.
+                is_active: true,
+            })
+            .select('id')
+            .single()
+
+        return { store: created.data, error: created.error }
+    }
+
+    const buildVehiclePayload = (raw) => {
+        const out = {}
+        for (const [key, value] of Object.entries(raw)) {
+            if (value === '' || value == null) continue
+            out[key] = VEHICLE_NUMERIC_FIELDS.has(key) ? Number(value) : value
+        }
+        return Object.keys(out).length ? out : null
+    }
+
+    const buildServicePayload = () => ({
+        priceRange: {
+            min: productInfo.priceMin ? Number(productInfo.priceMin) : null,
+            max: productInfo.priceMax ? Number(productInfo.priceMax) : null,
+            unit: productInfo.priceUnit,
+        },
+        specialties: productInfo.specialties,
+        responseTime: productInfo.responseTime || null,
+        areaCovered: productInfo.areaCovered || null,
+    })
+
     const onSubmitHandler = async (e) => {
         e.preventDefault()
-        // Logic to add a listing
+        if (loading) return
+        if (!user) {
+            toast.error('You need to be signed in to post a listing.')
+            return
+        }
+        setLoading(true)
+
+        // 1. Resolve the seller's store, creating one inline if it's their
+        // first post. No separate setup ceremony for individual sellers.
+        const { store, error: storeErr } = await resolveOrCreateStore()
+
+        if (storeErr || !store) {
+            toast.error(storeErr?.message || 'Could not set up your shop.')
+            setLoading(false)
+            return
+        }
+
+        // 2. Upload images to Supabase Storage and collect their public URLs.
+        // Files live under product-images/<userId>/<timestamp>-<n>.<ext>.
+        let imageUrls = []
+        const fileList = Object.values(images).filter(Boolean)
+        if (fileList.length) {
+            try {
+                imageUrls = await uploadProductImages(fileList, user.id, {
+                    onProgress: ({ done, total }) => setUploadProgress({ done, total }),
+                })
+            } catch (err) {
+                toast.error(err?.message || 'Image upload failed.')
+                setLoading(false)
+                setUploadProgress(null)
+                return
+            } finally {
+                setUploadProgress(null)
+            }
+        }
+
+        // 3. Build the products row from the form state.
+        const payload = {
+            store_id: store.id,
+            name: productInfo.name.trim(),
+            description: (productInfo.description || '').trim() || null,
+            category: productInfo.category,
+            location: [productInfo.locationState, productInfo.locationArea].filter(Boolean).join(' · ') || 'Lagos',
+            images: imageUrls,
+            in_stock: true,
+
+            // Pricing — services with quote-on-request leave price null.
+            free: productInfo.free,
+            price: productInfo.free
+                ? 0
+                : (isService
+                    ? null
+                    : (productInfo.price !== '' ? Number(productInfo.price) : null)),
+            was_price: productInfo.wasPrice !== '' ? Number(productInfo.wasPrice) : null,
+
+            // Universal flags
+            condition: !isService ? (productInfo.condition || null) : null,
+            delivery_available: productInfo.deliveryAvailable,
+
+            // Type-specific blobs
+            service: isService ? buildServicePayload() : null,
+            vehicle: isVehicle ? buildVehiclePayload(productInfo.vehicle) : null,
+        }
+
+        const { data: inserted, error: insertErr } = await supabase
+            .from('products')
+            .insert(payload)
+            .select('id')
+            .single()
+
+        setLoading(false)
+
+        if (insertErr) {
+            toast.error(insertErr.message || 'Could not post listing.')
+            return
+        }
+
+        toast.success(isService ? 'Service listing published.' : 'Listing posted.')
+        router.push('/store/manage-product')
+        router.refresh()
     }
 
     const headerTitle = isService ? 'Offer your service' : 'Post an ad'
     const submitLabel = isService ? 'Publish service' : 'Post ad'
 
+    const loadingLabel = uploadProgress
+        ? `Uploading ${uploadProgress.done}/${uploadProgress.total}…`
+        : 'Posting…'
+
     return (
-        <form onSubmit={e => toast.promise(onSubmitHandler(e), { loading: "Posting…" })} className="text-slate-500 mb-28 max-w-2xl">
+        <form onSubmit={e => toast.promise(onSubmitHandler(e), { loading: loadingLabel })} className="text-slate-500 mb-28 max-w-2xl">
 
             {/* Header */}
             <h1 className="text-2xl text-slate-900 font-semibold">{headerTitle}</h1>
@@ -312,7 +473,7 @@ export default function StoreAddProduct() {
                             onChange={(e) => setProductInfo({
                                 ...productInfo,
                                 free: e.target.checked,
-                                ...(e.target.checked ? { price: "", wasPrice: "", urgent: false, bulkSale: false, urgencyReason: '' } : {}),
+                                ...(e.target.checked ? { price: "", wasPrice: "" } : {}),
                             })}
                             className="size-4"
                         />
@@ -357,101 +518,274 @@ export default function StoreAddProduct() {
                         </div>
                     )}
 
-                    {/* Boosts — optional paid add-ons, hidden when free */}
-                    {!productInfo.free && (() => {
-                        const selectedKeys = BOOSTS.filter(b => productInfo[b.key]).map(b => b.key)
-                        const allBundleSelected = BUNDLE.keys.every(k => selectedKeys.includes(k))
-                        const subtotal = allBundleSelected
-                            ? BUNDLE.price + BOOSTS.filter(b => !BUNDLE.keys.includes(b.key) && productInfo[b.key]).reduce((s, b) => s + b.price, 0)
-                            : BOOSTS.filter(b => productInfo[b.key]).reduce((s, b) => s + b.price, 0)
+                    {/* Vehicle specs — only when category is in the Vehicles group */}
+                    {isVehicle && (
+                        <section className="my-8 max-w-2xl">
+                            <div className="flex items-center gap-2 mb-1">
+                                <Car size={15} className="text-slate-700" />
+                                <h3 className="text-sm font-semibold text-slate-900">Vehicle details</h3>
+                            </div>
+                            <p className="text-xs text-slate-500 mb-5">
+                                These show up in the spec tabs (Overview / Performance / Running Costs) on the listing. Only Make, Model, Year, Mileage, Body, Transmission and Fuel are required — fill what you know.
+                            </p>
 
-                        return (
-                            <section className="my-8 max-w-xl">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <Rocket size={14} className="text-sky-600" />
-                                    <h3 className="text-sm font-semibold text-slate-900">Boost this listing</h3>
-                                    <span className="text-[10px] font-medium uppercase tracking-wide text-slate-400 ml-1">Optional</span>
+                            {/* Make + Model — most important identifiers; come
+                                first so the rest of the form feels natural.
+                                Changing make resets model so we never end up
+                                with Toyota Accord. */}
+                            <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mt-2 mb-3">Make &amp; model</p>
+                            <div className="grid sm:grid-cols-2 gap-3 mb-5">
+                                <div className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Make *</span>
+                                    <Dropdown
+                                        value={productInfo.vehicle.make}
+                                        onChange={(v) => setProductInfo((p) => ({
+                                            ...p,
+                                            vehicle: { ...p.vehicle, make: v, model: "" },
+                                        }))}
+                                        placeholder="Pick make"
+                                        options={Object.keys(carMakesModels).map(m => ({ value: m, label: m }))}
+                                    />
                                 </div>
-                                <p className="text-xs text-slate-500 mb-4">
-                                    Pick any combination — pay once, runs for the duration shown. Skip and your listing is still free and live.
+                                <div className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Model *</span>
+                                    <Dropdown
+                                        value={productInfo.vehicle.model}
+                                        onChange={(v) => setVehicleField('model', v)}
+                                        placeholder={productInfo.vehicle.make ? 'Pick model' : 'Pick make first'}
+                                        disabled={!productInfo.vehicle.make}
+                                        options={(carMakesModels[productInfo.vehicle.make] || []).map(m => ({ value: m, label: m }))}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Overview */}
+                            <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mt-2 mb-3">Overview</p>
+                            <div className="grid sm:grid-cols-2 gap-3">
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Year *</span>
+                                    <input
+                                        type="number"
+                                        min="1900"
+                                        max="2030"
+                                        value={productInfo.vehicle.year}
+                                        onChange={(e) => setVehicleField('year', e.target.value)}
+                                        placeholder="e.g. 2014"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                        required
+                                    />
+                                </label>
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Mileage * (miles)</span>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={productInfo.vehicle.mileage}
+                                        onChange={(e) => setVehicleField('mileage', e.target.value)}
+                                        placeholder="e.g. 43700"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                        required
+                                    />
+                                </label>
+                                <div className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Body type *</span>
+                                    <Dropdown
+                                        value={productInfo.vehicle.bodyType}
+                                        onChange={(v) => setVehicleField('bodyType', v)}
+                                        placeholder="Pick body type"
+                                        options={BODY_TYPES}
+                                    />
+                                </div>
+                                <div className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Transmission *</span>
+                                    <Dropdown
+                                        value={productInfo.vehicle.transmission}
+                                        onChange={(v) => setVehicleField('transmission', v)}
+                                        placeholder="Pick transmission"
+                                        options={TRANSMISSIONS}
+                                    />
+                                </div>
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Colour</span>
+                                    <input
+                                        type="text"
+                                        value={productInfo.vehicle.colour}
+                                        onChange={(e) => setVehicleField('colour', e.target.value)}
+                                        placeholder="e.g. Black"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                    />
+                                </label>
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Seats</span>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="20"
+                                        value={productInfo.vehicle.seats}
+                                        onChange={(e) => setVehicleField('seats', e.target.value)}
+                                        placeholder="5"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                    />
+                                </label>
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Doors</span>
+                                    <input
+                                        type="number"
+                                        min="2"
+                                        max="6"
+                                        value={productInfo.vehicle.doors}
+                                        onChange={(e) => setVehicleField('doors', e.target.value)}
+                                        placeholder="4"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                    />
+                                </label>
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Luggage capacity (litres)</span>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={productInfo.vehicle.luggageCapacity}
+                                        onChange={(e) => setVehicleField('luggageCapacity', e.target.value)}
+                                        placeholder="e.g. 275"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                    />
+                                </label>
+                            </div>
+
+                            {/* Performance */}
+                            <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mt-6 mb-3">Performance</p>
+                            <div className="grid sm:grid-cols-2 gap-3">
+                                <div className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Fuel type *</span>
+                                    <Dropdown
+                                        value={productInfo.vehicle.fuelType}
+                                        onChange={(v) => setVehicleField('fuelType', v)}
+                                        placeholder="Pick fuel type"
+                                        options={FUEL_TYPES}
+                                    />
+                                </div>
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Engine size (cc)</span>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={productInfo.vehicle.engineSize}
+                                        onChange={(e) => setVehicleField('engineSize', e.target.value)}
+                                        placeholder="e.g. 1368"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                    />
+                                </label>
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Engine power (bhp)</span>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        step="0.1"
+                                        value={productInfo.vehicle.enginePower}
+                                        onChange={(e) => setVehicleField('enginePower', e.target.value)}
+                                        placeholder="e.g. 76"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                    />
+                                </label>
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Top speed (mph)</span>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={productInfo.vehicle.topSpeed}
+                                        onChange={(e) => setVehicleField('topSpeed', e.target.value)}
+                                        placeholder="e.g. 103"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                    />
+                                </label>
+                                <label className="flex flex-col gap-1.5 sm:col-span-2">
+                                    <span className="text-xs text-slate-600">Acceleration 0–62 mph (seconds)</span>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        step="0.1"
+                                        value={productInfo.vehicle.acceleration}
+                                        onChange={(e) => setVehicleField('acceleration', e.target.value)}
+                                        placeholder="e.g. 13.2"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                    />
+                                </label>
+                            </div>
+
+                            {/* Running costs */}
+                            <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mt-6 mb-3">Running costs <span className="text-slate-400 font-normal normal-case">— optional</span></p>
+                            <div className="grid sm:grid-cols-2 gap-3">
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Fuel consumption (mpg)</span>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        step="0.1"
+                                        value={productInfo.vehicle.fuelConsumption}
+                                        onChange={(e) => setVehicleField('fuelConsumption', e.target.value)}
+                                        placeholder="e.g. 49.6"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                    />
+                                </label>
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Fuel capacity (litres)</span>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={productInfo.vehicle.fuelCapacity}
+                                        onChange={(e) => setVehicleField('fuelCapacity', e.target.value)}
+                                        placeholder="e.g. 45"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                    />
+                                </label>
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">Insurance group</span>
+                                    <input
+                                        type="text"
+                                        value={productInfo.vehicle.insuranceGroup}
+                                        onChange={(e) => setVehicleField('insuranceGroup', e.target.value)}
+                                        placeholder="e.g. 11D"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                    />
+                                </label>
+                                <label className="flex flex-col gap-1.5">
+                                    <span className="text-xs text-slate-600">CO₂ emissions (g/km)</span>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={productInfo.vehicle.co2Emissions}
+                                        onChange={(e) => setVehicleField('co2Emissions', e.target.value)}
+                                        placeholder="e.g. 132"
+                                        className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                    />
+                                </label>
+                                <div className="flex flex-col gap-1.5 sm:col-span-2">
+                                    <span className="text-xs text-slate-600">Euro emissions standard</span>
+                                    <Dropdown
+                                        value={productInfo.vehicle.euroEmissions}
+                                        onChange={(v) => setVehicleField('euroEmissions', v)}
+                                        placeholder="Pick standard"
+                                        options={EURO_EMISSIONS_LEVELS}
+                                    />
+                                </div>
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Boost teaser — actual purchase happens from the dashboard
+                        once the listing is posted, so we don't take payment in
+                        the same flow as the post-an-ad form. */}
+                    {!productInfo.free && (
+                        <section className="my-8 max-w-xl bg-slate-50 ring-1 ring-slate-200 rounded-xl p-4 flex items-start gap-3">
+                            <Rocket size={16} className="text-sky-600 mt-0.5 shrink-0" />
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-slate-900">Sell quicker with boosts</p>
+                                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                                    Once your ad is posted, you can boost it from your dashboard — Bump up, Featured, Urgent, Bulk sale, or the Boost bundle. Listing itself is free.
                                 </p>
-
-                                <div className="rounded-xl ring-1 ring-slate-200 divide-y divide-slate-100 bg-white">
-                                    {BOOSTS.map((boost) => {
-                                        const checked = productInfo[boost.key]
-                                        return (
-                                            <div key={boost.key} className="p-4">
-                                                <label className="flex items-start gap-3 cursor-pointer">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={checked}
-                                                        onChange={(e) => {
-                                                            const isChecking = e.target.checked
-                                                            setProductInfo((p) => ({
-                                                                ...p,
-                                                                [boost.key]: isChecking,
-                                                                ...(boost.key === 'urgent' && {
-                                                                    urgencyReason: isChecking ? p.urgencyReason || 'other' : '',
-                                                                }),
-                                                            }))
-                                                        }}
-                                                        className="size-4 mt-0.5 shrink-0"
-                                                    />
-                                                    <div className="min-w-0 flex-1">
-                                                        <div className="flex items-center gap-2 flex-wrap">
-                                                            <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide rounded px-2 py-0.5 ${boost.tagClass}`}>
-                                                                <boost.Icon size={11} /> {boost.title}
-                                                            </span>
-                                                            <span className="text-sm font-semibold text-slate-900">₦{boost.price.toLocaleString()}</span>
-                                                            <span className="text-xs text-slate-500">· {boost.duration}</span>
-                                                        </div>
-                                                        <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{boost.why}</p>
-                                                    </div>
-                                                </label>
-
-                                                {boost.key === 'urgent' && checked && (
-                                                    <div className="ml-7 mt-3 max-w-sm">
-                                                        <p className="text-xs text-slate-500 mb-1.5">
-                                                            Why is this urgent? <span className="text-slate-400">(private — buyers see only the Urgent tag)</span>
-                                                        </p>
-                                                        <Dropdown
-                                                            value={productInfo.urgencyReason}
-                                                            onChange={(v) => setProductInfo({ ...productInfo, urgencyReason: v })}
-                                                            placeholder="Pick a reason"
-                                                            options={URGENCY_REASONS}
-                                                        />
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-
-                                {/* Bundle suggestion when bundle-eligible boosts are selected */}
-                                {allBundleSelected && (
-                                    <div className="mt-3 bg-sky-50 ring-1 ring-sky-200 rounded-xl p-4 flex items-start gap-3">
-                                        <Zap size={16} className="text-sky-600 mt-0.5 shrink-0" />
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold text-slate-900">
-                                                {BUNDLE.label} — ₦{BUNDLE.price.toLocaleString()} · {BUNDLE.duration}
-                                            </p>
-                                            <p className="text-xs text-slate-600 mt-1">{BUNDLE.why}</p>
-                                            <p className="text-xs text-sky-700 font-medium mt-1.5">
-                                                Bundled cost ₦{BUNDLE.price.toLocaleString()} vs ₦{BUNDLE.keys.reduce((s, k) => s + BOOSTS.find(b => b.key === k).price, 0).toLocaleString()} separately.
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {subtotal > 0 && (
-                                    <div className="mt-3 flex items-center justify-between text-sm">
-                                        <span className="text-slate-500">Boosts subtotal</span>
-                                        <span className="font-semibold text-slate-900">₦{subtotal.toLocaleString()}</span>
-                                    </div>
-                                )}
-                            </section>
-                        )
-                    })()}
+                            </div>
+                        </section>
+                    )}
                 </>
             )}
 
@@ -524,23 +858,40 @@ export default function StoreAddProduct() {
                 </div>
             )}
 
-            {/* Location + Phone — applies to both */}
+            {/* Location — Jiji-style state + area picker. Area depends on
+                state: changing state resets area so we never end up with a
+                Lagos · Wuse mismatch. */}
             <div className="grid sm:grid-cols-2 gap-4 my-6 max-w-xl">
                 <div className="flex flex-col gap-2">
-                    <span className="text-slate-700 font-medium">Location</span>
+                    <span className="text-slate-700 font-medium">State</span>
                     <Dropdown
-                        value={productInfo.location}
-                        onChange={(v) => setProductInfo({ ...productInfo, location: v })}
-                        placeholder="Where you're based"
+                        value={productInfo.locationState}
+                        onChange={(v) => setProductInfo({ ...productInfo, locationState: v, locationArea: "" })}
+                        placeholder="Pick state"
                         leftIcon={<MapPin size={15} className="text-slate-400 shrink-0" />}
-                        options={LOCATIONS}
+                        options={LOCATION_STATES}
                     />
                 </div>
+                <div className="flex flex-col gap-2">
+                    <span className="text-slate-700 font-medium">
+                        Area <span className="text-slate-400 font-normal text-sm">— optional</span>
+                    </span>
+                    <Dropdown
+                        value={productInfo.locationArea}
+                        onChange={(v) => setProductInfo({ ...productInfo, locationArea: v })}
+                        placeholder={productInfo.locationState ? 'Pick area' : 'Pick state first'}
+                        disabled={!productInfo.locationState}
+                        options={(stateAreas[productInfo.locationState] || []).map(a => ({ value: a, label: a }))}
+                    />
+                </div>
+            </div>
+
+            <div className="my-6 max-w-xl">
                 <label className="flex flex-col gap-2">
                     <span className="text-slate-700 font-medium">
                         Phone <span className="text-slate-400 font-normal text-sm">— optional</span>
                     </span>
-                    <div className="flex items-center gap-2 bg-white ring-1 ring-slate-200 rounded-full px-4 py-2 focus-within:ring-slate-400 transition">
+                    <div className="flex items-center gap-2 bg-white ring-1 ring-slate-200 rounded-full px-4 py-2 focus-within:ring-slate-400 transition max-w-sm">
                         <Phone size={15} className="text-slate-400 shrink-0" />
                         <input
                             type="tel"
