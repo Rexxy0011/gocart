@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
+import { FeaturedRibbon, UrgentBulkTag } from '@/components/ListingBadges'
 
 const buildSpecLine = (product) => {
     const v = product.vehicle
@@ -40,8 +41,20 @@ const ProductRow = ({ product }) => {
                     sizes='(min-width: 640px) 240px, 160px'
                     className='object-cover group-hover:scale-105 transition duration-500'
                 />
+                {/* Featured ribbon top-left, Urgent/Bulk bottom-left so they
+                    don't collide with the image counter on the bottom-right. */}
+                {product.featured && (
+                    <div className='absolute top-2 left-2'>
+                        <FeaturedRibbon size='sm' />
+                    </div>
+                )}
+                {(product.urgent || product.bulkSale) && (
+                    <div className='absolute bottom-2 left-2'>
+                        <UrgentBulkTag urgent={product.urgent} bulkSale={product.bulkSale} size='sm' />
+                    </div>
+                )}
                 {product.images.length > 1 && (
-                    <span className='absolute bottom-2 left-2 inline-flex items-center gap-1 bg-slate-900/80 text-white text-[11px] px-1.5 py-0.5 rounded'>
+                    <span className='absolute bottom-2 right-2 inline-flex items-center gap-1 bg-slate-900/80 text-white text-[11px] px-1.5 py-0.5 rounded'>
                         <Camera size={11} /> {product.images.length}
                     </span>
                 )}

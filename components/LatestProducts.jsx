@@ -3,10 +3,15 @@ import ProductCard from './ProductCard'
 import { createClient } from '@/lib/supabase/server'
 import { PRODUCT_WITH_STORE_SELECT, mapProductRow } from '@/lib/supabase/mappers'
 
-// Top 4 product listings on the home page. Featured first, then most-recently
-// bumped, then newest. Filters to approved + active shops (per the B+C model)
-// and excludes services (those live on /services).
-const DISPLAY_QUANTITY = 4
+// "Top listings" — only listings with an active paid boost. Sellers who
+// have paid for visibility (Featured, Urgent, Bulk sale, or Bump) get
+// surfaced here above the plain feed. Without boosts the home page has a
+// weaker signal but the section disappears entirely so we don't pad with
+// random listings and dilute the meaning of the badge.
+//
+// Order: Featured first (premium ribbon, top placement), then most
+// recently bumped, then newest.
+const DISPLAY_QUANTITY = 8
 
 const LatestProducts = async () => {
 
@@ -19,6 +24,10 @@ const LatestProducts = async () => {
         .eq('review_status', 'approved')
         .eq('store.status', 'approved')
         .eq('store.is_active', true)
+        // Any one of the four paid-boost markers qualifies the listing
+        // for the Top section. bumped_at-not-null = the seller paid for
+        // a Bump (we don't yet stamp bumped_until everywhere).
+        .or('featured.eq.true,urgent.eq.true,bulk_sale.eq.true,bumped_at.not.is.null')
         .order('featured', { ascending: false })
         .order('bumped_at', { ascending: false, nullsFirst: false })
         .order('created_at', { ascending: false })
@@ -26,24 +35,20 @@ const LatestProducts = async () => {
 
     const products = (rows || []).map(mapProductRow)
 
+    if (products.length === 0) return null
+
     return (
         <div className='px-6 my-30 max-w-6xl mx-auto'>
             <Title
                 title='Top listings'
-                description={`Showing ${products.length} of the freshest classifieds`}
+                description={`${products.length} boosted listing${products.length === 1 ? '' : 's'} buyers are seeing first`}
                 href='/shop'
             />
-            {products.length === 0 ? (
-                <p className='text-center text-sm text-slate-500 mt-8'>
-                    Nothing posted yet — check back soon, or be the first.
-                </p>
-            ) : (
-                <div className='mt-12 grid grid-cols-2 sm:flex flex-wrap gap-6 justify-between'>
-                    {products.map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
-                </div>
-            )}
+            <div className='mt-12 grid grid-cols-2 sm:flex flex-wrap gap-6 justify-between'>
+                {products.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                ))}
+            </div>
         </div>
     )
 }

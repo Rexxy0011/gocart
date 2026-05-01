@@ -11,6 +11,10 @@ import { useToggleFavorite } from "@/lib/features/cart/useToggleFavorite"
 import { Button } from "@/components/ui/button"
 import VehicleSpecs from "@/components/VehicleSpecs"
 import ServiceDetails from "@/components/ServiceDetails"
+import {
+    FeaturedRibbon, UrgentTag, BulkSaleTag, FreeTag, ReducedTag,
+    DeliveryAvailableTag, ConditionTag,
+} from "@/components/ListingBadges"
 import { categoryGroups } from "@/assets/assets"
 import { useAuthGate } from "@/hooks/useAuthGate"
 import { toast } from "react-hot-toast"
@@ -118,6 +122,21 @@ const ProductDetails = ({ product }) => {
                     </p>
                 )}
             </div>
+
+            {/* Boost / state badges. Each only renders when its flag is on,
+                so the row is empty by default and grows as the seller pays
+                for visibility. */}
+            {(product.featured || product.urgent || product.bulkSale || product.free || (product.mrp != null && product.mrp > product.price) || product.deliveryAvailable || product.condition) && (
+                <div className='flex items-center gap-1.5 flex-wrap mb-4'>
+                    {product.featured && <FeaturedRibbon />}
+                    {product.urgent && <UrgentTag />}
+                    {product.bulkSale && <BulkSaleTag />}
+                    {product.free && <FreeTag />}
+                    {!product.free && product.mrp != null && product.mrp > product.price && <ReducedTag />}
+                    {product.deliveryAvailable && <DeliveryAvailableTag />}
+                    {product.condition && <ConditionTag condition={product.condition} />}
+                </div>
+            )}
 
             <div className='grid lg:grid-cols-12 gap-6 mt-4'>
 
