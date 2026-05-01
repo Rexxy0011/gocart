@@ -357,18 +357,20 @@ const Navbar = ({ user = null, providerStatus = null }) => {
             </div>
             <hr className="border-gray-300" />
 
-            {/* Mobile drawer — slides in from the right. Holds everything that
-                won't fit in the mobile top row: account, navigation, footer-y
-                links. Hidden entirely on sm+ via sm:hidden. */}
-            {openMobileMenu && (
-                <div className="fixed inset-0 z-[60] sm:hidden">
-                    {/* Backdrop */}
-                    <div
-                        className="absolute inset-0 bg-black/40"
-                        onClick={() => setOpenMobileMenu(false)}
-                    />
-                    {/* Panel */}
-                    <div className="absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col overflow-hidden">
+            {/* Mobile drawer — slides in from the right. Always mounted so the
+                close animation can play on its way out. pointer-events-none
+                when closed so the invisible layer doesn't intercept taps. */}
+            <div
+                className={`fixed inset-0 z-[60] sm:hidden ${openMobileMenu ? '' : 'pointer-events-none'}`}
+                aria-hidden={!openMobileMenu}
+            >
+                {/* Backdrop — fades in/out */}
+                <div
+                    onClick={() => setOpenMobileMenu(false)}
+                    className={`absolute inset-0 bg-black/40 transition-opacity duration-200 ${openMobileMenu ? 'opacity-100' : 'opacity-0'}`}
+                />
+                {/* Panel — slides in from the right */}
+                <div className={`absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col overflow-hidden transform transition-transform duration-300 ease-out ${openMobileMenu ? 'translate-x-0' : 'translate-x-full'}`}>
 
                         {/* Header */}
                         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
@@ -485,9 +487,8 @@ const Navbar = ({ user = null, providerStatus = null }) => {
                                 </button>
                             </form>
                         )}
-                    </div>
                 </div>
-            )}
+            </div>
         </nav>
     )
 }

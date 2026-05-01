@@ -25,7 +25,7 @@ function SignupForm() {
         setErrorMsg('')
         setSubmitting(true)
 
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
             email: form.email.trim().toLowerCase(),
             password: form.password,
             options: {
@@ -39,10 +39,18 @@ function SignupForm() {
             return
         }
 
-        toast.success('Account created — welcome to the marketplace.')
-        // Full page nav so the auth cookie just written by the Supabase client
-        // is sent on the next request. router.refresh() races the cookie write
-        // on mobile Safari and lands you on the destination still signed-out.
+        // If "Confirm email" is enabled in Supabase, signUp returns no session
+        // — the user has to click the email link before logging in. Tell them
+        // that explicitly instead of dumping them on a still-signed-out page.
+        if (!data.session) {
+            toast.success('Check your email to confirm your account, then sign in.')
+            router.push(next === '/' ? '/login' : `/login?next=${encodeURIComponent(next)}`)
+            return
+        }
+
+        // Auto-signed in (email confirmation disabled). Full page nav so the
+        // freshly-written auth cookie is sent on the next request.
+        toast.success('Welcome to GoCart.')
         window.location.assign(next)
     }
 
