@@ -38,8 +38,12 @@ function LoginForm() {
         }
 
         toast.success('Welcome back.')
-        router.push(next)
-        router.refresh()
+        // Full page nav (not router.push) so the next HTTP request carries
+        // the freshly-written auth cookie. router.refresh() races the cookie
+        // write on mobile Safari — the navbar then renders signed-out and
+        // protected routes bounce back to /login. window.location guarantees
+        // the cookie is sent.
+        window.location.assign(next)
     }
 
     return (

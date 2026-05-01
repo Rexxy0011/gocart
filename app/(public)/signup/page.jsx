@@ -40,8 +40,10 @@ function SignupForm() {
         }
 
         toast.success('Account created — welcome to the marketplace.')
-        router.push(next)
-        router.refresh()
+        // Full page nav so the auth cookie just written by the Supabase client
+        // is sent on the next request. router.refresh() races the cookie write
+        // on mobile Safari and lands you on the destination still signed-out.
+        window.location.assign(next)
     }
 
     return (
