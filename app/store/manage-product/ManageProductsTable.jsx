@@ -90,6 +90,14 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
 
     const cheapest = BOOSTS.reduce((m, b) => Math.min(m, b.price), Infinity)
 
+    // Maps review_status → pill style. Pending listings get a soft pulsing
+    // dot to signal "in motion" rather than just sitting there.
+    const statusBadge = (status) => {
+        if (status === 'rejected') return { label: 'Rejected',     cls: 'bg-rose-50 text-rose-700 ring-rose-200',       pulse: false }
+        if (status === 'pending')  return { label: 'Under review', cls: 'bg-amber-50 text-amber-800 ring-amber-200',    pulse: true  }
+        return                            { label: 'Live',         cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200', pulse: false }
+    }
+
     return (
         <>
             <div className='flex flex-wrap items-start justify-between gap-3 mb-5'>
@@ -126,6 +134,7 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                     <thead className="bg-slate-50 text-gray-700 uppercase tracking-wider">
                         <tr>
                             <th className="px-4 py-3">Name</th>
+                            <th className="px-4 py-3">Status</th>
                             <th className="px-4 py-3 hidden md:table-cell">Posted</th>
                             <th className="px-4 py-3">Price</th>
                             <th className="px-4 py-3">In stock</th>
@@ -149,6 +158,17 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                                             )}
                                             <span className='line-clamp-2'>{product.name}</span>
                                         </div>
+                                    </td>
+                                    <td className="px-4 py-3">
+                                        {(() => {
+                                            const b = statusBadge(product.review_status || 'approved')
+                                            return (
+                                                <span className={`inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wide rounded-full px-2 py-0.5 ring-1 ${b.cls}`}>
+                                                    {b.pulse && <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />}
+                                                    {b.label}
+                                                </span>
+                                            )
+                                        })()}
                                     </td>
                                     <td className="px-4 py-3 hidden md:table-cell text-slate-500">{postedAgo}</td>
                                     <td className="px-4 py-3">

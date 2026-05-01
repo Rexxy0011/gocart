@@ -2,9 +2,8 @@
 import { Heart, MapPin, Camera } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useDispatch, useSelector } from 'react-redux'
 import { formatDistanceToNow } from 'date-fns'
-import { addToCart, deleteItemFromCart } from '@/lib/features/cart/cartSlice'
+import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
 
 const buildSpecLine = (product) => {
     const v = product.vehicle
@@ -22,20 +21,11 @@ const ProductRow = ({ product }) => {
 
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
 
-    const cart = useSelector(state => state.cart.cartItems)
-    const dispatch = useDispatch()
-    const isSaved = !!cart[product.id]
+    const { isSaved, toggle: toggleSave } = useToggleFavorite(product.id)
 
     const location = product.location || 'Lagos'
     const postedAgo = formatDistanceToNow(new Date(product.createdAt), { addSuffix: true })
     const specLine = buildSpecLine(product)
-
-    const toggleSave = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        if (isSaved) dispatch(deleteItemFromCart({ productId: product.id }))
-        else dispatch(addToCart({ productId: product.id }))
-    }
 
     return (
         <Link

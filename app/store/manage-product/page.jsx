@@ -19,7 +19,7 @@ export default async function StoreManageProducts() {
     if (store) {
         const { data } = await supabase
             .from('products')
-            .select('id, name, images, price, in_stock, created_at, bumped_at, free, category, service')
+            .select('id, name, images, price, in_stock, created_at, bumped_at, free, category, service, review_status, reviewed_at')
             .eq('store_id', store.id)
             .order('created_at', { ascending: false })
         products = data || []

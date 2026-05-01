@@ -3,11 +3,9 @@ import { Heart, MapPin, Clock } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useDispatch, useSelector } from 'react-redux'
 import { formatDistanceToNow } from 'date-fns'
-import { addToCart, deleteItemFromCart } from '@/lib/features/cart/cartSlice'
+import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
 import VerifiedCheck from '@/components/VerifiedCheck'
-import { useAuthGate } from '@/hooks/useAuthGate'
 import {
     FeaturedRibbon, UrgentBulkTag, ConditionTag,
 } from '@/components/ListingBadges'
@@ -16,26 +14,14 @@ const ProductCard = ({ product }) => {
 
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
 
-    const cart = useSelector(state => state.cart.cartItems)
-    const dispatch = useDispatch()
     const router = useRouter()
-    const requireAuth = useAuthGate()
-    const isSaved = !!cart[product.id]
+    const { isSaved, toggle: toggleSave } = useToggleFavorite(product.id)
 
     const location = product.location || 'Lagos'
     const postedAgo = formatDistanceToNow(new Date(product.createdAt), { addSuffix: true })
     const sellerName = product.store?.user?.name || product.store?.name
     const sellerUsername = product.store?.username
     const isVerified = product.store?.status === 'approved'
-
-    const toggleSave = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        requireAuth(() => {
-            if (isSaved) dispatch(deleteItemFromCart({ productId: product.id }))
-            else dispatch(addToCart({ productId: product.id }))
-        }, 'Sign in to save this listing.')
-    }
 
     const goToSeller = (e) => {
         if (!sellerUsername) return

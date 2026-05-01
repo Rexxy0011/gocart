@@ -10,6 +10,8 @@ import Dropdown from "@/components/Dropdown"
 import { createClient } from "@/lib/supabase/client"
 import { uploadProductImages } from "@/lib/supabase/storage"
 import { useUser } from "@/lib/auth/UserContext"
+import { checkListingContent } from "@/lib/moderation"
+import ReviewProgressOverlay from "@/components/ReviewProgressOverlay"
 
 const VEHICLE_NUMERIC_FIELDS = new Set([
     'year', 'mileage', 'seats', 'doors', 'luggageCapacity',
@@ -118,6 +120,9 @@ export default function StoreAddProduct() {
     }
     const [loading, setLoading] = useState(false)
     const [uploadProgress, setUploadProgress] = useState(null)
+    // Holds the post-publish review_status ('approved' | 'pending') so the
+    // overlay can show the right result. null = overlay hidden.
+    const [reviewState, setReviewState] = useState(null)
 
     const isService = useMemo(() => serviceSet.has(productInfo.category), [productInfo.category])
     const isVehicle = useMemo(() => vehicleSet.has(productInfo.category), [productInfo.category])
@@ -229,6 +234,16 @@ export default function StoreAddProduct() {
             toast.error('You need to be signed in to post a listing.')
             return
         }
+
+        // 0. Pre-publish content screen. Catches obvious banned keywords
+        // before we charge for image uploads. Server-side enforcement comes
+        // when we move the insert through a server action.
+        const screen = checkListingContent(productInfo.name, productInfo.description)
+        if (!screen.ok) {
+            toast.error(screen.message)
+            return
+        }
+
         setLoading(true)
 
         // 1. Resolve the seller's store, creating one inline if it's their
@@ -288,10 +303,14 @@ export default function StoreAddProduct() {
             vehicle: isVehicle ? buildVehiclePayload(productInfo.vehicle) : null,
         }
 
+        // Pull review_status back so we can tell the seller whether the
+        // listing is live or held in admin queue. The auto_review_listing
+        // trigger may have flipped it from 'pending' → 'approved' if the
+        // seller has 3+ prior approved listings.
         const { data: inserted, error: insertErr } = await supabase
             .from('products')
             .insert(payload)
-            .select('id')
+            .select('id, review_status')
             .single()
 
         setLoading(false)
@@ -301,9 +320,9 @@ export default function StoreAddProduct() {
             return
         }
 
-        toast.success(isService ? 'Service listing published.' : 'Listing posted.')
-        router.push('/store/manage-product')
-        router.refresh()
+        // Show the animated review overlay. It auto-routes to
+        // /store/manage-product once the animation finishes.
+        setReviewState(inserted.review_status)
     }
 
     const headerTitle = isService ? 'Offer your service' : 'Post an ad'
@@ -314,10 +333,23 @@ export default function StoreAddProduct() {
         : 'Posting…'
 
     return (
-        <form onSubmit={e => toast.promise(onSubmitHandler(e), { loading: loadingLabel })} className="text-slate-500 mb-28 max-w-2xl">
+        <>
+            {/* Review-pipeline overlay — appears for ~2.5s after a successful
+                post, then routes to /store/manage-product. */}
+            {reviewState && (
+                <ReviewProgressOverlay
+                    status={reviewState}
+                    onComplete={() => {
+                        router.push('/store/manage-product')
+                        router.refresh()
+                    }}
+                />
+            )}
 
-            {/* Header */}
-            <h1 className="text-2xl text-slate-900 font-semibold">{headerTitle}</h1>
+            <form onSubmit={e => toast.promise(onSubmitHandler(e), { loading: loadingLabel })} className="text-slate-500 mb-28 max-w-2xl">
+
+                {/* Header */}
+                <h1 className="text-2xl text-slate-900 font-semibold">{headerTitle}</h1>
 
             {/* How it works — sets the classifieds expectation */}
             <div className="mt-4 mb-7 bg-slate-50 ring-1 ring-slate-200 rounded-lg p-4 flex items-start gap-3">
@@ -911,5 +943,6 @@ export default function StoreAddProduct() {
                 {submitLabel}
             </button>
         </form>
+        </>
     )
 }

@@ -16,6 +16,7 @@ const LatestProducts = async () => {
         .select(PRODUCT_WITH_STORE_SELECT)
         .is('service', null)
         .is('removed_at', null)
+        .eq('review_status', 'approved')
         .eq('store.status', 'approved')
         .eq('store.is_active', true)
         .order('featured', { ascending: false })

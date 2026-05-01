@@ -79,3 +79,38 @@ export async function setProviderApplicationStatus(applicationId, status, reason
     revalidatePath('/pro/apply')
     return { ok: true }
 }
+
+// Per-listing review action. Replaces the per-shop approval flow now that
+// shops auto-approve and review happens at the listing level. Approve →
+// review_status='approved', listing goes live. Reject → review_status=
+// 'rejected', rejection_reason recorded for the seller's dashboard.
+export async function setProductReviewStatus(productId, status, reason = '') {
+    if (!['approved', 'rejected'].includes(status)) {
+        return { error: 'Invalid status' }
+    }
+    if (status === 'rejected' && !reason?.trim()) {
+        return { error: 'A rejection reason is required.' }
+    }
+
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user || !isAdminEmail(user.email)) {
+        return { error: 'Not authorized' }
+    }
+
+    const admin = createAdminClient()
+    const { error } = await admin
+        .from('products')
+        .update({
+            review_status: status,
+            reviewed_at: new Date().toISOString(),
+            rejection_reason: status === 'rejected' ? reason.trim() : null,
+        })
+        .eq('id', productId)
+
+    if (error) return { error: error.message }
+
+    revalidatePath('/admin/approve')
+    revalidatePath('/store/manage-product')
+    return { ok: true }
+}

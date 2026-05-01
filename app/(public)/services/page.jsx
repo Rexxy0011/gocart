@@ -17,6 +17,7 @@ export default async function Services() {
             .select(PRODUCT_WITH_STORE_SELECT)
             .not('service', 'is', null)
             .is('removed_at', null)
+            .eq('review_status', 'approved')
             .eq('store.status', 'approved')
             .eq('store.is_active', true)
             .order('featured', { ascending: false })

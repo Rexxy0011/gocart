@@ -1,82 +1,183 @@
-'use client'
-import { dummyStoreDashboardData } from "@/assets/assets"
-import Loading from "@/components/Loading"
-import VerifiedCheck from "@/components/VerifiedCheck"
+import { redirect } from 'next/navigation'
+import Image from 'next/image'
+import Link from 'next/link'
 import {
     ArrowUpRight, Eye, ListChecks, MessageSquareText,
-    Plus, Star, TrendingUp, BarChart3, Wrench,
-} from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
-import { useSelector } from "react-redux"
+    Plus, Star, TrendingUp, BarChart3, Wrench, Clock,
+} from 'lucide-react'
+import { formatDistanceToNow } from 'date-fns'
+import { createClient } from '@/lib/supabase/server'
+import VerifiedCheck from '@/components/VerifiedCheck'
 
-// Demo-only hook into the seller (later: from auth context)
-const STORE_ID = 'store_1'
+// Seller dashboard. Real data from Supabase: counts come from the
+// products and conversations tables, the seller name comes from the
+// profile, the verified state comes from email + phone confirmation.
+//
+// Things that are real:
+//   - Active listings count
+//   - Pending review count
+//   - New inquiries (last 7 days)
+//   - Average rating + reviews list
+//   - Top listings by inquiry count
+//
+// Things we deliberately DON'T fake:
+//   - Listing views — we don't track views yet, so the card shows "—"
+//     with a "coming soon" hint instead of a fabricated number.
+//   - Review counts — empty until the ratings system is wired.
 
-export default function Dashboard() {
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000
 
-    const router = useRouter()
+export default async function Dashboard() {
 
-    const [loading, setLoading] = useState(true)
-    const [dashboardData, setDashboardData] = useState({
-        totalProducts: 0,
-        ratings: [],
-    })
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) redirect('/login?next=/store')
 
-    const allProducts = useSelector(state => state.product.list)
-    // /store is product-seller-only. Service listings are managed in /pro.
-    const productListings = useMemo(
-        () => allProducts.filter(p => p.storeId === STORE_ID && !p.service),
-        [allProducts]
-    )
-    const topByViews = productListings.slice(0, 4).map((p, i) => ({
-        ...p,
-        viewsMock: [842, 514, 388, 271][i] ?? 200,
-        inquiriesMock: [12, 7, 4, 3][i] ?? 1,
-    }))
+    // Profile + store ----------------------------------------------------
+    const [{ data: profile }, { data: store }] = await Promise.all([
+        supabase
+            .from('profiles')
+            .select('name, image')
+            .eq('id', user.id)
+            .maybeSingle(),
+        supabase
+            .from('stores')
+            .select('id, name, username')
+            .eq('user_id', user.id)
+            .maybeSingle(),
+    ])
 
-    const fetchDashboardData = async () => {
-        setDashboardData(dummyStoreDashboardData)
-        setLoading(false)
+    const sellerName = profile?.name || user.user_metadata?.name || user.email?.split('@')[0] || 'Seller'
+    const emailVerified = !!user.email_confirmed_at
+    const phoneVerified = !!user.phone_confirmed_at
+    const isVerified = emailVerified && phoneVerified
+
+    // No store yet → empty-state CTA. Skip all the analytics — there's
+    // nothing to show.
+    if (!store) {
+        return (
+            <div className="text-slate-700 mb-28 max-w-5xl">
+                <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50/40 ring-1 ring-slate-200 rounded-2xl p-6 sm:p-8">
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Seller dashboard</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">
+                        Hi {sellerName.split(' ')[0]}
+                    </h1>
+                    <p className="text-sm text-slate-600 mt-2 max-w-md">
+                        Your shop is empty. Post your first ad — buyers reach you directly through GoCart messaging. Free, no commission on offline sales.
+                    </p>
+                    <Link
+                        href="/store/add-product"
+                        className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-full px-5 py-2.5 transition mt-6"
+                    >
+                        <Plus size={15} /> Post an ad
+                    </Link>
+                </section>
+            </div>
+        )
     }
 
-    useEffect(() => {
-        fetchDashboardData()
-    }, [])
+    // Counts -------------------------------------------------------------
+    const sevenDaysAgo = new Date(Date.now() - SEVEN_DAYS_MS).toISOString()
 
-    if (loading) return <Loading />
+    const [
+        activeListingsRes,
+        pendingReviewRes,
+        newInquiriesRes,
+    ] = await Promise.all([
+        supabase
+            .from('products')
+            .select('id', { count: 'exact', head: true })
+            .eq('store_id', store.id)
+            .eq('review_status', 'approved')
+            .is('removed_at', null),
+        supabase
+            .from('products')
+            .select('id', { count: 'exact', head: true })
+            .eq('store_id', store.id)
+            .eq('review_status', 'pending')
+            .is('removed_at', null),
+        supabase
+            .from('conversations')
+            .select('id', { count: 'exact', head: true })
+            .eq('seller_id', user.id)
+            .gte('created_at', sevenDaysAgo),
+    ])
 
-    const sellerName = 'Great Stack'
-    const isVerified = true
-    const ratingCount = dashboardData.ratings.length
+    const activeListings = activeListingsRes.count || 0
+    const pendingReview = pendingReviewRes.count || 0
+    const newInquiries = newInquiriesRes.count || 0
+
+    // Listings + per-listing inquiry counts ------------------------------
+    const { data: listings } = await supabase
+        .from('products')
+        .select('id, name, images, price, free, created_at')
+        .eq('store_id', store.id)
+        .eq('review_status', 'approved')
+        .is('removed_at', null)
+        .order('bumped_at', { ascending: false, nullsFirst: false })
+        .order('created_at', { ascending: false })
+        .limit(20)
+
+    const listingIds = (listings || []).map(l => l.id)
+    const inqByListing = {}
+    if (listingIds.length > 0) {
+        const { data: convos } = await supabase
+            .from('conversations')
+            .select('listing_id')
+            .in('listing_id', listingIds)
+        for (const c of (convos || [])) {
+            inqByListing[c.listing_id] = (inqByListing[c.listing_id] || 0) + 1
+        }
+    }
+
+    const topByInquiries = (listings || [])
+        .map(l => ({ ...l, inquiriesCount: inqByListing[l.id] || 0 }))
+        .sort((a, b) => b.inquiriesCount - a.inquiriesCount || new Date(b.created_at) - new Date(a.created_at))
+        .slice(0, 4)
+
+    // Reviews ------------------------------------------------------------
+    // Pulls ratings whose product belongs to this store. Will be empty
+    // until the ratings/jobs flow is wired — the empty state below
+    // explains that to the seller.
+    const { data: ratings } = await supabase
+        .from('ratings')
+        .select(`
+            id, rating, review, created_at,
+            user:profiles!ratings_user_id_fkey(name, image),
+            product:products!inner(id, name, category, store_id)
+        `)
+        .eq('product.store_id', store.id)
+        .order('created_at', { ascending: false })
+        .limit(5)
+
+    const ratingsList = ratings || []
+    const ratingCount = ratingsList.length
     const averageRating = ratingCount
-        ? dashboardData.ratings.reduce((s, r) => s + r.rating, 0) / ratingCount
+        ? ratingsList.reduce((s, r) => s + r.rating, 0) / ratingCount
         : 0
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
 
     const stats = [
         {
             title: 'Active listings',
-            value: productListings.length,
+            value: activeListings,
             icon: ListChecks,
             tone: 'bg-sky-50 text-sky-600 ring-sky-200',
-            trend: { dir: 'up', text: '+2 this week' },
+            hint: pendingReview > 0 ? `${pendingReview} pending review` : 'All live',
         },
         {
             title: 'New inquiries',
-            value: 0,
+            value: newInquiries,
             icon: MessageSquareText,
             tone: 'bg-emerald-50 text-emerald-600 ring-emerald-200',
             hint: 'Last 7 days',
         },
         {
             title: 'Listing views',
-            value: '1,284',
+            value: '—',
             icon: Eye,
             tone: 'bg-violet-50 text-violet-600 ring-violet-200',
-            trend: { dir: 'up', text: '+12% vs last week' },
+            hint: 'View tracking — coming soon',
         },
         {
             title: 'Rating',
@@ -117,16 +218,9 @@ export default function Dashboard() {
                         </div>
                         <p className="text-3xl font-bold text-slate-900 mt-4 leading-none">{card.value}</p>
                         <p className="text-sm text-slate-600 mt-1.5">{card.title}</p>
-                        {card.trend ? (
-                            <p className={`inline-flex items-center gap-1 text-[11px] font-medium mt-2 ${
-                                card.trend.dir === 'up' ? 'text-emerald-600' : 'text-rose-600'
-                            }`}>
-                                {card.trend.dir === 'up' ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-                                {card.trend.text}
-                            </p>
-                        ) : card.hint ? (
+                        {card.hint && (
                             <p className="text-[11px] text-slate-400 mt-2">{card.hint}</p>
-                        ) : null}
+                        )}
                     </div>
                 ))}
             </section>
@@ -140,7 +234,7 @@ export default function Dashboard() {
                         </span>
                         <div className="min-w-0">
                             <p className="font-semibold text-slate-900">Listing insights</p>
-                            <p className="text-xs text-slate-500">Your top listings — what&apos;s pulling buyer attention.</p>
+                            <p className="text-xs text-slate-500">Your top listings — ranked by buyer inquiries.</p>
                         </div>
                     </div>
                     <Link href="/store/manage-product" className="text-xs font-semibold text-sky-700 hover:underline shrink-0">
@@ -148,37 +242,49 @@ export default function Dashboard() {
                     </Link>
                 </div>
                 <ul className="divide-y divide-slate-100">
-                    {topByViews.length === 0 ? (
-                        <li className="p-8 text-center text-sm text-slate-500">No listings yet — post your first ad to see insights.</li>
-                    ) : topByViews.map((p) => (
-                        <li key={p.id} className="p-4 flex items-center gap-4 flex-wrap">
-                            <Image
-                                src={p.images[0]}
-                                alt={p.name}
-                                width={48}
-                                height={48}
-                                className="size-12 rounded-lg object-cover ring-1 ring-slate-200 shrink-0"
-                            />
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold text-slate-900 line-clamp-1">{p.name}</p>
-                                <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
-                                    <span className="inline-flex items-center gap-1"><Eye size={11} /> {p.viewsMock.toLocaleString()} views</span>
-                                    <span className="inline-flex items-center gap-1"><MessageSquareText size={11} /> {p.inquiriesMock} inquiries</span>
-                                </div>
-                            </div>
-                            <p className="text-sm font-semibold text-slate-900 shrink-0">
-                                {p.free ? 'FREE' : `${currency}${(p.price ?? 0).toLocaleString()}`}
-                            </p>
-                            <Link
-                                href={`/product/${p.id}`}
-                                className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold text-sky-700 hover:underline"
-                            >
-                                Open <ArrowUpRight size={11} />
-                            </Link>
+                    {topByInquiries.length === 0 ? (
+                        <li className="p-8 text-center text-sm text-slate-500">
+                            No live listings yet — post your first ad to see insights.
                         </li>
-                    ))}
+                    ) : topByInquiries.map((p) => {
+                        const firstImage = p.images?.[0]
+                        return (
+                            <li key={p.id} className="p-4 flex items-center gap-4 flex-wrap">
+                                {firstImage ? (
+                                    <Image
+                                        src={firstImage}
+                                        alt={p.name}
+                                        width={48}
+                                        height={48}
+                                        className="size-12 rounded-lg object-cover ring-1 ring-slate-200 shrink-0"
+                                    />
+                                ) : (
+                                    <div className="size-12 rounded-lg bg-slate-100 ring-1 ring-slate-200 shrink-0" />
+                                )}
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-semibold text-slate-900 line-clamp-1">{p.name}</p>
+                                    <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
+                                        <span className="inline-flex items-center gap-1">
+                                            <MessageSquareText size={11} /> {p.inquiriesCount} {p.inquiriesCount === 1 ? 'inquiry' : 'inquiries'}
+                                        </span>
+                                        <span className="inline-flex items-center gap-1">
+                                            <Clock size={11} /> {formatDistanceToNow(new Date(p.created_at), { addSuffix: true })}
+                                        </span>
+                                    </div>
+                                </div>
+                                <p className="text-sm font-semibold text-slate-900 shrink-0">
+                                    {p.free ? 'FREE' : `${currency}${(p.price ?? 0).toLocaleString()}`}
+                                </p>
+                                <Link
+                                    href={`/product/${p.id}`}
+                                    className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold text-sky-700 hover:underline"
+                                >
+                                    Open <ArrowUpRight size={11} />
+                                </Link>
+                            </li>
+                        )
+                    })}
                 </ul>
-                {/* Cross-link to /pro for users who also offer services */}
                 <div className="border-t border-slate-100 bg-slate-50/60 px-5 py-3 flex items-center justify-between gap-3 flex-wrap">
                     <p className="text-xs text-slate-500 inline-flex items-center gap-2">
                         <Wrench size={12} className="text-slate-400" />
@@ -253,20 +359,24 @@ export default function Dashboard() {
                     )}
                 </div>
 
-                {dashboardData.ratings.length === 0 ? (
+                {ratingsList.length === 0 ? (
                     <div className="border border-dashed border-slate-300 bg-slate-50/60 rounded-xl p-10 text-center">
                         <Star size={22} className="mx-auto text-slate-300" />
                         <p className="text-sm text-slate-500 mt-2">No reviews yet — they appear here once a buyer confirms a job.</p>
                     </div>
                 ) : (
                     <div className="space-y-3">
-                        {dashboardData.ratings.map((review, index) => (
-                            <div key={index} className="bg-white border border-slate-200 rounded-xl p-5 flex max-sm:flex-col sm:items-center justify-between gap-4">
+                        {ratingsList.map((review) => (
+                            <div key={review.id} className="bg-white border border-slate-200 rounded-xl p-5 flex max-sm:flex-col sm:items-center justify-between gap-4">
                                 <div className="flex gap-3 min-w-0">
-                                    <Image src={review.user.image} alt="" className="size-10 rounded-full shrink-0" width={40} height={40} />
+                                    {review.user?.image ? (
+                                        <Image src={review.user.image} alt="" className="size-10 rounded-full shrink-0 object-cover" width={40} height={40} />
+                                    ) : (
+                                        <div className="size-10 rounded-full bg-slate-200 shrink-0" />
+                                    )}
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-2 flex-wrap">
-                                            <p className="font-semibold text-slate-900">{review.user.name}</p>
+                                            <p className="font-semibold text-slate-900">{review.user?.name || 'Buyer'}</p>
                                             <div className="flex items-center">
                                                 {Array(5).fill('').map((_, i) => (
                                                     <Star
@@ -279,7 +389,7 @@ export default function Dashboard() {
                                                 ))}
                                             </div>
                                         </div>
-                                        <p className="text-xs text-slate-500 mt-0.5">{new Date(review.createdAt).toDateString()}</p>
+                                        <p className="text-xs text-slate-500 mt-0.5">{new Date(review.created_at).toDateString()}</p>
                                         <p className="text-sm text-slate-700 mt-2 max-w-xl leading-relaxed">{review.review}</p>
                                     </div>
                                 </div>
@@ -288,12 +398,12 @@ export default function Dashboard() {
                                         <p className="text-[11px] text-slate-400 uppercase tracking-wide">{review.product?.category}</p>
                                         <p className="text-sm font-medium text-slate-700 max-w-[10rem] truncate">{review.product?.name}</p>
                                     </div>
-                                    <button
-                                        onClick={() => router.push(`/product/${review.product.id}`)}
+                                    <Link
+                                        href={`/product/${review.product?.id}`}
                                         className="inline-flex items-center gap-1 text-xs font-semibold text-sky-700 hover:underline whitespace-nowrap"
                                     >
                                         View listing <ArrowUpRight size={12} />
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         ))}

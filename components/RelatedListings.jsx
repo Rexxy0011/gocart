@@ -24,6 +24,7 @@ const RelatedListings = async ({ product }) => {
         .select(PRODUCT_WITH_STORE_SELECT)
         .neq('id', product.id)
         .is('removed_at', null)
+        .eq('review_status', 'approved')
         .eq('store.status', 'approved')
         .eq('store.is_active', true)
         .order('featured', { ascending: false })

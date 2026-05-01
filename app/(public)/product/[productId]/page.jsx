@@ -14,6 +14,7 @@ export default async function Product({ params }) {
         .from('products')
         .select(PRODUCT_WITH_STORE_SELECT)
         .eq('id', productId)
+        .eq('review_status', 'approved')
         .is('removed_at', null)
         .maybeSingle()
 

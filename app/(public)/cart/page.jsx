@@ -1,104 +1,86 @@
-'use client'
-import Counter from "@/components/Counter";
-import OrderSummary from "@/components/OrderSummary";
-import PageTitle from "@/components/PageTitle";
-import { deleteItemFromCart } from "@/lib/features/cart/cartSlice";
-import { Trash2Icon } from "lucide-react";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import Link from 'next/link'
+import { Heart } from 'lucide-react'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { mapProductRow, PRODUCT_WITH_STORE_SELECT } from '@/lib/supabase/mappers'
+import ProductCard from '@/components/ProductCard'
 
-export default function Cart() {
+// Saved listings page (still routed at /cart for legacy URL stability —
+// the cart slice was repurposed as the favorites store way back). Reads
+// the user's favorites joined to products, filters out anything that's
+// no longer publicly visible (rejected, removed, or pulled by the store
+// going inactive), and renders the same ProductCard buyers see on /shop.
+export const metadata = { title: 'Saved listings — GoCart' }
 
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦';
-    
-    const { cartItems } = useSelector(state => state.cart);
-    const products = useSelector(state => state.product.list);
+export default async function SavedListings() {
 
-    const dispatch = useDispatch();
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
 
-    const [cartArray, setCartArray] = useState([]);
-    const [totalPrice, setTotalPrice] = useState(0);
-
-    const createCartArray = () => {
-        setTotalPrice(0);
-        const cartArray = [];
-        for (const [key, value] of Object.entries(cartItems)) {
-            const product = products.find(product => product.id === key);
-            if (product) {
-                cartArray.push({
-                    ...product,
-                    quantity: value,
-                });
-                setTotalPrice(prev => prev + product.price * value);
-            }
-        }
-        setCartArray(cartArray);
+    if (!user) {
+        redirect('/login?next=/cart')
     }
 
-    const handleDeleteItemFromCart = (productId) => {
-        dispatch(deleteItemFromCart({ productId }))
+    // PostgREST embedded filter: pull favorites and the joined product +
+    // store. The product join carries our usual approved-and-visible
+    // rules — listings the user saved that have since been rejected /
+    // removed / their store deactivated drop out of the result.
+    const { data: rows } = await supabase
+        .from('favorites')
+        .select(`
+            created_at,
+            product:products!inner(
+                ${PRODUCT_WITH_STORE_SELECT}
+            )
+        `)
+        .eq('product.review_status', 'approved')
+        .is('product.removed_at', null)
+        .eq('product.store.status', 'approved')
+        .eq('product.store.is_active', true)
+        .order('created_at', { ascending: false })
+
+    const products = (rows || [])
+        .map(r => r.product)
+        .filter(Boolean)
+        .map(mapProductRow)
+
+    if (products.length === 0) {
+        return (
+            <main className='min-h-[70vh] mx-6 flex items-center justify-center'>
+                <div className='max-w-md text-center'>
+                    <span className='inline-flex items-center justify-center size-14 rounded-full bg-rose-50 ring-1 ring-rose-200 text-rose-500 mb-4'>
+                        <Heart size={22} />
+                    </span>
+                    <h1 className='text-2xl font-semibold text-slate-900'>No saved listings yet</h1>
+                    <p className='text-sm text-slate-600 mt-2 leading-relaxed'>
+                        Tap the heart on any listing to save it for later. Your favourites show up here, on every device you sign in from.
+                    </p>
+                    <Link
+                        href='/shop'
+                        className='inline-flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-full px-5 py-2.5 mt-6 transition'
+                    >
+                        Browse listings
+                    </Link>
+                </div>
+            </main>
+        )
     }
 
-    useEffect(() => {
-        if (products.length > 0) {
-            createCartArray();
-        }
-    }, [cartItems, products]);
+    return (
+        <main className='min-h-[70vh] mx-6'>
+            <div className='max-w-7xl mx-auto py-8'>
+                <div className='flex items-end justify-between gap-3 mb-6'>
+                    <div>
+                        <h1 className='text-2xl font-semibold text-slate-900'>Saved listings</h1>
+                        <p className='text-sm text-slate-500 mt-1'>{products.length} item{products.length === 1 ? '' : 's'} saved</p>
+                    </div>
+                    <Link href='/shop' className='text-sm text-sky-700 hover:underline shrink-0'>Add more →</Link>
+                </div>
 
-    return cartArray.length > 0 ? (
-        <div className="min-h-screen mx-6 text-slate-800">
-
-            <div className="max-w-7xl mx-auto ">
-                {/* Title */}
-                <PageTitle heading="My Cart" text="items in your cart" linkText="Add more" />
-
-                <div className="flex items-start justify-between gap-5 max-lg:flex-col">
-
-                    <table className="w-full max-w-4xl text-slate-600 table-auto">
-                        <thead>
-                            <tr className="max-sm:text-sm">
-                                <th className="text-left">Product</th>
-                                <th>Quantity</th>
-                                <th>Total Price</th>
-                                <th className="max-md:hidden">Remove</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                cartArray.map((item, index) => (
-                                    <tr key={index} className="space-x-2">
-                                        <td className="flex gap-3 my-4">
-                                            <div className="flex gap-3 items-center justify-center bg-slate-100 size-18 rounded-md">
-                                                <Image src={item.images[0]} className="h-14 w-auto" alt="" width={45} height={45} />
-                                            </div>
-                                            <div>
-                                                <p className="max-sm:text-sm">{item.name}</p>
-                                                <p className="text-xs text-slate-500">{item.category}</p>
-                                                <p>{currency}{item.price}</p>
-                                            </div>
-                                        </td>
-                                        <td className="text-center">
-                                            <Counter productId={item.id} />
-                                        </td>
-                                        <td className="text-center">{currency}{(item.price * item.quantity).toLocaleString()}</td>
-                                        <td className="text-center max-md:hidden">
-                                            <button onClick={() => handleDeleteItemFromCart(item.id)} className=" text-red-500 hover:bg-red-50 p-2.5 rounded-full active:scale-95 transition-all">
-                                                <Trash2Icon size={18} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-                    <OrderSummary totalPrice={totalPrice} items={cartArray} />
+                <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
+                    {products.map(p => <ProductCard key={p.id} product={p} />)}
                 </div>
             </div>
-        </div>
-    ) : (
-        <div className="min-h-[80vh] mx-6 flex items-center justify-center text-slate-400">
-            <h1 className="text-2xl sm:text-4xl font-semibold">Your cart is empty</h1>
-        </div>
+        </main>
     )
 }

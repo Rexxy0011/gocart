@@ -12,6 +12,7 @@ export default async function ServiceRoute({ params }) {
         .from('products')
         .select(PRODUCT_WITH_STORE_SELECT)
         .eq('id', id)
+        .eq('review_status', 'approved')
         .is('removed_at', null)
         .maybeSingle()
 

@@ -12,7 +12,16 @@ import { isAdminEmail } from '@/lib/auth/admins'
 // /admin requires not just auth but admin allowlist membership (see admins.js).
 const PROTECTED_PREFIXES = ['/store', '/pro', '/orders', '/admin', '/messages']
 
+// Routes that require *full* Tier-1 verification (email + phone). Subset of
+// PROTECTED_PREFIXES. /verify itself stays reachable so users can complete
+// verification, /admin stays gated only on the allowlist.
+const VERIFIED_PREFIXES = ['/store', '/pro', '/orders', '/messages']
+
 const isProtected = (pathname) => PROTECTED_PREFIXES.some(p =>
+    pathname === p || pathname.startsWith(p + '/')
+)
+
+const requiresFullVerification = (pathname) => VERIFIED_PREFIXES.some(p =>
     pathname === p || pathname.startsWith(p + '/')
 )
 
@@ -55,6 +64,25 @@ export async function middleware(request) {
         loginUrl.pathname = '/login'
         loginUrl.searchParams.set('next', request.nextUrl.pathname + request.nextUrl.search)
         return NextResponse.redirect(loginUrl)
+    }
+
+    // Tier-1 verification gate. Off by default — flip VERIFICATION_REQUIRED
+    // to "true" once Twilio + email confirmation are wired in the Supabase
+    // dashboard, otherwise this page just bounces every signed-in user to a
+    // /verify page that can't actually send OTPs yet.
+    if (
+        process.env.VERIFICATION_REQUIRED === 'true'
+        && user
+        && requiresFullVerification(request.nextUrl.pathname)
+    ) {
+        const emailConfirmed = !!user.email_confirmed_at
+        const phoneConfirmed = !!user.phone_confirmed_at
+        if (!emailConfirmed || !phoneConfirmed) {
+            const verifyUrl = request.nextUrl.clone()
+            verifyUrl.pathname = '/verify'
+            verifyUrl.searchParams.set('next', request.nextUrl.pathname + request.nextUrl.search)
+            return NextResponse.redirect(verifyUrl)
+        }
     }
 
     // Admin allowlist check — even authenticated non-admins can't see /admin.

@@ -22,6 +22,7 @@ const BestSelling = async () => {
         .select(PRODUCT_WITH_STORE_SELECT)
         .is('service', null)
         .is('removed_at', null)
+        .eq('review_status', 'approved')
         .eq('store.status', 'approved')
         .eq('store.is_active', true)
         .or('urgent.eq.true,bulk_sale.eq.true,free.eq.true,was_price.not.is.null')

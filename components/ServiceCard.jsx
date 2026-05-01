@@ -3,8 +3,7 @@ import { Heart, MapPin, Clock, Star, ShieldCheck } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useDispatch, useSelector } from 'react-redux'
-import { addToCart, deleteItemFromCart } from '@/lib/features/cart/cartSlice'
+import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
 import VerifiedCheck from '@/components/VerifiedCheck'
 import MilestoneBadge, { getMilestone } from '@/components/MilestoneBadge'
 
@@ -20,10 +19,8 @@ const formatPriceRange = (service) => {
 
 const ServiceCard = ({ product }) => {
 
-    const cart = useSelector(state => state.cart.cartItems)
-    const dispatch = useDispatch()
     const router = useRouter()
-    const isSaved = !!cart[product.id]
+    const { isSaved, toggle: toggleSave } = useToggleFavorite(product.id)
 
     const sellerName = product.store?.user?.name || product.store?.name || 'Provider'
     const sellerUsername = product.store?.username
@@ -40,13 +37,6 @@ const ServiceCard = ({ product }) => {
     const responseTime = product.service?.responseTime
     const areaCovered = product.service?.areaCovered || product.location
     const jobsCompleted = product.service?.jobsCompleted ?? 0
-
-    const toggleSave = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        if (isSaved) dispatch(deleteItemFromCart({ productId: product.id }))
-        else dispatch(addToCart({ productId: product.id }))
-    }
 
     const goToSeller = (e) => {
         if (!sellerUsername) return

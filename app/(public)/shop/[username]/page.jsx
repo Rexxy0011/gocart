@@ -36,6 +36,7 @@ export default async function StoreShop({ params }) {
         .from('products')
         .select(PRODUCT_WITH_STORE_SELECT)
         .eq('store_id', storeRow.id)
+        .eq('review_status', 'approved')
         .is('service', null)
         .is('removed_at', null)
         .order('featured', { ascending: false })

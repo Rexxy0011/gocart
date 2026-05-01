@@ -13,7 +13,7 @@ const AdminSidebar = () => {
     const sidebarLinks = [
         { name: 'Dashboard', href: '/admin', icon: HomeIcon },
         { name: 'Stores', href: '/admin/stores', icon: StoreIcon },
-        { name: 'Approve Store', href: '/admin/approve', icon: ShieldCheckIcon },
+        { name: 'Review Listings', href: '/admin/approve', icon: ShieldCheckIcon },
         { name: 'Approve Provider', href: '/admin/providers', icon: BadgeCheckIcon },
         { name: 'Reports', href: '/admin/reports', icon: FlagIcon },
         { name: 'Coupons', href: '/admin/coupons', icon: TicketPercentIcon  },

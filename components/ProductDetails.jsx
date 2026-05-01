@@ -5,10 +5,9 @@ import Image from "next/image"
 import Link from "next/link"
 import { format, formatDistanceToNow } from "date-fns"
 import {
-    ChevronLeft, ChevronRight, ChevronDown, Heart, Flag, Camera, MapPin,
+    ChevronLeft, ChevronRight, ChevronDown, Heart, Flag, Camera, MapPin, Phone,
 } from "lucide-react"
-import { useDispatch, useSelector } from "react-redux"
-import { addToCart, deleteItemFromCart } from "@/lib/features/cart/cartSlice"
+import { useToggleFavorite } from "@/lib/features/cart/useToggleFavorite"
 import { Button } from "@/components/ui/button"
 import VehicleSpecs from "@/components/VehicleSpecs"
 import ServiceDetails from "@/components/ServiceDetails"
@@ -55,22 +54,23 @@ const ProductDetails = ({ product }) => {
             : `Hi ${sellerName.split(' ')[0]},\n\nI'm interested in your item. Is this still available?\n\nThanks`
     )
 
-    const cart = useSelector(state => state.cart.cartItems)
-    const dispatch = useDispatch()
     const requireAuth = useAuthGate()
-    const isSaved = !!cart[productId]
+    const { isSaved, toggle: toggleSave } = useToggleFavorite(productId)
     const [reportOpen, setReportOpen] = useState(false)
     const openReport = () => requireAuth(() => setReportOpen(true), 'Sign in to report a listing.')
 
+    // Phone reveal: scammers harvest numbers off public pages, so we keep
+    // the seller's contact hidden until a buyer signs in. Once revealed
+    // it stays visible for the rest of the session.
+    const sellerContact = product.store?.contact?.trim()
+    const [contactRevealed, setContactRevealed] = useState(false)
+    const revealContact = () => requireAuth(
+        () => setContactRevealed(true),
+        'Sign in to view the seller\'s phone number.'
+    )
+
     const prevImage = () => setImageIndex((i) => (i - 1 + product.images.length) % product.images.length)
     const nextImage = () => setImageIndex((i) => (i + 1) % product.images.length)
-
-    const toggleSave = () => {
-        requireAuth(() => {
-            if (isSaved) dispatch(deleteItemFromCart({ productId }))
-            else dispatch(addToCart({ productId }))
-        }, 'Sign in to save this listing.')
-    }
 
     const handleSendMessage = () => {
         requireAuth(async () => {
@@ -180,8 +180,21 @@ const ProductDetails = ({ product }) => {
                             </div>
                         </div>
                     ) : (
-                        <div className='aspect-[4/3] bg-slate-100 border border-t-0 border-slate-200 flex items-center justify-center text-slate-500 text-sm'>
-                            Map view coming soon
+                        <div className='aspect-[4/3] bg-slate-100 border border-t-0 border-slate-200 overflow-hidden relative'>
+                            {/* Google Maps embed — no API key needed for the
+                                ?q= search variant. Location is "State · Area"
+                                (or just "State"); we append ", Nigeria" so
+                                the search disambiguates. We never render the
+                                seller's exact address — only the area-level
+                                pin they chose at posting time. */}
+                            <iframe
+                                title={`Map of ${location}`}
+                                src={`https://www.google.com/maps?q=${encodeURIComponent(location.replace(/\s*·\s*/g, ', ') + ', Nigeria')}&output=embed`}
+                                className='absolute inset-0 w-full h-full border-0'
+                                loading='lazy'
+                                referrerPolicy='no-referrer-when-downgrade'
+                                allowFullScreen
+                            />
                         </div>
                     )}
                 </div>
@@ -224,6 +237,31 @@ const ProductDetails = ({ product }) => {
                             >
                                 Send Message
                             </Button>
+
+                            {/* Gated contact reveal — phone is hidden behind a
+                                sign-in wall to discourage harvesting. Once the
+                                buyer is signed in and clicks once, the number
+                                renders as a tap-to-call link. */}
+                            {sellerContact && (
+                                contactRevealed ? (
+                                    <a
+                                        href={`tel:${sellerContact.replace(/[\s()-]/g, '')}`}
+                                        className='inline-flex items-center justify-center gap-2 w-full h-11 rounded-md ring-1 ring-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 text-base font-medium transition'
+                                    >
+                                        <Phone size={16} /> {sellerContact}
+                                    </a>
+                                ) : (
+                                    <Button
+                                        size='lg'
+                                        variant='outline'
+                                        onClick={revealContact}
+                                        className='w-full justify-center text-base'
+                                    >
+                                        <Phone size={16} /> Contact
+                                    </Button>
+                                )
+                            )}
+
                             <Button
                                 size='lg'
                                 variant='outline'

@@ -6,8 +6,8 @@ import Link from 'next/link'
 import {
     BadgeCheck, CalendarClock, ChevronDown, Clock, Flag, Heart, MapPin, Package, ShieldCheck, Star, Wrench,
 } from 'lucide-react'
-import { useDispatch, useSelector } from 'react-redux'
-import { addToCart, deleteItemFromCart } from '@/lib/features/cart/cartSlice'
+import { useSelector } from 'react-redux'
+import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
 import { Button } from '@/components/ui/button'
 import VerifiedCheck from '@/components/VerifiedCheck'
 import Dropdown from '@/components/Dropdown'
@@ -49,10 +49,8 @@ const ServicePage = ({ product }) => {
         : 0
     const priceRange = formatPriceRange(service)
 
-    const cart = useSelector(state => state.cart.cartItems)
     const allProducts = useSelector(state => state.product.list)
-    const dispatch = useDispatch()
-    const isSaved = !!cart[product.id]
+    const { isSaved, toggle: toggleSave } = useToggleFavorite(product.id)
     const requireAuth = useAuthGate()
     const [reportOpen, setReportOpen] = useState(false)
     const openReport = () => requireAuth(() => setReportOpen(true), 'Sign in to report a listing.')
@@ -106,11 +104,6 @@ const ServicePage = ({ product }) => {
             ? `Hi ${sellerName.split(' ')[0]},\n\nDetails of the parcel and special handling notes…`
             : `Hi ${sellerName.split(' ')[0]},\n\nI'd like to book your ${product.category?.toLowerCase() || 'service'}. Could you confirm availability and rough pricing?\n\nThanks`
     )
-
-    const toggleSave = () => {
-        if (isSaved) dispatch(deleteItemFromCart({ productId: product.id }))
-        else dispatch(addToCart({ productId: product.id }))
-    }
 
     return (
         <div className='mx-6'>
