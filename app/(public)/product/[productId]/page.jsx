@@ -10,11 +10,13 @@ export default async function Product({ params }) {
     const { productId } = await params
     const supabase = await createClient()
 
+    // Don't filter on review_status here — RLS already enforces "approved
+    // OR own" at the row level. That way the owner can view their own
+    // pending listing (preview / share-link), but buyers still get a 404.
     const { data: row } = await supabase
         .from('products')
         .select(PRODUCT_WITH_STORE_SELECT)
         .eq('id', productId)
-        .eq('review_status', 'approved')
         .is('removed_at', null)
         .maybeSingle()
 

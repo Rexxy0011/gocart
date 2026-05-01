@@ -235,7 +235,9 @@ const ProductDetails = ({ product }) => {
                 <div className='lg:col-span-4 min-w-0'>
                     <div className='border border-slate-200 rounded p-5 bg-white'>
 
-                        {/* Seller header */}
+                        {/* Seller header — links to the seller's full shop
+                            page so anyone (buyer or the poster themselves)
+                            can browse all their listings. */}
                         <Link
                             href={product.store?.username ? `/shop/${product.store.username}` : '#'}
                             className='flex items-center gap-3 group'
@@ -243,8 +245,23 @@ const ProductDetails = ({ product }) => {
                             <div className='size-12 rounded-full bg-slate-100 ring-1 ring-slate-200 flex items-center justify-center text-slate-700 font-semibold text-lg shrink-0'>
                                 {sellerName.charAt(0).toUpperCase()}
                             </div>
-                            <p className='text-lg font-semibold text-slate-900 truncate group-hover:underline'>{sellerName}</p>
+                            <div className='min-w-0'>
+                                <p className='text-lg font-semibold text-slate-900 truncate group-hover:underline'>{sellerName}</p>
+                                {product.store?.username && (
+                                    <p className='text-xs text-sky-700 mt-0.5'>
+                                        Visit shop →
+                                    </p>
+                                )}
+                            </div>
                         </Link>
+                        {product.store?.username && (
+                            <Link
+                                href={`/shop/${product.store.username}`}
+                                className='mt-4 inline-flex items-center justify-center w-full text-sm font-medium text-slate-700 ring-1 ring-slate-300 hover:ring-slate-500 rounded-full py-2 transition'
+                            >
+                                See all listings from {sellerName.split(' ')[0]}
+                            </Link>
+                        )}
                         <hr className='border-slate-200 my-4' />
                         <p className='text-xs text-slate-500'>
                             Posting for 3+ years <span className='mx-2 text-slate-300'>|</span> 4 Ads in a year

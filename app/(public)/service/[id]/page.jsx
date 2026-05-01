@@ -8,11 +8,12 @@ export default async function ServiceRoute({ params }) {
     const { id } = await params
     const supabase = await createClient()
 
+    // RLS handles the "approved or own" gate; app-level filter would
+    // shadow the owner's own pending preview.
     const { data: row } = await supabase
         .from('products')
         .select(PRODUCT_WITH_STORE_SELECT)
         .eq('id', id)
-        .eq('review_status', 'approved')
         .is('removed_at', null)
         .maybeSingle()
 
