@@ -22,6 +22,7 @@ export default async function HotPage() {
         .is('service', null)
         .is('removed_at', null)
         .eq('review_status', 'approved')
+        .eq('in_stock', true)
         .eq('store.status', 'approved')
         .eq('store.is_active', true)
         .or('urgent.eq.true,bulk_sale.eq.true')

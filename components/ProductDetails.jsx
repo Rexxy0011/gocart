@@ -123,19 +123,32 @@ const ProductDetails = ({ product }) => {
                 )}
             </div>
 
-            {/* Boost / state badges. Each only renders when its flag is on,
-                so the row is empty by default and grows as the seller pays
-                for visibility. */}
-            {(product.featured || product.urgent || product.bulkSale || product.free || (product.mrp != null && product.mrp > product.price) || product.deliveryAvailable || product.condition) && (
-                <div className='flex items-center gap-1.5 flex-wrap mb-4'>
-                    {product.featured && <FeaturedRibbon />}
-                    {product.urgent && <UrgentTag />}
-                    {product.bulkSale && <BulkSaleTag />}
-                    {product.free && <FreeTag />}
-                    {!product.free && product.mrp != null && product.mrp > product.price && <ReducedTag />}
-                    {product.deliveryAvailable && <DeliveryAvailableTag />}
-                    {product.condition && <ConditionTag condition={product.condition} />}
+            {/* Sold banner — replaces the whole badge row when the seller
+                has marked the listing unavailable. */}
+            {product.inStock === false ? (
+                <div className='mb-4 flex items-center gap-3 bg-slate-900 text-white rounded-xl px-4 py-3'>
+                    <span className='inline-flex items-center justify-center size-8 rounded-full bg-white/15 font-bold text-xs uppercase tracking-widest'>
+                        Sold
+                    </span>
+                    <p className='text-sm'>
+                        This listing has been marked sold by the seller. You can still browse, but it&apos;s no longer available.
+                    </p>
                 </div>
+            ) : (
+                /* Boost / state badges. Each only renders when its flag is
+                    on, so the row is empty by default and grows as the
+                    seller pays for visibility. */
+                (product.featured || product.urgent || product.bulkSale || product.free || (product.mrp != null && product.mrp > product.price) || product.deliveryAvailable || product.condition) && (
+                    <div className='flex items-center gap-1.5 flex-wrap mb-4'>
+                        {product.featured && <FeaturedRibbon />}
+                        {product.urgent && <UrgentTag />}
+                        {product.bulkSale && <BulkSaleTag />}
+                        {product.free && <FreeTag />}
+                        {!product.free && product.mrp != null && product.mrp > product.price && <ReducedTag />}
+                        {product.deliveryAvailable && <DeliveryAvailableTag />}
+                        {product.condition && <ConditionTag condition={product.condition} />}
+                    </div>
+                )
             )}
 
             <div className='grid lg:grid-cols-12 gap-6 mt-4'>

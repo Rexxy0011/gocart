@@ -39,8 +39,16 @@ const ProductRow = ({ product }) => {
                     alt={product.name}
                     fill
                     sizes='(min-width: 640px) 240px, 160px'
-                    className='object-cover group-hover:scale-105 transition duration-500'
+                    className={`object-cover group-hover:scale-105 transition duration-500 ${product.inStock === false ? 'opacity-60' : ''}`}
                 />
+                {/* Sold stamp */}
+                {product.inStock === false && (
+                    <div className='absolute inset-0 z-20 flex items-center justify-center pointer-events-none'>
+                        <span className='bg-slate-900/85 text-white font-bold uppercase tracking-widest text-xs px-3 py-1 rounded-sm rotate-[-8deg] shadow-lg'>
+                            Sold
+                        </span>
+                    </div>
+                )}
                 {/* Featured ribbon top-left, Urgent/Bulk bottom-left so they
                     don't collide with the image counter on the bottom-right. */}
                 {product.featured && (

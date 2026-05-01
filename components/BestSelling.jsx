@@ -24,6 +24,7 @@ const BestSelling = async () => {
         .is('service', null)
         .is('removed_at', null)
         .eq('review_status', 'approved')
+        .eq('in_stock', true)
         .eq('store.status', 'approved')
         .eq('store.is_active', true)
         .gte('created_at', since)
