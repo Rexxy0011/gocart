@@ -75,6 +75,22 @@ const boostState = (p) => {
     return max > Date.now() + RENEW_WINDOW_MS ? 'locked' : 'renewable'
 }
 
+// Returns { label, until } for the longest-remaining active boost on a row,
+// or null if none. Used to build the "you're about to sell a boosted
+// listing" confirmation copy.
+const primaryActiveBoost = (p) => {
+    const all = [
+        { until: p.featured_until,  label: 'Featured' },
+        { until: p.urgent_until,    label: 'Urgent' },
+        { until: p.bulk_sale_until, label: 'Bulk sale' },
+        { until: p.bumped_until,    label: 'Bump' },
+    ]
+    const active = all
+        .filter(b => b.until && new Date(b.until).getTime() > Date.now())
+        .sort((a, b) => new Date(b.until).getTime() - new Date(a.until).getTime())
+    return active[0] || null
+}
+
 // Each entry maps to a key in BOOST_CATALOG (lib/boosts.js) — keep in sync.
 const BOOSTS = [
     { key: 'bump',      label: 'Bump up',         price: 1500, duration: '7 days',  why: 'Auto-pushes your listing to the top of the feed once a day.' },
@@ -146,6 +162,22 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
 
     const toggleStock = async (productId, current) => {
         const next = !current
+        // Soft guard: marking a boosted listing sold doesn't refund the
+        // boost, so warn the seller before we flip in-stock off. Going
+        // back IN stock never asks — that's always fine.
+        if (current && !next) {
+            const product = products.find(p => p.id === productId)
+            const active = product && primaryActiveBoost(product)
+            if (active) {
+                const left = fmtLeft(active.until)
+                const desc = left ? `${active.label} · ${left}` : active.label
+                const ok = window.confirm(
+                    `This listing is currently boosted (${desc}). ` +
+                    `Marking it sold won't refund the boost — continue?`
+                )
+                if (!ok) return
+            }
+        }
         // Optimistic update
         setProducts((ps) => ps.map(p => p.id === productId ? { ...p, in_stock: next } : p))
         const { error } = await supabase
