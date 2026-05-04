@@ -192,7 +192,7 @@ export default function StoreAddProduct() {
                 // NOT NULL columns we don't yet collect — sensible empty
                 // defaults; user can edit later in /store profile.
                 description: '',
-                address: [productInfo.locationState, productInfo.locationArea].filter(Boolean).join(' · '),
+                address: `${productInfo.locationState} · ${productInfo.locationArea}`,
                 email: user.email || '',
                 contact: productInfo.phone || '',
                 logo: '',
@@ -244,6 +244,17 @@ export default function StoreAddProduct() {
             return
         }
 
+        // 1. Require state + area — area is a primary search filter, so
+        // unspecified locations would dilute every neighborhood's feed.
+        if (!productInfo.locationState) {
+            toast.error('Pick a state.')
+            return
+        }
+        if (!productInfo.locationArea) {
+            toast.error('Pick the area within the state — buyers filter by neighborhood.')
+            return
+        }
+
         setLoading(true)
 
         // 1. Resolve the seller's store, creating one inline if it's their
@@ -281,7 +292,7 @@ export default function StoreAddProduct() {
             name: productInfo.name.trim(),
             description: (productInfo.description || '').trim() || null,
             category: productInfo.category,
-            location: [productInfo.locationState, productInfo.locationArea].filter(Boolean).join(' · ') || 'Lagos',
+            location: `${productInfo.locationState} · ${productInfo.locationArea}`,
             images: imageUrls,
             in_stock: true,
 
@@ -905,9 +916,7 @@ export default function StoreAddProduct() {
                     />
                 </div>
                 <div className="flex flex-col gap-2">
-                    <span className="text-slate-700 font-medium">
-                        Area <span className="text-slate-400 font-normal text-sm">— optional</span>
-                    </span>
+                    <span className="text-slate-700 font-medium">Area</span>
                     <Dropdown
                         value={productInfo.locationArea}
                         onChange={(v) => setProductInfo({ ...productInfo, locationArea: v })}
