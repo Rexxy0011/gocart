@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
+import { formatLocation } from '@/lib/format-location'
 import { Button } from '@/components/ui/button'
 import Dropdown from '@/components/Dropdown'
 import AddressInput from '@/components/AddressInput'
@@ -192,7 +193,7 @@ const ServicePage = ({ product }) => {
                                 <div className='flex-1 min-w-0 text-sm'>
                                     <p className='text-slate-500 text-xs'>Market context</p>
                                     <p className='text-slate-900'>
-                                        Average <span className='font-semibold'>{product.category}</span> in <span className='font-semibold'>{product.location}</span>:{' '}
+                                        Average <span className='font-semibold'>{product.category}</span> in <span className='font-semibold'>{formatLocation(product.location)}</span>:{' '}
                                         <span className='font-bold'>{marketContext.label}</span>
                                         <span className='text-slate-400 text-xs ml-1'>(across {marketContext.peerCount} {marketContext.peerCount === 1 ? 'other provider' : 'other providers'})</span>
                                     </p>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
 import { FeaturedRibbon, UrgentBulkTag } from '@/components/ListingBadges'
+import { formatLocation } from '@/lib/format-location'
 
 const buildSpecLine = (product) => {
     const v = product.vehicle
@@ -24,7 +25,7 @@ const ProductRow = ({ product }) => {
 
     const { isSaved, toggle: toggleSave } = useToggleFavorite(product.id)
 
-    const location = product.location || 'Lagos'
+    const location = formatLocation(product.location) || 'Lagos'
     const postedAgo = formatDistanceToNow(new Date(product.createdAt), { addSuffix: true })
     const specLine = buildSpecLine(product)
 

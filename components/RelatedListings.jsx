@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import ProductCard from './ProductCard'
 import { createClient } from '@/lib/supabase/server'
 import { PRODUCT_WITH_STORE_SELECT, mapProductRow } from '@/lib/supabase/mappers'
+import { formatLocation } from '@/lib/format-location'
 
 const MAX_ITEMS = 4
 
@@ -64,7 +65,7 @@ const RelatedListings = async ({ product }) => {
                         {product.category
                             ? `More ${product.category.toLowerCase()} listings`
                             : 'More listings on GoCart'}
-                        {product.location ? ` near ${product.location}` : ''}
+                        {product.location ? ` near ${formatLocation(product.location)}` : ''}
                     </p>
                 </div>
                 <Link href={seeMoreHref} className='shrink-0 text-sm font-medium text-slate-700 hover:text-slate-900 inline-flex items-center gap-1'>

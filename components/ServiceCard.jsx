@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
 import MilestoneBadge, { getMilestone } from '@/components/MilestoneBadge'
+import { formatLocation } from '@/lib/format-location'
 
 const formatPriceRange = (service) => {
     if (!service?.priceRange) return 'Quote on request'
@@ -33,7 +34,7 @@ const ServiceCard = ({ product }) => {
 
     const priceRange = formatPriceRange(product.service)
     const responseTime = product.service?.responseTime
-    const areaCovered = product.service?.areaCovered || product.location
+    const areaCovered = product.service?.areaCovered || formatLocation(product.location)
     const jobsCompleted = product.service?.jobsCompleted ?? 0
 
     const goToSeller = (e) => {

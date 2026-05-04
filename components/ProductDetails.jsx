@@ -17,6 +17,7 @@ import {
 } from "@/components/ListingBadges"
 import { categoryGroups } from "@/assets/assets"
 import { useAuthGate } from "@/hooks/useAuthGate"
+import { formatLocation } from "@/lib/format-location"
 import { toast } from "react-hot-toast"
 import { startConversation } from "@/app/actions/messages"
 // Modal is dynamic-imported because it's only mounted on demand and only by
@@ -41,7 +42,7 @@ const ProductDetails = ({ product }) => {
 
     const sellerName = product.store?.user?.name || product.store?.name || 'Seller'
     const sellerVerified = product.store?.status === 'approved'
-    const location = product.location || 'Lagos'
+    const location = formatLocation(product.location) || 'Lagos'
 
     const isService = !!product.service
     const isVehicle = VEHICLE_CATEGORIES.has(product.category) && product.vehicle

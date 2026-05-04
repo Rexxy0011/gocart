@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
+import { formatLocation } from '@/lib/format-location'
 import {
     FeaturedRibbon, UrgentBulkTag, ConditionTag,
 } from '@/components/ListingBadges'
@@ -14,7 +15,7 @@ const ProductCard = ({ product }) => {
 
     const { isSaved, toggle: toggleSave } = useToggleFavorite(product.id)
 
-    const location = product.location || 'Lagos'
+    const location = formatLocation(product.location) || 'Lagos'
     const postedAgo = formatDistanceToNow(new Date(product.createdAt), { addSuffix: true })
 
     return (

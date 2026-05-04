@@ -70,14 +70,42 @@ export const categoryGroups = [
 
 export const subCategories = categoryGroups.flatMap(g => g.items);
 
+// Curated, ordered roughly by listing volume on real Nigerian classifieds
+// (Jiji + Property24 reference). Lagos is the deepest because it's where
+// most GoCart listings will land — we split Lekki into phases + Oniru
+// since that area alone moves a lot of housing/electronics inventory.
 export const stateAreas = {
-    'Lagos':         ['Ikeja', 'Lekki', 'Victoria Island', 'Ikoyi', 'Yaba', 'Surulere', 'Ajah', 'Apapa', 'Festac', 'Magodo', 'Maryland', 'Ojota', 'Mushin', 'Oshodi', 'Ogba', 'Ikorodu', 'Gbagada', 'Sabo', 'Agege', 'Anthony'],
-    'Abuja':         ['Wuse', 'Garki', 'Maitama', 'Asokoro', 'Gwarinpa', 'Lugbe', 'Kubwa', 'Karu', 'Jabi', 'Utako', 'Wuye', 'Apo', 'Lokogoma', 'Galadimawa', 'Mabushi', 'Katampe', 'Life Camp'],
-    'Port Harcourt': ['Trans Amadi', 'GRA Phase 1', 'GRA Phase 2', 'D-Line', 'Eliozu', 'Rumuola', 'Mile 1', 'Mile 3', 'Choba', 'Old Port Harcourt', 'Diobu', 'Woji', 'Rumuokoro'],
-    'Ibadan':        ['Bodija', 'Dugbe', 'Ring Road', 'Mokola', 'Iwo Road', 'Challenge', 'Apata', 'Akobo', 'Sango', 'Agbowo'],
-    'Kano':          ['Sabon Gari', 'Nassarawa', 'Bompai', 'Hotoro', 'Dala', 'Gwale'],
-    'Benin City':    ['GRA', 'Sapele Road', 'Ugbowo', 'Ring Road', 'Ekenwan'],
-    'Enugu':         ['Independence Layout', 'Trans Ekulu', 'New Haven', 'Achara Layout', 'Coal Camp'],
+    'Lagos': [
+        // Lekki / Eti-Osa axis (Island)
+        'Lekki Phase 1', 'Lekki Phase 2', 'Oniru', 'Ikate Elegushi', 'Chevron', 'Agungi', 'Jakande', 'Osapa London',
+        'Ajah', 'Sangotedo', 'Awoyaya', 'Lakowe', 'Abraham Adesanya',
+        // Ikoyi / VI
+        'Victoria Island', 'Ikoyi', 'Banana Island', 'Parkview', 'Old Ikoyi',
+        // Ikeja axis
+        'Ikeja GRA', 'Allen Avenue', 'Awolowo Way', 'Opebi', 'Maryland', 'Magodo', 'Ojodu Berger',
+        // Yaba / Surulere / Mainland core
+        'Yaba', 'Sabo', 'Surulere', 'Akoka', 'Ebute Metta', 'Bariga',
+        // Apapa / Festac / Mile 2 axis
+        'Apapa', 'Festac', 'Amuwo Odofin', 'Mile 2', 'Satellite Town',
+        // Outer mainland
+        'Gbagada', 'Anthony', 'Ojota', 'Ogudu', 'Ketu', 'Mushin', 'Oshodi', 'Isolo', 'Ikotun', 'Egbeda', 'Ogba',
+        'Agege', 'Ikorodu', 'Alimosho',
+    ],
+    'Abuja': [
+        'Wuse 1', 'Wuse 2', 'Garki 1', 'Garki 2', 'Maitama', 'Asokoro',
+        'Gwarinpa', 'Jahi', 'Kado', 'Life Camp', 'Mabushi', 'Katampe',
+        'Jabi', 'Utako', 'Wuye', 'Apo', 'Gudu', 'Lokogoma', 'Galadimawa', 'Durumi',
+        'Lugbe', 'Kubwa', 'Karu', 'Dawaki', 'Dakwo',
+    ],
+    'Port Harcourt': [
+        'GRA Phase 1', 'GRA Phase 2', 'GRA Phase 3', 'Trans Amadi', 'D-Line',
+        'Eliozu', 'Rumuola', 'Rumuokoro', 'Woji', 'Eneka', 'Ada-George',
+        'Old Port Harcourt', 'Diobu', 'Mile 1', 'Mile 3', 'Choba', 'Elelenwo',
+    ],
+    'Ibadan':     ['Bodija', 'Agodi', 'Dugbe', 'Ring Road', 'Mokola', 'Iwo Road', 'Challenge', 'Apata', 'Akobo', 'Sango', 'Agbowo', 'Jericho', 'Oluyole', 'Felele'],
+    'Kano':       ['Sabon Gari', 'Nassarawa', 'Bompai', 'Hotoro', 'Dala', 'Gwale', 'Tarauni', 'Fagge'],
+    'Benin City': ['GRA', 'Sapele Road', 'Ugbowo', 'Ring Road', 'Ekenwan', 'Akpakpava', 'Sakponba'],
+    'Enugu':      ['Independence Layout', 'Trans Ekulu', 'New Haven', 'Achara Layout', 'Coal Camp', 'GRA', 'Abakpa', 'Uwani'],
 }
 
 // Popular makes + models in the Nigerian used-car market. Order within each
