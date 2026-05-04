@@ -2,7 +2,6 @@
 import { Heart, MapPin, Clock } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { formatDistanceToNow } from 'date-fns'
 import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
 import {
@@ -13,20 +12,10 @@ const ProductCard = ({ product }) => {
 
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
 
-    const router = useRouter()
     const { isSaved, toggle: toggleSave } = useToggleFavorite(product.id)
 
     const location = product.location || 'Lagos'
     const postedAgo = formatDistanceToNow(new Date(product.createdAt), { addSuffix: true })
-    const sellerName = product.store?.user?.name || product.store?.name
-    const sellerUsername = product.store?.username
-
-    const goToSeller = (e) => {
-        if (!sellerUsername) return
-        e.preventDefault()
-        e.stopPropagation()
-        router.push(`/shop/${sellerUsername}`)
-    }
 
     return (
         <Link
@@ -89,15 +78,6 @@ const ProductCard = ({ product }) => {
                     <p className='text-base font-bold text-slate-900 leading-tight'>{currency}{product.price.toLocaleString()}</p>
                 )}
                 <p className='text-sm text-slate-800 font-medium line-clamp-1'>{product.name}</p>
-                {sellerName && (
-                    <button
-                        type='button'
-                        onClick={goToSeller}
-                        className='inline-flex items-center gap-1 text-xs text-slate-600 min-w-0 self-start hover:text-slate-900 hover:underline'
-                    >
-                        <span className='truncate'>{sellerName}</span>
-                    </button>
-                )}
                 <div className='flex items-center gap-2 text-[11px] text-slate-500 mt-1.5'>
                     <span className='flex items-center gap-1 truncate'><MapPin size={11} className='shrink-0' /> {location}</span>
                     <span>·</span>

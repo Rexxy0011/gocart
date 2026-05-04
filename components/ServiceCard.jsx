@@ -62,14 +62,7 @@ const ServiceCard = ({ product }) => {
                     )}
                 </button>
                 <div className='flex-1 min-w-0'>
-                    <button
-                        type='button'
-                        onClick={goToSeller}
-                        className='inline-flex items-center gap-1.5 max-w-full hover:underline'
-                    >
-                        <span className='text-base font-bold text-slate-900 truncate'>{sellerName}</span>
-                    </button>
-                    <p className='text-xs font-semibold uppercase tracking-wide text-emerald-700 mt-0.5'>{product.category}</p>
+                    <p className='text-base font-bold text-emerald-700 truncate'>{product.category}</p>
                     <p className='inline-flex items-center gap-1 text-xs text-slate-500 mt-1'>
                         <MapPin size={11} className='shrink-0' />
                         <span className='truncate'>{areaCovered}</span>
