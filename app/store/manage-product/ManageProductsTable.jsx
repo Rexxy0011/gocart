@@ -4,10 +4,68 @@ import { toast } from "react-hot-toast"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Rocket, Plus, X } from "lucide-react"
+import { Rocket, Plus, X, Crown, Flame, Boxes, ArrowUp } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { createClient } from "@/lib/supabase/client"
 import { initBoostPayment } from "@/app/actions/boosts"
+
+// Compact countdown for table cells. >24h → "5d", >1h → "8h", else "<1h".
+const fmtLeft = (until) => {
+    if (!until) return null
+    const ms = new Date(until).getTime() - Date.now()
+    if (ms <= 0) return null
+    const hours = Math.floor(ms / 3_600_000)
+    if (hours >= 24) return `${Math.floor(hours / 24)}d left`
+    if (hours >= 1) return `${hours}h left`
+    return '<1h left'
+}
+
+// Active boosts on a row, rendered as stacked pills. Reads from the *_until
+// columns since the cron sweeper may not have flipped a stale boolean yet.
+const BoostBadges = ({ product }) => {
+    const featuredLeft = product.featured && fmtLeft(product.featured_until)
+    const urgentLeft   = product.urgent   && fmtLeft(product.urgent_until)
+    const bulkLeft     = product.bulk_sale && fmtLeft(product.bulk_sale_until)
+    const bumpLeft     = product.bumped_at && fmtLeft(product.bumped_until)
+
+    if (!featuredLeft && !urgentLeft && !bulkLeft && !bumpLeft) {
+        return <span className='text-slate-300 text-xs'>—</span>
+    }
+
+    const pill = 'inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full ring-1 whitespace-nowrap'
+    return (
+        <div className='flex flex-col items-start gap-1'>
+            {featuredLeft && (
+                <span className={`${pill} text-sky-800 bg-sky-50 ring-sky-200`}>
+                    <Crown size={10} /> Featured · {featuredLeft}
+                </span>
+            )}
+            {urgentLeft && (
+                <span className={`${pill} text-yellow-800 bg-yellow-50 ring-yellow-200`}>
+                    <Flame size={10} /> Urgent · {urgentLeft}
+                </span>
+            )}
+            {bulkLeft && (
+                <span className={`${pill} text-amber-800 bg-amber-50 ring-amber-200`}>
+                    <Boxes size={10} /> Bulk · {bulkLeft}
+                </span>
+            )}
+            {bumpLeft && (
+                <span className={`${pill} text-slate-700 bg-slate-50 ring-slate-200`}>
+                    <ArrowUp size={10} /> Bumped · {bumpLeft}
+                </span>
+            )}
+        </div>
+    )
+}
+
+// True if the listing has any boost still in effect — drives the
+// "Boost" → "Renew" CTA flip.
+const hasActiveBoost = (p) =>
+    (p.featured && fmtLeft(p.featured_until)) ||
+    (p.urgent   && fmtLeft(p.urgent_until)) ||
+    (p.bulk_sale && fmtLeft(p.bulk_sale_until)) ||
+    (p.bumped_at && fmtLeft(p.bumped_until))
 
 // Each entry maps to a key in BOOST_CATALOG (lib/boosts.js) — keep in sync.
 const BOOSTS = [
@@ -139,6 +197,7 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                         <tr>
                             <th className="px-4 py-3">Name</th>
                             <th className="px-4 py-3">Status</th>
+                            <th className="px-4 py-3">Boost</th>
                             <th className="px-4 py-3 hidden md:table-cell">Posted</th>
                             <th className="px-4 py-3">Price</th>
                             <th className="px-4 py-3">In stock</th>
@@ -174,6 +233,9 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                                             )
                                         })()}
                                     </td>
+                                    <td className="px-4 py-3">
+                                        <BoostBadges product={product} />
+                                    </td>
                                     <td className="px-4 py-3 hidden md:table-cell text-slate-500">{postedAgo}</td>
                                     <td className="px-4 py-3">
                                         {product.free
@@ -195,15 +257,22 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                                         </label>
                                     </td>
                                     <td className="px-4 py-3">
-                                        <button
-                                            type='button'
-                                            onClick={() => setPickerFor(product.id)}
-                                            disabled={product.free}
-                                            title={product.free ? 'Free listings can\'t be boosted' : 'Boost this listing'}
-                                            className='inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full ring-1 bg-white text-sky-700 ring-sky-200 hover:bg-sky-50 hover:ring-sky-400 disabled:opacity-50 disabled:hover:bg-white disabled:hover:ring-sky-200 transition'
-                                        >
-                                            <Rocket size={12} /> Boost
-                                        </button>
+                                        {(() => {
+                                            const active = hasActiveBoost(product)
+                                            return (
+                                                <button
+                                                    type='button'
+                                                    onClick={() => setPickerFor(product.id)}
+                                                    disabled={product.free}
+                                                    title={product.free
+                                                        ? 'Free listings can\'t be boosted'
+                                                        : active ? 'Extend or stack another boost' : 'Boost this listing'}
+                                                    className='inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full ring-1 bg-white text-sky-700 ring-sky-200 hover:bg-sky-50 hover:ring-sky-400 disabled:opacity-50 disabled:hover:bg-white disabled:hover:ring-sky-200 transition'
+                                                >
+                                                    <Rocket size={12} /> {active ? 'Renew' : 'Boost'}
+                                                </button>
+                                            )
+                                        })()}
                                     </td>
                                 </tr>
                             )
