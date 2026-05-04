@@ -56,19 +56,23 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
 
     const onPickBoost = async (productId, boostKey) => {
         setPaying({ productId, boostKey })
-        // Server action initiates Paystack and redirects the browser to the
-        // hosted payment page. Control doesn't return here on success — the
-        // user lands back at /api/paystack/callback after paying.
+        // Server action returns Paystack's authorization URL — we navigate
+        // the browser there ourselves. Cross-origin redirect() from a server
+        // action is unreliable in Next 15, so the client handles it.
         try {
             const result = await initBoostPayment({ listingId: productId, boostKey })
             if (result?.error) {
                 toast.error(result.error)
                 setPaying(null)
+                return
             }
+            if (result?.url) {
+                window.location.assign(result.url)
+                return
+            }
+            toast.error('Could not start payment.')
+            setPaying(null)
         } catch (err) {
-            // redirect() throws NEXT_REDIRECT — that's the success path.
-            // Anything else is a real error.
-            if (err?.digest?.startsWith('NEXT_REDIRECT')) return
             toast.error(err?.message || 'Could not start payment.')
             setPaying(null)
         }

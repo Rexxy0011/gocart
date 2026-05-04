@@ -1,14 +1,27 @@
 'use server'
 import { randomUUID } from 'crypto'
-import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { initializeTransaction } from '@/lib/paystack'
 import { BOOST_CATALOG } from '@/lib/boosts'
 
-const SITE_URL = () => (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(/\/$/, '')
+// Derive the public origin from the actual request — works on localhost,
+// preview deploys, and prod without needing NEXT_PUBLIC_SITE_URL to be
+// set correctly per-environment. Falls back to the env var, then localhost.
+const resolveSiteUrl = async () => {
+    try {
+        const h = await headers()
+        const host = h.get('x-forwarded-host') || h.get('host')
+        const proto = h.get('x-forwarded-proto') || (host?.startsWith('localhost') ? 'http' : 'https')
+        if (host) return `${proto}://${host}`
+    } catch {}
+    return (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(/\/$/, '')
+}
 
 // Initiates a boost purchase. Inserts a pending boost_orders row, asks
-// Paystack for an authorization URL, then redirects the user to it.
+// Paystack for an authorization URL, and returns it. The CLIENT then
+// does window.location.assign(url) — Next.js server-action redirect() to
+// a cross-origin URL is unreliable in 15.x and silently no-ops.
 // On payment completion Paystack returns the user to /api/paystack/callback,
 // which verifies + applies the boost.
 export async function initBoostPayment({ listingId, boostKey }) {
@@ -48,20 +61,22 @@ export async function initBoostPayment({ listingId, boostKey }) {
         })
     if (insertErr) return { error: insertErr.message }
 
-    let authorizationUrl
     try {
+        const siteUrl = await resolveSiteUrl()
+        const callbackUrl = `${siteUrl}/api/paystack/callback`
+        console.log('[boost] init', { reference, boostKey, callbackUrl })
         const data = await initializeTransaction({
             email: user.email,
             amountKobo,
             reference,
-            callbackUrl: `${SITE_URL()}/api/paystack/callback`,
+            callbackUrl,
             metadata: {
                 listing_id: listingId,
                 boost_key: boostKey,
                 user_id: user.id,
             },
         })
-        authorizationUrl = data.authorization_url
+        return { url: data.authorization_url }
     } catch (err) {
         // Mark the order failed so we don't leave a phantom pending row.
         await supabase.from('boost_orders')
@@ -69,7 +84,4 @@ export async function initBoostPayment({ listingId, boostKey }) {
             .eq('reference', reference)
         return { error: err.message || 'Could not start payment.' }
     }
-
-    // redirect throws — won't reach the next line.
-    redirect(authorizationUrl)
 }

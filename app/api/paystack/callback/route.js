@@ -3,7 +3,11 @@ import { createClient } from '@/lib/supabase/server'
 import { verifyTransaction } from '@/lib/paystack'
 import { BOOST_CATALOG } from '@/lib/boosts'
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(/\/$/, '')
+// Derive the redirect base from the actual request URL so we always
+// land back on the same origin Paystack just sent the user from.
+const baseFrom = (request) => new URL(request.url).origin
+const back = (request, status) =>
+    NextResponse.redirect(`${baseFrom(request)}/store/manage-product?boost=${status}`)
 
 // Compute which *_until columns to set on the listing for a given boost.
 // Returns a partial update object — callers spread it into a single
@@ -44,27 +48,28 @@ const buildListingUpdate = (boostKey, durationDays) => {
 export async function GET(request) {
     const { searchParams } = new URL(request.url)
     const reference = searchParams.get('reference') || searchParams.get('trxref')
+    console.log('[paystack callback] hit', { reference, url: request.url })
 
-    if (!reference) {
-        return NextResponse.redirect(`${SITE_URL}/store/manage-product?boost=missing`)
-    }
+    if (!reference) return back(request, 'missing')
 
     const supabase = await createClient()
 
     // 1. Find the local order row (created at /transaction/initialize time)
-    const { data: order } = await supabase
+    const { data: order, error: orderErr } = await supabase
         .from('boost_orders')
         .select('id, listing_id, boost_key, amount_kobo, status, metadata')
         .eq('reference', reference)
         .maybeSingle()
 
+    if (orderErr) console.log('[paystack callback] order lookup error', orderErr)
     if (!order) {
-        return NextResponse.redirect(`${SITE_URL}/store/manage-product?boost=unknown`)
+        console.log('[paystack callback] no order for reference', reference)
+        return back(request, 'unknown')
     }
     if (order.status === 'paid') {
         // Idempotent — Paystack might bounce the user here twice (refresh,
         // back button, webhook delay). Just take them to the dashboard.
-        return NextResponse.redirect(`${SITE_URL}/store/manage-product?boost=ok`)
+        return back(request, 'ok')
     }
 
     // 2. Verify with Paystack — never trust the redirect alone.
@@ -72,26 +77,29 @@ export async function GET(request) {
     try {
         pay = await verifyTransaction(reference)
     } catch (err) {
+        console.log('[paystack callback] verify failed', err?.message)
         await supabase.from('boost_orders')
             .update({ status: 'failed' })
             .eq('reference', reference)
-        return NextResponse.redirect(`${SITE_URL}/store/manage-product?boost=verify-failed`)
+        return back(request, 'verify-failed')
     }
 
     if (pay.status !== 'success') {
+        console.log('[paystack callback] pay not success', pay.status)
         await supabase.from('boost_orders')
             .update({ status: pay.status === 'abandoned' ? 'abandoned' : 'failed' })
             .eq('reference', reference)
-        return NextResponse.redirect(`${SITE_URL}/store/manage-product?boost=failed`)
+        return back(request, 'failed')
     }
 
     // 3. Sanity-check the amount paid matches what we charged. Paystack
     // shouldn't lie about this but defensive coding is cheap.
     if (pay.amount !== order.amount_kobo) {
+        console.log('[paystack callback] amount mismatch', { paid: pay.amount, expected: order.amount_kobo })
         await supabase.from('boost_orders')
             .update({ status: 'failed', metadata: { ...order.metadata, mismatch: pay.amount } })
             .eq('reference', reference)
-        return NextResponse.redirect(`${SITE_URL}/store/manage-product?boost=mismatch`)
+        return back(request, 'mismatch')
     }
 
     // 4. Apply the boost — single update so the timestamp set is atomic.
@@ -107,15 +115,17 @@ export async function GET(request) {
         // Money taken, boost not applied — this is the bad path. Mark the
         // order paid anyway (Paystack confirmed) and flag the apply error
         // for manual review. With a real ops setup we'd alert here.
+        console.log('[paystack callback] apply failed', applyErr)
         await supabase.from('boost_orders')
             .update({ status: 'paid', paid_at: new Date().toISOString(), metadata: { ...order.metadata, apply_error: applyErr.message } })
             .eq('reference', reference)
-        return NextResponse.redirect(`${SITE_URL}/store/manage-product?boost=apply-failed`)
+        return back(request, 'apply-failed')
     }
 
     await supabase.from('boost_orders')
         .update({ status: 'paid', paid_at: new Date().toISOString() })
         .eq('reference', reference)
 
-    return NextResponse.redirect(`${SITE_URL}/store/manage-product?boost=ok`)
+    console.log('[paystack callback] applied', { reference, boostKey: order.boost_key, listingId: order.listing_id })
+    return back(request, 'ok')
 }
