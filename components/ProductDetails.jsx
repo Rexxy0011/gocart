@@ -40,6 +40,7 @@ const ProductDetails = ({ product }) => {
     const productId = product.id
 
     const sellerName = product.store?.user?.name || product.store?.name || 'Seller'
+    const sellerVerified = product.store?.status === 'approved'
     const location = product.location || 'Lagos'
 
     const isService = !!product.service
@@ -247,8 +248,13 @@ const ProductDetails = ({ product }) => {
                             </div>
                             <div className='min-w-0'>
                                 <p className='text-lg font-semibold text-slate-900 truncate group-hover:underline'>{sellerName}</p>
+                                {sellerVerified && (
+                                    <span className='mt-1 inline-flex items-center text-[10px] font-semibold uppercase tracking-wide bg-sky-50 text-sky-700 ring-1 ring-sky-200 rounded-full px-2 py-0.5'>
+                                        Verified seller
+                                    </span>
+                                )}
                                 {product.store?.username && (
-                                    <p className='text-xs text-sky-700 mt-0.5'>
+                                    <p className='text-xs text-sky-700 mt-1.5'>
                                         Visit shop →
                                     </p>
                                 )}

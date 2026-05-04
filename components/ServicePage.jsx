@@ -9,7 +9,6 @@ import {
 import { useSelector } from 'react-redux'
 import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
 import { Button } from '@/components/ui/button'
-import VerifiedCheck from '@/components/VerifiedCheck'
 import Dropdown from '@/components/Dropdown'
 import AddressInput from '@/components/AddressInput'
 import MilestoneBadge from '@/components/MilestoneBadge'
@@ -329,14 +328,16 @@ const ServicePage = ({ product }) => {
                                     )}
                                 </div>
                                 <div className='min-w-0 flex-1'>
-                                    <p className='inline-flex items-center gap-1 max-w-full'>
-                                        <span className='text-base font-semibold text-slate-900 truncate group-hover:underline'>{sellerName}</span>
-                                        {isVerified && <VerifiedCheck size={13} />}
-                                    </p>
+                                    <p className='text-base font-semibold text-slate-900 truncate group-hover:underline'>{sellerName}</p>
                                     <div className='flex items-center gap-1.5 mt-1'>
                                         <p className='text-xs text-slate-500 truncate'>@{sellerUsername}</p>
                                         <MilestoneBadge jobsCompleted={service.jobsCompleted ?? 0} size='sm' />
                                     </div>
+                                    {isVerified && (
+                                        <span className='mt-1.5 inline-flex items-center text-[10px] font-semibold uppercase tracking-wide bg-sky-50 text-sky-700 ring-1 ring-sky-200 rounded-full px-2 py-0.5'>
+                                            Verified seller
+                                        </span>
+                                    )}
                                 </div>
                             </Link>
                             <hr className='border-slate-200 my-4' />

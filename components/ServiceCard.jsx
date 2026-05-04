@@ -4,7 +4,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
-import VerifiedCheck from '@/components/VerifiedCheck'
 import MilestoneBadge, { getMilestone } from '@/components/MilestoneBadge'
 
 const formatPriceRange = (service) => {
@@ -25,7 +24,6 @@ const ServiceCard = ({ product }) => {
     const sellerName = product.store?.user?.name || product.store?.name || 'Provider'
     const sellerUsername = product.store?.username
     const sellerImage = product.store?.user?.image || product.store?.logo
-    const isVerified = product.store?.status === 'approved'
 
     const ratings = product.rating || []
     const ratingCount = ratings.length
@@ -70,7 +68,6 @@ const ServiceCard = ({ product }) => {
                         className='inline-flex items-center gap-1.5 max-w-full hover:underline'
                     >
                         <span className='text-base font-bold text-slate-900 truncate'>{sellerName}</span>
-                        {isVerified && <VerifiedCheck size={14} />}
                     </button>
                     <p className='text-xs font-semibold uppercase tracking-wide text-emerald-700 mt-0.5'>{product.category}</p>
                     <p className='inline-flex items-center gap-1 text-xs text-slate-500 mt-1'>

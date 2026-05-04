@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { formatDistanceToNow } from 'date-fns'
 import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
-import VerifiedCheck from '@/components/VerifiedCheck'
 import {
     FeaturedRibbon, UrgentBulkTag, ConditionTag,
 } from '@/components/ListingBadges'
@@ -21,7 +20,6 @@ const ProductCard = ({ product }) => {
     const postedAgo = formatDistanceToNow(new Date(product.createdAt), { addSuffix: true })
     const sellerName = product.store?.user?.name || product.store?.name
     const sellerUsername = product.store?.username
-    const isVerified = product.store?.status === 'approved'
 
     const goToSeller = (e) => {
         if (!sellerUsername) return
@@ -98,7 +96,6 @@ const ProductCard = ({ product }) => {
                         className='inline-flex items-center gap-1 text-xs text-slate-600 min-w-0 self-start hover:text-slate-900 hover:underline'
                     >
                         <span className='truncate'>{sellerName}</span>
-                        {isVerified && <VerifiedCheck size={13} />}
                     </button>
                 )}
                 <div className='flex items-center gap-2 text-[11px] text-slate-500 mt-1.5'>
