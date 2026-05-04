@@ -33,15 +33,29 @@ export async function initBoostPayment({ listingId, boostKey }) {
     if (!user) return { error: 'You need to be signed in to boost a listing.' }
     if (!user.email) return { error: 'Your account has no email — Paystack needs one.' }
 
-    // Verify the listing belongs to the user. RLS would do this in a tight
-    // setup; until we wire it, check explicitly.
+    // Verify the listing belongs to the user AND check whether it already
+    // has an active boost. Policy: one boost at a time. If a boost is
+    // active and more than 24h from expiry, refuse — the seller can buy
+    // again only inside the renewal window (matches the T-24h reminder
+    // mail). RLS would handle ownership in a tight setup; until we wire
+    // it, check explicitly.
     const { data: listing } = await supabase
         .from('products')
-        .select('id, store:stores!inner(user_id)')
+        .select(`id, store:stores!inner(user_id),
+                 featured_until, urgent_until, bulk_sale_until, bumped_until`)
         .eq('id', listingId)
         .maybeSingle()
     if (!listing) return { error: 'Listing not found.' }
     if (listing.store.user_id !== user.id) return { error: 'You can only boost your own listings.' }
+
+    const RENEW_WINDOW_MS = 24 * 60 * 60 * 1000
+    const expiries = [listing.featured_until, listing.urgent_until, listing.bulk_sale_until, listing.bumped_until]
+        .filter(Boolean)
+        .map(t => new Date(t).getTime())
+    const maxExpiry = expiries.length ? Math.max(...expiries) : 0
+    if (maxExpiry > Date.now() + RENEW_WINDOW_MS) {
+        return { error: 'This listing is already boosted. You can renew within 24 hours of expiry.' }
+    }
 
     // Generate a reference — short, prefixed, includes the boost key for
     // grep-ability in the Paystack dashboard.

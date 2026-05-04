@@ -59,13 +59,21 @@ const BoostBadges = ({ product }) => {
     )
 }
 
-// True if the listing has any boost still in effect — drives the
-// "Boost" → "Renew" CTA flip.
-const hasActiveBoost = (p) =>
-    (p.featured && fmtLeft(p.featured_until)) ||
-    (p.urgent   && fmtLeft(p.urgent_until)) ||
-    (p.bulk_sale && fmtLeft(p.bulk_sale_until)) ||
-    (p.bumped_at && fmtLeft(p.bumped_until))
+// Resolves the listing's overall boost state for the action button:
+//   - 'idle'     → no active boost; allow Boost
+//   - 'locked'   → boosted with >24h to expiry; button disabled (one-at-a-time)
+//   - 'renewable'→ boosted with ≤24h to expiry; allow Renew (matches the
+//                  reminder mail window)
+const RENEW_WINDOW_MS = 24 * 60 * 60 * 1000
+const boostState = (p) => {
+    const candidates = [p.featured_until, p.urgent_until, p.bulk_sale_until, p.bumped_until]
+        .filter(Boolean)
+        .map(t => new Date(t).getTime())
+        .filter(t => t > Date.now())
+    if (!candidates.length) return 'idle'
+    const max = Math.max(...candidates)
+    return max > Date.now() + RENEW_WINDOW_MS ? 'locked' : 'renewable'
+}
 
 // Each entry maps to a key in BOOST_CATALOG (lib/boosts.js) — keep in sync.
 const BOOSTS = [
@@ -258,18 +266,35 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                                     </td>
                                     <td className="px-4 py-3">
                                         {(() => {
-                                            const active = hasActiveBoost(product)
+                                            const state = boostState(product)
+                                            const isFree = product.free
+                                            const disabled = isFree || state === 'locked'
+                                            const label = state === 'idle' ? 'Boost' : state === 'renewable' ? 'Renew' : 'Boosted'
+                                            const title = isFree
+                                                ? "Free listings can't be boosted"
+                                                : state === 'locked'
+                                                    ? 'Already boosted — renew within 24h of expiry'
+                                                    : state === 'renewable'
+                                                        ? 'Boost expires soon — renew now to stay at the top'
+                                                        : 'Boost this listing'
+                                            // Distinct styling per state so the lock is visually obvious:
+                                            //  idle      → sky (call-to-action)
+                                            //  renewable → amber (urgency, matches the reminder mail tone)
+                                            //  locked    → slate, no hover, dimmed
+                                            const cls = state === 'renewable'
+                                                ? 'bg-white text-amber-800 ring-amber-300 hover:bg-amber-50 hover:ring-amber-400'
+                                                : state === 'locked'
+                                                    ? 'bg-slate-50 text-slate-500 ring-slate-200 cursor-not-allowed'
+                                                    : 'bg-white text-sky-700 ring-sky-200 hover:bg-sky-50 hover:ring-sky-400'
                                             return (
                                                 <button
                                                     type='button'
-                                                    onClick={() => setPickerFor(product.id)}
-                                                    disabled={product.free}
-                                                    title={product.free
-                                                        ? 'Free listings can\'t be boosted'
-                                                        : active ? 'Extend or stack another boost' : 'Boost this listing'}
-                                                    className='inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full ring-1 bg-white text-sky-700 ring-sky-200 hover:bg-sky-50 hover:ring-sky-400 disabled:opacity-50 disabled:hover:bg-white disabled:hover:ring-sky-200 transition'
+                                                    onClick={() => !disabled && setPickerFor(product.id)}
+                                                    disabled={disabled}
+                                                    title={title}
+                                                    className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full ring-1 transition disabled:opacity-70 ${cls}`}
                                                 >
-                                                    <Rocket size={12} /> {active ? 'Renew' : 'Boost'}
+                                                    <Rocket size={12} /> {label}
                                                 </button>
                                             )
                                         })()}
