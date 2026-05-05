@@ -8,6 +8,7 @@ import {
 import { formatDistanceToNow } from 'date-fns'
 import { createClient } from '@/lib/supabase/server'
 import VerifiedCheck from '@/components/VerifiedCheck'
+import AvatarPrompt from '@/components/AvatarPrompt'
 
 // Seller dashboard. Real data from Supabase: counts come from the
 // products and conversations tables, the seller name comes from the
@@ -190,6 +191,10 @@ export default async function Dashboard() {
 
     return (
         <div className="text-slate-700 mb-28 max-w-5xl">
+
+            {/* One-time nudge to set a profile picture. Self-hides if the
+                seller already has one OR they dismiss it for the session. */}
+            <AvatarPrompt userId={user.id} currentImage={profile?.image} />
 
             {/* Hero header */}
             <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50/40 ring-1 ring-slate-200 rounded-2xl p-6 sm:p-8">
