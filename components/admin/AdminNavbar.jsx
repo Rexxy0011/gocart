@@ -1,8 +1,8 @@
-'use client'
 import Link from "next/link"
+import { LogOut } from "lucide-react"
+import { adminSignOut } from "@/app/actions/admin"
 
 const AdminNavbar = () => {
-
 
     return (
         <div className="flex items-center justify-between px-12 py-3 border-b border-slate-200 transition-all">
@@ -13,7 +13,16 @@ const AdminNavbar = () => {
                 </p>
             </Link>
             <div className="flex items-center gap-3">
-                <p>Hi, Admin</p>
+                <p className="text-sm text-slate-600">Hi, Admin</p>
+                <form action={adminSignOut}>
+                    <button
+                        type="submit"
+                        title="Sign out of admin"
+                        className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 ring-1 ring-slate-200 hover:ring-slate-400 rounded-full px-3 py-1.5 transition"
+                    >
+                        <LogOut size={12} /> Sign out
+                    </button>
+                </form>
             </div>
         </div>
     )

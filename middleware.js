@@ -1,16 +1,17 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
-import { isAdminEmail } from '@/lib/auth/admins'
+import { isAdminCookieValid, ADMIN_COOKIE_NAME } from '@/lib/auth/admin-pass'
 
-// Routes that require an authenticated session. Anonymous users hitting any of
-// these get bounced to /login?next=<original-path>; on successful login we send
-// them back to where they were going.
+// Routes that require an authenticated Supabase session. Anonymous users
+// hitting any of these get bounced to /login?next=<original-path>; on
+// successful login we send them back to where they were going.
 //
 // /pro/apply is included — anyone offering a service must have an account so
 // the provider record can attach to a real user_id when verified.
 //
-// /admin requires not just auth but admin allowlist membership (see admins.js).
-const PROTECTED_PREFIXES = ['/store', '/pro', '/orders', '/admin', '/messages']
+// /admin is NOT in this list: admin uses a separate shared-password gate
+// (see admin-pass.js) and doesn't need a Supabase user session at all.
+const PROTECTED_PREFIXES = ['/store', '/pro', '/orders', '/messages']
 
 // Routes that require *full* Tier-1 verification (email + phone). Subset of
 // PROTECTED_PREFIXES. /verify itself stays reachable so users can complete
@@ -85,12 +86,22 @@ export async function middleware(request) {
         }
     }
 
-    // Admin allowlist check — even authenticated non-admins can't see /admin.
-    if (user && isAdminRoute(request.nextUrl.pathname) && !isAdminEmail(user.email)) {
-        const homeUrl = request.nextUrl.clone()
-        homeUrl.pathname = '/'
-        homeUrl.search = ''
-        return NextResponse.redirect(homeUrl)
+    // Admin shared-password gate. Independent of Supabase auth — anyone
+    // with the right password (and the resulting cookie) gets in. The
+    // /admin/login page is the only /admin/* path that bypasses this.
+    if (
+        isAdminRoute(request.nextUrl.pathname)
+        && request.nextUrl.pathname !== '/admin/login'
+    ) {
+        const cookieValue = request.cookies.get(ADMIN_COOKIE_NAME)?.value
+        const ok = await isAdminCookieValid(cookieValue)
+        if (!ok) {
+            const loginUrl = request.nextUrl.clone()
+            loginUrl.pathname = '/admin/login'
+            loginUrl.search = ''
+            loginUrl.searchParams.set('next', request.nextUrl.pathname + request.nextUrl.search)
+            return NextResponse.redirect(loginUrl)
+        }
     }
 
     return response

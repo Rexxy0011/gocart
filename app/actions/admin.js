@@ -1,15 +1,16 @@
 'use server'
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { isAdminEmail } from '@/lib/auth/admins'
+import { isAdminAuthenticated, clearAdminCookie } from '@/lib/auth/admin-pass'
 
 // Server action for the admin approval queue. Called from /admin/approve.
-// Re-checks admin membership server-side — middleware already gates the
-// route, but a server action is callable directly so we double-check.
+// Re-checks the admin password cookie server-side — middleware already
+// gates the route, but a server action is callable directly so we
+// double-check before mutating.
 //
-// Once authorized, we switch to the service-role admin client to perform
-// the mutation, because RLS only lets a user update rows they own.
+// Once authorized, we use the service-role admin client to perform the
+// mutation; RLS would otherwise block writes to rows we don't own.
 //
 // `reason` is required when rejecting, ignored on approve. Persisted to
 // stores.rejection_reason so the seller's dashboard can surface it.
@@ -21,9 +22,7 @@ export async function setStoreStatus(storeId, status, reason = '') {
         return { error: 'A rejection reason is required.' }
     }
 
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user || !isAdminEmail(user.email)) {
+    if (!(await isAdminAuthenticated())) {
         return { error: 'Not authorized' }
     }
 
@@ -42,7 +41,7 @@ export async function setStoreStatus(storeId, status, reason = '') {
     if (error) return { error: error.message }
 
     revalidatePath('/admin/approve')
-    revalidatePath('/store')  // refresh seller's banner
+    revalidatePath('/store')
     return { ok: true }
 }
 
@@ -57,9 +56,7 @@ export async function setProviderApplicationStatus(applicationId, status, reason
         return { error: 'A rejection reason is required.' }
     }
 
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user || !isAdminEmail(user.email)) {
+    if (!(await isAdminAuthenticated())) {
         return { error: 'Not authorized' }
     }
 
@@ -92,9 +89,7 @@ export async function setProductReviewStatus(productId, status, reason = '') {
         return { error: 'A rejection reason is required.' }
     }
 
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user || !isAdminEmail(user.email)) {
+    if (!(await isAdminAuthenticated())) {
         return { error: 'Not authorized' }
     }
 
@@ -113,4 +108,12 @@ export async function setProductReviewStatus(productId, status, reason = '') {
     revalidatePath('/admin/approve')
     revalidatePath('/store/manage-product')
     return { ok: true }
+}
+
+// Sign out of the admin panel — clears the gc_admin cookie and bounces
+// the user back to the login page. Called from a small form/button in
+// AdminNavbar.
+export async function adminSignOut() {
+    await clearAdminCookie()
+    redirect('/admin/login')
 }
