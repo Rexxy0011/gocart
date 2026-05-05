@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast"
 import { categoryGroups, serviceSpecialties, stateAreas } from "@/assets/assets"
 import Dropdown from "@/components/Dropdown"
 import VerifiedCheck from "@/components/VerifiedCheck"
+import { PolicyModal, SafetyContent, TermsContent, PrivacyContent } from "@/components/PolicyDocs"
 import { createClient } from "@/lib/supabase/client"
 import { uploadProviderDoc } from "@/lib/supabase/storage"
 import { useUser } from "@/lib/auth/UserContext"
@@ -46,6 +47,9 @@ export default function ProviderApply() {
         yearsExperience: '',
         bio: '',
         certifications: '',
+        // NDPA — explicit consent ticked at submit. Stamped into
+        // provider_applications.consent_given_at so we have a record.
+        consent: false,
     })
     const [submitting, setSubmitting] = useState(false)
 
@@ -53,6 +57,9 @@ export default function ProviderApply() {
     // is editable. Fetched once on mount via the client SDK.
     const [existing, setExisting] = useState(null)
     const [loadingExisting, setLoadingExisting] = useState(true)
+    // 'safety' | 'terms' | null — opens the matching PolicyModal so the
+    // applicant can read inline without losing form state.
+    const [policyOpen, setPolicyOpen] = useState(null)
 
     useEffect(() => {
         if (!user) {
@@ -109,6 +116,10 @@ export default function ProviderApply() {
             toast.error('You need to be signed in to apply.')
             return
         }
+        if (!form.consent) {
+            toast.error('Tick the consent box so we can process your ID.')
+            return
+        }
         setSubmitting(true)
 
         try {
@@ -143,6 +154,7 @@ export default function ProviderApply() {
                 certifications: form.certifications.trim() || null,
                 status: 'pending',
                 rejection_reason: null,
+                consent_given_at: new Date().toISOString(),
             }
 
             const { error } = await supabase
@@ -417,13 +429,39 @@ export default function ProviderApply() {
                     </label>
                 </section>
 
+                {/* Consent — explicit lawful basis for processing the ID
+                    (NDPA). Required before submit. Worded plainly so a
+                    real human can understand what they're agreeing to. */}
+                <label className="flex items-start gap-3 p-4 bg-slate-50 ring-1 ring-slate-200 rounded-xl cursor-pointer">
+                    <input
+                        type="checkbox"
+                        checked={form.consent}
+                        onChange={(e) => set('consent', e.target.checked)}
+                        className="mt-0.5 size-4 accent-slate-900 cursor-pointer"
+                    />
+                    <span className="text-sm text-slate-700 leading-relaxed">
+                        I consent to GoCart storing this ID document and selfie for verification purposes.
+                        Documents are kept for up to <strong>30 days after a decision</strong> and then automatically deleted.
+                        I&apos;ve read the{' '}
+                        <button type="button" onClick={() => setPolicyOpen('privacy')} className="text-sky-700 hover:underline">Privacy Notice</button>.
+                    </span>
+                </label>
+
                 {/* Submit */}
                 <div className="flex items-center justify-between gap-3 pt-2 border-t border-slate-200">
                     <p className="text-xs text-slate-500">
                         By submitting, you agree to our{' '}
-                        <Link href="/safety" className="text-sky-700 hover:underline">Safety guidelines</Link>{' '}
+                        <button
+                            type="button"
+                            onClick={() => setPolicyOpen('safety')}
+                            className="text-sky-700 hover:underline"
+                        >Safety guidelines</button>{' '}
                         and{' '}
-                        <Link href="/terms" className="text-sky-700 hover:underline">Terms of Use</Link>.
+                        <button
+                            type="button"
+                            onClick={() => setPolicyOpen('terms')}
+                            className="text-sky-700 hover:underline"
+                        >Terms of Use</button>.
                     </p>
                     <button
                         type="submit"
@@ -436,6 +474,12 @@ export default function ProviderApply() {
                 </div>
             </form>
             )}
+
+            <PolicyModal open={!!policyOpen} onClose={() => setPolicyOpen(null)}>
+                {policyOpen === 'safety'  && <SafetyContent />}
+                {policyOpen === 'terms'   && <TermsContent />}
+                {policyOpen === 'privacy' && <PrivacyContent />}
+            </PolicyModal>
         </div>
     )
 }

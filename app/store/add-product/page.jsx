@@ -7,6 +7,7 @@ import { useMemo, useState } from "react"
 import { toast } from "react-hot-toast"
 import { BadgeCheck, Car, Info, MapPin, Phone, Rocket, X } from "lucide-react"
 import Dropdown from "@/components/Dropdown"
+import MultiSelect from "@/components/MultiSelect"
 import { createClient } from "@/lib/supabase/client"
 import { uploadProductImages } from "@/lib/supabase/storage"
 import { useUser } from "@/lib/auth/UserContext"
@@ -100,7 +101,9 @@ export default function StoreAddProduct() {
         deliveryAvailable: false,
         specialties: [],
         responseTime: "",
-        areaCovered: "",
+        // Up to 4 neighborhoods inside the same locationState. Stored as an
+        // array on service.areaCovered (JSONB-friendly).
+        areaCovered: [],
         locationState: "",
         locationArea: "",
         phone: "",
@@ -224,7 +227,7 @@ export default function StoreAddProduct() {
         },
         specialties: productInfo.specialties,
         responseTime: productInfo.responseTime || null,
-        areaCovered: productInfo.areaCovered || null,
+        areaCovered: productInfo.areaCovered.length ? productInfo.areaCovered : null,
     })
 
     const onSubmitHandler = async (e) => {
@@ -858,13 +861,25 @@ export default function StoreAddProduct() {
                 </div>
             )}
 
-            {/* SERVICE-ONLY: Area covered + Response time */}
+            {/* SERVICE-ONLY: Areas covered + Response time. Areas are
+                limited to neighborhoods inside the locationState selected
+                above — buyers filtering by neighborhood expect a service to
+                actually serve there. Cap of 4 keeps providers honest. */}
             {isService && (
                 <div className="grid sm:grid-cols-2 gap-4 my-6 max-w-xl">
-                    <label className="flex flex-col gap-2">
-                        <span className="text-slate-700 font-medium">Area covered</span>
-                        <input type="text" name="areaCovered" onChange={onChangeHandler} value={productInfo.areaCovered} placeholder="e.g. Lagos, Ogun" className="w-full p-2 px-4 outline-none border border-slate-200 rounded" />
-                    </label>
+                    <div className="flex flex-col gap-2">
+                        <span className="text-slate-700 font-medium">Areas you cover</span>
+                        <MultiSelect
+                            value={productInfo.areaCovered}
+                            onChange={(next) => setProductInfo({ ...productInfo, areaCovered: next })}
+                            options={(stateAreas[productInfo.locationState] || []).map(a => ({ value: a, label: a }))}
+                            placeholder={productInfo.locationState ? `Pick areas in ${productInfo.locationState}` : 'Pick state first'}
+                            disabled={!productInfo.locationState}
+                            max={4}
+                            leftIcon={<MapPin size={15} className="text-slate-400 shrink-0" />}
+                        />
+                        <p className="text-xs text-slate-400">Up to 4 neighborhoods inside {productInfo.locationState || 'your state'}.</p>
+                    </div>
                     <label className="flex flex-col gap-2">
                         <span className="text-slate-700 font-medium">Response time</span>
                         <input type="text" name="responseTime" onChange={onChangeHandler} value={productInfo.responseTime} placeholder="e.g. Within 2 hours" className="w-full p-2 px-4 outline-none border border-slate-200 rounded" />
@@ -909,7 +924,7 @@ export default function StoreAddProduct() {
                     <span className="text-slate-700 font-medium">State</span>
                     <Dropdown
                         value={productInfo.locationState}
-                        onChange={(v) => setProductInfo({ ...productInfo, locationState: v, locationArea: "" })}
+                        onChange={(v) => setProductInfo({ ...productInfo, locationState: v, locationArea: "", areaCovered: [] })}
                         placeholder="Pick state"
                         leftIcon={<MapPin size={15} className="text-slate-400 shrink-0" />}
                         options={LOCATION_STATES}

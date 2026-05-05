@@ -20,8 +20,11 @@ const ServiceDetails = ({ service, description, category, ratings = [] }) => {
         ? ratings.reduce((s, r) => s + r.rating, 0) / ratingCount
         : 0
 
+    const areaText = Array.isArray(service?.areaCovered)
+        ? service.areaCovered.join(', ')
+        : service?.areaCovered
     const facts = [
-        { icon: MapPin, label: 'Area covered', value: service?.areaCovered },
+        { icon: MapPin, label: 'Area covered', value: areaText },
         { icon: Clock, label: 'Response time', value: service?.responseTime },
         { icon: Calendar, label: 'Available', value: service?.available },
         { icon: Wrench, label: 'Experience', value: service?.yearsExperience ? `${service.yearsExperience} years` : null },

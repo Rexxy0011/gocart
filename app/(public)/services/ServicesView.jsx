@@ -55,7 +55,7 @@ const ServicesView = ({ services = [], providerStatus = null }) => {
                     s.store?.user?.name,
                     s.store?.name,
                     s.location,
-                    s.service?.areaCovered,
+                    ...(Array.isArray(s.service?.areaCovered) ? s.service.areaCovered : [s.service?.areaCovered]),
                     ...(s.service?.specialties || []),
                 ]
                 return fields.some(f => f && f.toLowerCase().includes(q))

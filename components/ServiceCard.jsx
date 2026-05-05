@@ -34,7 +34,10 @@ const ServiceCard = ({ product }) => {
 
     const priceRange = formatPriceRange(product.service)
     const responseTime = product.service?.responseTime
-    const areaCovered = product.service?.areaCovered || formatLocation(product.location)
+    const rawArea = product.service?.areaCovered
+    const areaCovered = Array.isArray(rawArea)
+        ? rawArea.join(', ')
+        : (rawArea || formatLocation(product.location))
     const jobsCompleted = product.service?.jobsCompleted ?? 0
 
     const goToSeller = (e) => {

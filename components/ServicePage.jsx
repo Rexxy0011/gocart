@@ -247,7 +247,7 @@ const ServicePage = ({ product }) => {
                             <h2 className='text-lg font-semibold text-slate-900 mb-3'>Service details</h2>
                             <dl className='grid grid-cols-1 sm:grid-cols-2 gap-x-10 text-sm'>
                                 {[
-                                    { icon: MapPin, label: 'Area covered', value: service.areaCovered },
+                                    { icon: MapPin, label: 'Area covered', value: Array.isArray(service.areaCovered) ? service.areaCovered.join(', ') : service.areaCovered },
                                     { icon: Clock, label: 'Response time', value: service.responseTime },
                                     { icon: CalendarClock, label: 'Available', value: service.available },
                                     { icon: Wrench, label: 'Experience', value: service.yearsExperience ? `${service.yearsExperience} years` : null },
