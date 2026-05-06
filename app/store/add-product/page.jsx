@@ -382,9 +382,10 @@ export default function StoreAddProduct() {
     // On /pro/add-service we *always* show service copy — even before a
     // category is picked — because the route itself committed the user to
     // posting a service. On /store/add-product the copy follows whatever
-    // category they actually choose.
-    const headerTitle = (isProviderRoute || isService) ? 'Offer your service' : 'Post an ad'
-    const submitLabel = (isProviderRoute || isService) ? 'Publish service' : 'Post ad'
+    // category they actually choose. `isServiceMode` is the unified flag.
+    const isServiceMode = isProviderRoute || isService
+    const headerTitle = isServiceMode ? 'Offer your service' : 'Post an ad'
+    const submitLabel = isServiceMode ? 'Publish service' : 'Post ad'
 
     const loadingLabel = uploadProgress
         ? `Uploading ${uploadProgress.done}/${uploadProgress.total}…`
@@ -486,7 +487,7 @@ export default function StoreAddProduct() {
             {/* Photos — products only. For services the "Showcase past
                 work" portfolio block (further down) drives both the cover
                 and the gallery, so we don't show this section there. */}
-            {!isService && (
+            {!isServiceMode && (
                 <div className="my-6">
                     <p className="text-slate-700 font-medium">Photos</p>
                     <p className="text-xs text-slate-500 mt-0.5">Add up to 4 — first photo is the cover. Clear photos = more replies.</p>
@@ -505,7 +506,7 @@ export default function StoreAddProduct() {
                 describe the item. Services use a fixed, derived title
                 (the chosen category) to prevent misuse / spammy
                 self-promotion / clickbait headlines. */}
-            {!isService && (
+            {!isServiceMode && (
                 <label className="flex flex-col gap-2 my-6">
                     <span className="text-slate-700 font-medium">Ad title</span>
                     <input
@@ -532,12 +533,12 @@ export default function StoreAddProduct() {
 
             {/* Description */}
             <label className="flex flex-col gap-2 my-6">
-                <span className="text-slate-700 font-medium">{isService ? 'About this service' : 'Description'}</span>
+                <span className="text-slate-700 font-medium">{isServiceMode ? 'About this service' : 'Description'}</span>
                 <textarea
                     name="description"
                     onChange={onChangeHandler}
                     value={productInfo.description}
-                    placeholder={isService
+                    placeholder={isServiceMode
                         ? 'What you do, your process, what buyers can expect, your typical response time.'
                         : 'Condition details, what\'s included, why you\'re selling, collection or delivery preferences.'}
                     rows={5}
@@ -547,7 +548,7 @@ export default function StoreAddProduct() {
             </label>
 
             {/* PRODUCT-ONLY: Condition + Delivery */}
-            {!isService && (
+            {!isServiceMode && (
                 <div className="grid sm:grid-cols-2 gap-4 my-6 max-w-xl">
                     <div className="flex flex-col gap-2">
                         <span className="text-slate-700 font-medium">Condition</span>
@@ -572,7 +573,7 @@ export default function StoreAddProduct() {
             )}
 
             {/* PRICE — products */}
-            {!isService && (
+            {!isServiceMode && (
                 <>
                     <label className="flex items-center gap-3 my-6 cursor-pointer max-w-xl">
                         <input
