@@ -1,7 +1,7 @@
 'use client'
 import { usePathname } from "next/navigation"
 import {
-    HomeIcon, MessageSquareTextIcon, CalendarDays, FileText, ShieldCheck, Trophy, ArrowUpRightIcon,
+    HomeIcon, MessageSquareTextIcon, CalendarDays, FileText, ShieldCheck, Trophy, ArrowUpRightIcon, Search, Plus,
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -11,12 +11,16 @@ const ProSidebar = ({ providerInfo }) => {
     const pathname = usePathname()
 
     const sidebarLinks = [
-        { name: 'Dashboard',     href: '/pro',           icon: HomeIcon },
-        { name: 'Inquiries',     href: '/pro/inquiries', icon: MessageSquareTextIcon },
-        { name: 'Jobs',          href: '/pro/jobs',      icon: ShieldCheck },
-        { name: 'Quote requests',href: '/pro/quotes',    icon: FileText },
-        { name: 'Calendar',      href: '/pro/calendar',  icon: CalendarDays },
-        { name: 'Milestones',    href: '/pro/milestones',icon: Trophy },
+        { name: 'Dashboard',      href: '/pro',             icon: HomeIcon },
+        { name: 'Add service',    href: '/pro/add-service', icon: Plus },
+        { name: 'Inquiries',      href: '/pro/inquiries',   icon: MessageSquareTextIcon },
+        { name: 'Jobs',           href: '/pro/jobs',      icon: ShieldCheck },
+        { name: 'Quote requests', href: '/pro/quotes',    icon: FileText },
+        { name: 'Calendar',       href: '/pro/calendar',  icon: CalendarDays },
+        { name: 'Milestones',     href: '/pro/milestones',icon: Trophy },
+        // Take the provider out to the public services list — same view
+        // a buyer sees, useful for benchmarking or browsing peers.
+        { name: 'Browse services',href: '/services',      icon: Search },
     ]
 
     return (

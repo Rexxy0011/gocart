@@ -34,7 +34,7 @@ const Navbar = ({ user = null, providerStatus = null }) => {
     // (pending / rejected / no application yet) routes through /pro/apply
     // where they see their status and can submit / resubmit.
     const providerHref = providerStatus === 'approved' ? '/pro' : '/pro/apply'
-    const providerLabel = providerStatus === 'approved' ? 'Provider' : 'Offer a service'
+    const providerLabel = providerStatus === 'approved' ? 'Provider dashboard' : 'Offer a service'
 
     const locations = useMemo(() => {
         const counts = {}

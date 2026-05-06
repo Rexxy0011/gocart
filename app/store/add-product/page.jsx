@@ -2,7 +2,7 @@
 import { assets, carMakesModels, categoryGroups, serviceSpecialties, stateAreas } from "@/assets/assets"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useMemo, useState } from "react"
 import { toast } from "react-hot-toast"
 import { BadgeCheck, Car, Info, MapPin, Phone, Rocket, X } from "lucide-react"
@@ -81,6 +81,18 @@ const EURO_EMISSIONS_LEVELS = [
 export default function StoreAddProduct() {
 
     const router = useRouter()
+    const pathname = usePathname()
+    // After a successful post, route back to wherever the user came from:
+    // providers stay inside their /pro dashboard; sellers land on
+    // /store/manage-product. The form is mounted at both paths.
+    const isProviderRoute = pathname?.startsWith('/pro/')
+    const postRedirect = isProviderRoute ? '/pro' : '/store/manage-product'
+    // Category split: providers post services only (Repairs & Services
+    // group); /store/add-product is for products, so we hide the services
+    // group there. Keeps each surface focused.
+    const categoryGroupsForRoute = isProviderRoute
+        ? categoryGroups.filter(g => g.name === SERVICES_GROUP_NAME)
+        : categoryGroups.filter(g => g.name !== SERVICES_GROUP_NAME)
     const supabase = createClient()
     const user = useUser()
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
@@ -354,7 +366,7 @@ export default function StoreAddProduct() {
                 <ReviewProgressOverlay
                     status={reviewState}
                     onComplete={() => {
-                        router.push('/store/manage-product')
+                        router.push(postRedirect)
                         router.refresh()
                     }}
                 />
@@ -379,7 +391,7 @@ export default function StoreAddProduct() {
                 <span className="text-slate-700 font-medium">Category</span>
                 <select onChange={onCategoryChange} value={productInfo.category} className="w-full max-w-sm p-2 px-4 outline-none border border-slate-200 rounded" required>
                     <option value="">Select a category</option>
-                    {categoryGroups.map((group) => (
+                    {categoryGroupsForRoute.map((group) => (
                         <optgroup key={group.name} label={group.name}>
                             {group.items.map((item) => (
                                 <option key={item} value={item}>{item}</option>
