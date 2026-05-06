@@ -207,7 +207,9 @@ export default function StoreAddProduct() {
                 // NOT NULL columns we don't yet collect — sensible empty
                 // defaults; user can edit later in /store profile.
                 description: '',
-                address: `${productInfo.locationState} · ${productInfo.locationArea}`,
+                address: isServiceMode
+                    ? productInfo.locationState
+                    : `${productInfo.locationState} · ${productInfo.locationArea}`,
                 email: user.email || '',
                 contact: productInfo.phone || '',
                 logo: '',
@@ -271,7 +273,7 @@ export default function StoreAddProduct() {
             toast.error('Pick a state.')
             return
         }
-        if (!productInfo.locationArea) {
+        if (!isServiceMode && !productInfo.locationArea) {
             toast.error('Pick the area within the state — buyers filter by neighborhood.')
             return
         }
@@ -335,7 +337,9 @@ export default function StoreAddProduct() {
             name: effectiveName.trim(),
             description: (productInfo.description || '').trim() || null,
             category: productInfo.category,
-            location: `${productInfo.locationState} · ${productInfo.locationArea}`,
+            location: isServiceMode
+                ? productInfo.locationState
+                : `${productInfo.locationState} · ${productInfo.locationArea}`,
             images: imageUrls,
             in_stock: true,
 
@@ -981,8 +985,11 @@ export default function StoreAddProduct() {
 
             {/* Location — Jiji-style state + area picker. Area depends on
                 state: changing state resets area so we never end up with a
-                Lagos · Wuse mismatch. */}
-            <div className="grid sm:grid-cols-2 gap-4 my-6 max-w-xl">
+                Lagos · Wuse mismatch.
+                Services skip the per-listing Area picker entirely — the
+                "Areas you cover" multi-select handles their geography
+                instead, since a provider works across multiple areas. */}
+            <div className={`grid ${isServiceMode ? 'sm:grid-cols-1' : 'sm:grid-cols-2'} gap-4 my-6 max-w-xl`}>
                 <div className="flex flex-col gap-2">
                     <span className="text-slate-700 font-medium">State</span>
                     <Dropdown
@@ -993,16 +1000,18 @@ export default function StoreAddProduct() {
                         options={LOCATION_STATES}
                     />
                 </div>
-                <div className="flex flex-col gap-2">
-                    <span className="text-slate-700 font-medium">Area</span>
-                    <Dropdown
-                        value={productInfo.locationArea}
-                        onChange={(v) => setProductInfo({ ...productInfo, locationArea: v })}
-                        placeholder={productInfo.locationState ? 'Pick area' : 'Pick state first'}
-                        disabled={!productInfo.locationState}
-                        options={(stateAreas[productInfo.locationState] || []).map(a => ({ value: a, label: a }))}
-                    />
-                </div>
+                {!isServiceMode && (
+                    <div className="flex flex-col gap-2">
+                        <span className="text-slate-700 font-medium">Area</span>
+                        <Dropdown
+                            value={productInfo.locationArea}
+                            onChange={(v) => setProductInfo({ ...productInfo, locationArea: v })}
+                            placeholder={productInfo.locationState ? 'Pick area' : 'Pick state first'}
+                            disabled={!productInfo.locationState}
+                            options={(stateAreas[productInfo.locationState] || []).map(a => ({ value: a, label: a }))}
+                        />
+                    </div>
+                )}
             </div>
 
             <div className="my-6 max-w-xl">
