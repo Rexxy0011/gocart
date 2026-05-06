@@ -928,6 +928,38 @@ export default function StoreAddProduct() {
                 </div>
             )}
 
+            {/* Location — Jiji-style state + area picker. Area depends on
+                state: changing state resets area so we never end up with a
+                Lagos · Wuse mismatch.
+                Services skip the per-listing Area picker entirely — the
+                "Areas you cover" multi-select (right below) handles their
+                geography instead. State sits directly above Areas-you-cover
+                so the dependency reads naturally: pick state → pick areas. */}
+            <div className={`grid ${isServiceMode ? 'sm:grid-cols-1' : 'sm:grid-cols-2'} gap-4 my-6 max-w-xl`}>
+                <div className="flex flex-col gap-2">
+                    <span className="text-slate-700 font-medium">State</span>
+                    <Dropdown
+                        value={productInfo.locationState}
+                        onChange={(v) => setProductInfo({ ...productInfo, locationState: v, locationArea: "", areaCovered: [] })}
+                        placeholder="Pick state"
+                        leftIcon={<MapPin size={15} className="text-slate-400 shrink-0" />}
+                        options={LOCATION_STATES}
+                    />
+                </div>
+                {!isServiceMode && (
+                    <div className="flex flex-col gap-2">
+                        <span className="text-slate-700 font-medium">Area</span>
+                        <Dropdown
+                            value={productInfo.locationArea}
+                            onChange={(v) => setProductInfo({ ...productInfo, locationArea: v })}
+                            placeholder={productInfo.locationState ? 'Pick area' : 'Pick state first'}
+                            disabled={!productInfo.locationState}
+                            options={(stateAreas[productInfo.locationState] || []).map(a => ({ value: a, label: a }))}
+                        />
+                    </div>
+                )}
+            </div>
+
             {/* SERVICE-ONLY: Areas covered + Response time. Areas are
                 limited to neighborhoods inside the locationState selected
                 above — buyers filtering by neighborhood expect a service to
@@ -982,37 +1014,6 @@ export default function StoreAddProduct() {
                     </div>
                 </div>
             )}
-
-            {/* Location — Jiji-style state + area picker. Area depends on
-                state: changing state resets area so we never end up with a
-                Lagos · Wuse mismatch.
-                Services skip the per-listing Area picker entirely — the
-                "Areas you cover" multi-select handles their geography
-                instead, since a provider works across multiple areas. */}
-            <div className={`grid ${isServiceMode ? 'sm:grid-cols-1' : 'sm:grid-cols-2'} gap-4 my-6 max-w-xl`}>
-                <div className="flex flex-col gap-2">
-                    <span className="text-slate-700 font-medium">State</span>
-                    <Dropdown
-                        value={productInfo.locationState}
-                        onChange={(v) => setProductInfo({ ...productInfo, locationState: v, locationArea: "", areaCovered: [] })}
-                        placeholder="Pick state"
-                        leftIcon={<MapPin size={15} className="text-slate-400 shrink-0" />}
-                        options={LOCATION_STATES}
-                    />
-                </div>
-                {!isServiceMode && (
-                    <div className="flex flex-col gap-2">
-                        <span className="text-slate-700 font-medium">Area</span>
-                        <Dropdown
-                            value={productInfo.locationArea}
-                            onChange={(v) => setProductInfo({ ...productInfo, locationArea: v })}
-                            placeholder={productInfo.locationState ? 'Pick area' : 'Pick state first'}
-                            disabled={!productInfo.locationState}
-                            options={(stateAreas[productInfo.locationState] || []).map(a => ({ value: a, label: a }))}
-                        />
-                    </div>
-                )}
-            </div>
 
             <div className="my-6 max-w-xl">
                 <label className="flex flex-col gap-2">
