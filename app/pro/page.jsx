@@ -4,6 +4,7 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import VerifiedCheck from '@/components/VerifiedCheck'
+import AvatarPrompt from '@/components/AvatarPrompt'
 
 // Provider dashboard — real data only. Lead alerts, quote requests, and
 // upcoming jobs are intentionally not here yet; those features aren't
@@ -17,6 +18,13 @@ export default async function ProviderDashboard() {
     if (!user) return null
 
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+
+    // Profile image — drives the AvatarPrompt (banner self-hides if set).
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('image')
+        .eq('id', user.id)
+        .maybeSingle()
 
     // The provider's store. Used as the FK target for listings + inquiries.
     const { data: store } = await supabase
@@ -100,6 +108,10 @@ export default async function ProviderDashboard() {
 
     return (
         <div className='text-slate-700 mb-28 max-w-5xl'>
+
+            {/* Public profile picture nudge — explicitly separate from
+                the KYC selfie, which is private and purged after 30 days. */}
+            <AvatarPrompt userId={user.id} currentImage={profile?.image} />
 
             {/* Hero */}
             <section className='relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-emerald-50/40 ring-1 ring-slate-200 rounded-2xl p-6 sm:p-8'>

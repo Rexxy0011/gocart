@@ -231,7 +231,7 @@ export default function StoreAddProduct() {
         return Object.keys(out).length ? out : null
     }
 
-    const buildServicePayload = () => ({
+    const buildServicePayload = (portfolioUrls = []) => ({
         priceRange: {
             min: productInfo.priceMin ? Number(productInfo.priceMin) : null,
             max: productInfo.priceMax ? Number(productInfo.priceMax) : null,
@@ -240,6 +240,7 @@ export default function StoreAddProduct() {
         specialties: productInfo.specialties,
         responseTime: productInfo.responseTime || null,
         areaCovered: productInfo.areaCovered.length ? productInfo.areaCovered : null,
+        portfolio: portfolioUrls.length ? portfolioUrls : null,
     })
 
     const onSubmitHandler = async (e) => {
@@ -269,6 +270,13 @@ export default function StoreAddProduct() {
             toast.error('Pick the area within the state — buyers filter by neighborhood.')
             return
         }
+        // Services use the portfolio gallery as their visual identity —
+        // first image becomes the cover. Without one, the listing card
+        // would render an empty placeholder.
+        if (isService && portfolioImages.length === 0) {
+            toast.error('Add at least one photo of past work — the first becomes your cover.')
+            return
+        }
 
         setLoading(true)
 
@@ -282,15 +290,30 @@ export default function StoreAddProduct() {
             return
         }
 
-        // 2. Upload images to Supabase Storage and collect their public URLs.
-        // Files live under product-images/<userId>/<timestamp>-<n>.<ext>.
+        // 2. Upload images. Two cases:
+        //    - Products: the 4-slot "Photos" picker → uploaded into
+        //      product.images (first = cover).
+        //    - Services: the portfolio gallery is the only image source.
+        //      We upload it once, mirror the URLs into BOTH product.images
+        //      (so cards / detail pages have a cover) AND service.portfolio
+        //      (so the detail page renders the past-work gallery).
         let imageUrls = []
-        const fileList = Object.values(images).filter(Boolean)
-        if (fileList.length) {
+        let portfolioUrls = []
+        const productFiles = isService ? [] : Object.values(images).filter(Boolean)
+        const portfolioFiles = isService ? portfolioImages : []
+
+        if (productFiles.length || portfolioFiles.length) {
+            const fileList = productFiles.length ? productFiles : portfolioFiles
             try {
-                imageUrls = await uploadProductImages(fileList, user.id, {
+                const urls = await uploadProductImages(fileList, user.id, {
                     onProgress: ({ done, total }) => setUploadProgress({ done, total }),
                 })
+                if (isService) {
+                    portfolioUrls = urls
+                    imageUrls = urls.slice(0, 1)  // first portfolio image = cover
+                } else {
+                    imageUrls = urls
+                }
             } catch (err) {
                 toast.error(err?.message || 'Image upload failed.')
                 setLoading(false)
@@ -325,7 +348,7 @@ export default function StoreAddProduct() {
             delivery_available: productInfo.deliveryAvailable,
 
             // Type-specific blobs
-            service: isService ? buildServicePayload() : null,
+            service: isService ? buildServicePayload(portfolioUrls) : null,
             vehicle: isVehicle ? buildVehiclePayload(productInfo.vehicle) : null,
         }
 
@@ -451,19 +474,23 @@ export default function StoreAddProduct() {
                 </div>
             )}
 
-            {/* Photos */}
-            <div className="my-6">
-                <p className="text-slate-700 font-medium">Photos</p>
-                <p className="text-xs text-slate-500 mt-0.5">Add up to 4 — first photo is the cover. Clear photos = more replies.</p>
-                <div className="flex gap-3 mt-3">
-                    {Object.keys(images).map((key) => (
-                        <label key={key} htmlFor={`images${key}`}>
-                            <Image width={300} height={300} className='h-15 w-auto border border-slate-200 rounded cursor-pointer' src={images[key] ? URL.createObjectURL(images[key]) : assets.upload_area} alt="" />
-                            <input type="file" accept='image/*' id={`images${key}`} onChange={e => setImages({ ...images, [key]: e.target.files[0] })} hidden />
-                        </label>
-                    ))}
+            {/* Photos — products only. For services the "Showcase past
+                work" portfolio block (further down) drives both the cover
+                and the gallery, so we don't show this section there. */}
+            {!isService && (
+                <div className="my-6">
+                    <p className="text-slate-700 font-medium">Photos</p>
+                    <p className="text-xs text-slate-500 mt-0.5">Add up to 4 — first photo is the cover. Clear photos = more replies.</p>
+                    <div className="flex gap-3 mt-3">
+                        {Object.keys(images).map((key) => (
+                            <label key={key} htmlFor={`images${key}`}>
+                                <Image width={300} height={300} className='h-15 w-auto border border-slate-200 rounded cursor-pointer' src={images[key] ? URL.createObjectURL(images[key]) : assets.upload_area} alt="" />
+                                <input type="file" accept='image/*' id={`images${key}`} onChange={e => setImages({ ...images, [key]: e.target.files[0] })} hidden />
+                            </label>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Title */}
             <label className="flex flex-col gap-2 my-6">
