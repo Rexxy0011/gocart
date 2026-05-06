@@ -5,6 +5,7 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import AvatarPrompt from '@/components/AvatarPrompt'
+import VerifiedCheck from '@/components/VerifiedCheck'
 
 // Provider dashboard — real data only. Lead alerts, quote requests, and
 // upcoming jobs are intentionally not here yet; those features aren't
@@ -138,9 +139,7 @@ export default async function ProviderDashboard() {
                         <p className='text-xs font-medium uppercase tracking-wide text-slate-500'>Provider dashboard</p>
                         <h1 className='text-2xl sm:text-3xl font-bold text-slate-900 mt-0.5 flex items-center gap-2 flex-wrap'>
                             Hi {providerName.split(' ')[0]}
-                            <span className='inline-flex items-center text-[10px] font-semibold uppercase tracking-wide bg-sky-50 text-sky-700 ring-1 ring-sky-200 rounded-full px-2 py-0.5'>
-                                Verified
-                            </span>
+                            <VerifiedCheck size={22} title='Verified provider' />
                         </h1>
                         <p className='text-sm text-slate-600 mt-1'>
                             {app?.primary_category
