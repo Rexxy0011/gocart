@@ -379,8 +379,12 @@ export default function StoreAddProduct() {
         setReviewState(inserted.review_status)
     }
 
-    const headerTitle = isService ? 'Offer your service' : 'Post an ad'
-    const submitLabel = isService ? 'Publish service' : 'Post ad'
+    // On /pro/add-service we *always* show service copy — even before a
+    // category is picked — because the route itself committed the user to
+    // posting a service. On /store/add-product the copy follows whatever
+    // category they actually choose.
+    const headerTitle = (isProviderRoute || isService) ? 'Offer your service' : 'Post an ad'
+    const submitLabel = (isProviderRoute || isService) ? 'Publish service' : 'Post ad'
 
     const loadingLabel = uploadProgress
         ? `Uploading ${uploadProgress.done}/${uploadProgress.total}…`
