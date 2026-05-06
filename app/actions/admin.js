@@ -111,9 +111,9 @@ export async function setProductReviewStatus(productId, status, reason = '') {
 }
 
 // Sign out of the admin panel — clears the gc_admin cookie and bounces
-// the user back to the login page. Called from a small form/button in
-// AdminNavbar.
+// back to /admin (which then renders the login form because the cookie
+// is gone). Called from a small form/button in AdminNavbar.
 export async function adminSignOut() {
     await clearAdminCookie()
-    redirect('/admin/login')
+    redirect('/admin')
 }

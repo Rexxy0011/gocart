@@ -86,18 +86,19 @@ export async function middleware(request) {
         }
     }
 
-    // Admin shared-password gate. Independent of Supabase auth — anyone
-    // with the right password (and the resulting cookie) gets in. The
-    // /admin/login page is the only /admin/* path that bypasses this.
+    // Admin shared-password gate. /admin itself is allowed through (it
+    // renders the login form when the cookie's missing). Sub-routes
+    // (approve, providers, etc.) bounce unauthed visitors back to /admin
+    // with a `next` param so we can land them where they were heading.
     if (
         isAdminRoute(request.nextUrl.pathname)
-        && request.nextUrl.pathname !== '/admin/login'
+        && request.nextUrl.pathname !== '/admin'
     ) {
         const cookieValue = request.cookies.get(ADMIN_COOKIE_NAME)?.value
         const ok = await isAdminCookieValid(cookieValue)
         if (!ok) {
             const loginUrl = request.nextUrl.clone()
-            loginUrl.pathname = '/admin/login'
+            loginUrl.pathname = '/admin'
             loginUrl.search = ''
             loginUrl.searchParams.set('next', request.nextUrl.pathname + request.nextUrl.search)
             return NextResponse.redirect(loginUrl)
