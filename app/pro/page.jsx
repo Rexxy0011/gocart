@@ -1,9 +1,9 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import {
     FileText, MessageSquareText, Star, Plus, Search,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import VerifiedCheck from '@/components/VerifiedCheck'
 import AvatarPrompt from '@/components/AvatarPrompt'
 
 // Provider dashboard — real data only. Lead alerts, quote requests, and
@@ -115,16 +115,40 @@ export default async function ProviderDashboard() {
 
             {/* Hero */}
             <section className='relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-emerald-50/40 ring-1 ring-slate-200 rounded-2xl p-6 sm:p-8'>
-                <p className='text-xs font-medium uppercase tracking-wide text-slate-500'>Provider dashboard</p>
-                <h1 className='text-2xl sm:text-3xl font-bold text-slate-900 mt-1 inline-flex items-center gap-2 flex-wrap'>
-                    Hi {providerName.split(' ')[0]}
-                    <VerifiedCheck size={18} />
-                </h1>
-                <p className='text-sm text-slate-600 mt-1'>
-                    {app?.primary_category
-                        ? `Your ${app.primary_category.toLowerCase()} services hub.`
-                        : 'Your provider hub.'}
-                </p>
+                <div className='flex items-center gap-4'>
+                    {/* Public profile picture (or initial fallback). Sits
+                        flush against the greeting so the dashboard feels
+                        personalised. Distinct from the KYC selfie. */}
+                    <div className='size-14 rounded-full overflow-hidden bg-white ring-2 ring-white shadow-sm flex items-center justify-center shrink-0'>
+                        {profile?.image ? (
+                            <Image
+                                src={profile.image}
+                                alt={providerName}
+                                width={56}
+                                height={56}
+                                className='size-full object-cover'
+                            />
+                        ) : (
+                            <span className='text-lg font-semibold text-slate-700'>
+                                {providerName.charAt(0).toUpperCase()}
+                            </span>
+                        )}
+                    </div>
+                    <div className='min-w-0 flex-1'>
+                        <p className='text-xs font-medium uppercase tracking-wide text-slate-500'>Provider dashboard</p>
+                        <h1 className='text-2xl sm:text-3xl font-bold text-slate-900 mt-0.5 flex items-center gap-2 flex-wrap'>
+                            Hi {providerName.split(' ')[0]}
+                            <span className='inline-flex items-center text-[10px] font-semibold uppercase tracking-wide bg-sky-50 text-sky-700 ring-1 ring-sky-200 rounded-full px-2 py-0.5'>
+                                Verified
+                            </span>
+                        </h1>
+                        <p className='text-sm text-slate-600 mt-1'>
+                            {app?.primary_category
+                                ? `Your ${app.primary_category.toLowerCase()} services hub.`
+                                : 'Your provider hub.'}
+                        </p>
+                    </div>
+                </div>
             </section>
 
             {/* Stats — real data, no mocks */}
