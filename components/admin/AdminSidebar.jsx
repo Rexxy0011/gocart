@@ -1,32 +1,27 @@
 'use client'
 
 import { usePathname } from "next/navigation"
-import { HomeIcon, ShieldCheckIcon, StoreIcon, TicketPercentIcon, BadgeCheckIcon, FlagIcon } from "lucide-react"
-import Image from "next/image"
+import { HomeIcon, ShieldCheckIcon, BadgeCheckIcon, FlagIcon } from "lucide-react"
 import Link from "next/link"
-import { assets } from "@/assets/assets"
 
 const AdminSidebar = () => {
 
     const pathname = usePathname()
 
+    // Tight nav — every link maps to actual daily work.
+    // Stores auto-approve via DB default; coupons don't apply to a
+    // classifieds model. If we ever add boost-discount codes those'd
+    // come back in here.
     const sidebarLinks = [
-        { name: 'Dashboard', href: '/admin', icon: HomeIcon },
-        { name: 'Stores', href: '/admin/stores', icon: StoreIcon },
-        { name: 'Review Listings', href: '/admin/approve', icon: ShieldCheckIcon },
-        { name: 'Approve Provider', href: '/admin/providers', icon: BadgeCheckIcon },
-        { name: 'Reports', href: '/admin/reports', icon: FlagIcon },
-        { name: 'Coupons', href: '/admin/coupons', icon: TicketPercentIcon  },
+        { name: 'Dashboard',         href: '/admin',           icon: HomeIcon },
+        { name: 'Review Listings',   href: '/admin/approve',   icon: ShieldCheckIcon },
+        { name: 'Approve Provider',  href: '/admin/providers', icon: BadgeCheckIcon },
+        { name: 'Reports',           href: '/admin/reports',   icon: FlagIcon },
     ]
 
     return (
         <div className="inline-flex h-full flex-col gap-5 border-r border-slate-200 sm:min-w-60">
-            <div className="flex flex-col gap-3 justify-center items-center pt-8 max-sm:hidden">
-                <Image className="w-14 h-14 rounded-full" src={assets.gs_logo} alt="" width={80} height={80} />
-                <p className="text-slate-700">Hi, GreatStack</p>
-            </div>
-
-            <div className="max-sm:mt-6">
+            <div className="max-sm:mt-6 sm:mt-6">
                 {
                     sidebarLinks.map((link, index) => (
                         <Link key={index} href={link.href} className={`relative flex items-center gap-3 text-slate-500 hover:bg-slate-50 p-2.5 transition ${pathname === link.href && 'bg-slate-100 sm:text-slate-600'}`}>
