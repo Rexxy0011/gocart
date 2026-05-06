@@ -251,10 +251,15 @@ export default function StoreAddProduct() {
             return
         }
 
+        // For services we lock the title to the chosen category — buyers
+        // can't be misled by the headline because we wrote it. For products,
+        // we run the user-typed title through the keyword screen.
+        const effectiveName = isService ? productInfo.category : productInfo.name
+
         // 0. Pre-publish content screen. Catches obvious banned keywords
         // before we charge for image uploads. Server-side enforcement comes
         // when we move the insert through a server action.
-        const screen = checkListingContent(productInfo.name, productInfo.description)
+        const screen = checkListingContent(effectiveName, productInfo.description)
         if (!screen.ok) {
             toast.error(screen.message)
             return
@@ -327,7 +332,7 @@ export default function StoreAddProduct() {
         // 3. Build the products row from the form state.
         const payload = {
             store_id: store.id,
-            name: productInfo.name.trim(),
+            name: effectiveName.trim(),
             description: (productInfo.description || '').trim() || null,
             category: productInfo.category,
             location: `${productInfo.locationState} · ${productInfo.locationArea}`,
@@ -492,20 +497,34 @@ export default function StoreAddProduct() {
                 </div>
             )}
 
-            {/* Title */}
-            <label className="flex flex-col gap-2 my-6">
-                <span className="text-slate-700 font-medium">{isService ? 'Service title' : 'Ad title'}</span>
-                <input
-                    type="text"
-                    name="name"
-                    onChange={onChangeHandler}
-                    value={productInfo.name}
-                    placeholder={isService ? 'e.g. AC repair & gas refill — same-day callouts' : 'e.g. iPhone 13 Pro 256GB, Pacific Blue — like new'}
-                    className="w-full max-w-xl p-2 px-4 outline-none border border-slate-200 rounded"
-                    required
-                />
-                <span className="text-xs text-slate-400">Short and specific — what it is, key feature, condition.</span>
-            </label>
+            {/* Title — products only. Free-form input lets sellers
+                describe the item. Services use a fixed, derived title
+                (the chosen category) to prevent misuse / spammy
+                self-promotion / clickbait headlines. */}
+            {!isService && (
+                <label className="flex flex-col gap-2 my-6">
+                    <span className="text-slate-700 font-medium">Ad title</span>
+                    <input
+                        type="text"
+                        name="name"
+                        onChange={onChangeHandler}
+                        value={productInfo.name}
+                        placeholder='e.g. iPhone 13 Pro 256GB, Pacific Blue — like new'
+                        className="w-full max-w-xl p-2 px-4 outline-none border border-slate-200 rounded"
+                        required
+                    />
+                    <span className="text-xs text-slate-400">Short and specific — what it is, key feature, condition.</span>
+                </label>
+            )}
+            {isService && productInfo.category && (
+                <div className="my-6 max-w-xl">
+                    <p className="text-slate-700 font-medium">Listing title</p>
+                    <p className="text-base text-slate-900 mt-2 px-3 py-2 bg-slate-50 ring-1 ring-slate-200 rounded">
+                        {productInfo.category}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-1.5">Title is locked to the category to keep search clean. Tell buyers more in “About this service” below.</p>
+                </div>
+            )}
 
             {/* Description */}
             <label className="flex flex-col gap-2 my-6">
