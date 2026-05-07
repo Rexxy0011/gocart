@@ -153,9 +153,9 @@ export default async function ProviderDashboard() {
                     </div>
                     <div className='min-w-0 flex-1'>
                         <p className='text-xs font-medium uppercase tracking-wide text-slate-500'>Provider dashboard</p>
-                        <h1 className='text-2xl sm:text-3xl font-bold text-slate-900 mt-0.5 flex items-center gap-2 flex-wrap'>
+                        <h1 className='text-2xl sm:text-3xl font-bold text-slate-900 mt-0.5 flex items-center gap-0 flex-wrap'>
                             Hi {providerName.split(' ')[0]}
-                            <VerifiedCheck size={36} title='Verified provider' />
+                            <VerifiedCheck size={36} className='-ml-0.5' title='Verified provider' />
                         </h1>
                         <p className='text-sm text-slate-600 mt-1'>
                             {app?.primary_category

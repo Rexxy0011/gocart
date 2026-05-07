@@ -11,6 +11,7 @@ import { useToggleFavorite } from "@/lib/features/cart/useToggleFavorite"
 import { Button } from "@/components/ui/button"
 import VehicleSpecs from "@/components/VehicleSpecs"
 import ServiceDetails from "@/components/ServiceDetails"
+import VerifiedCheck from "@/components/VerifiedCheck"
 import {
     FeaturedRibbon, UrgentTag, BulkSaleTag, FreeTag, ReducedTag,
     DeliveryAvailableTag, ConditionTag,
@@ -248,12 +249,10 @@ const ProductDetails = ({ product }) => {
                                 {sellerName.charAt(0).toUpperCase()}
                             </div>
                             <div className='min-w-0'>
-                                <p className='text-lg font-semibold text-slate-900 truncate group-hover:underline'>{sellerName}</p>
-                                {sellerVerified && (
-                                    <span className='mt-1 inline-flex items-center text-[10px] font-semibold uppercase tracking-wide bg-sky-50 text-sky-700 ring-1 ring-sky-200 rounded-full px-2 py-0.5'>
-                                        Verified seller
-                                    </span>
-                                )}
+                                <p className='inline-flex items-center gap-0 text-lg font-semibold text-slate-900 group-hover:underline'>
+                                    <span className='truncate'>{sellerName}</span>
+                                    {sellerVerified && <VerifiedCheck size={28} className='-ml-0.5' title='Verified seller' />}
+                                </p>
                                 {product.store?.username && (
                                     <p className='text-xs text-sky-700 mt-1.5'>
                                         Visit shop →

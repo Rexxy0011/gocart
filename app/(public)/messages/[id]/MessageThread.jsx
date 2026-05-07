@@ -73,12 +73,13 @@ const MessageThread = ({ conversationId, currentUserId, otherParty, initialMessa
     return (
         <div className="bg-white border border-slate-200 rounded-2xl flex flex-col h-[70vh] min-h-[480px] overflow-hidden">
 
-            {/* Other-party header — linked to their shop profile when they
-                have one (sellers always do; buyers do iff they've ever
-                posted a listing). Falls back to a plain block otherwise. */}
-            {otherParty.username ? (
+            {/* Other-party header. Buyer side: links to seller's provider
+                profile (services) or to the product listing (products).
+                Seller side: plain block — never expose the buyer's other
+                identities from inside a private DM. */}
+            {otherParty.profileHref ? (
                 <Link
-                    href={`/shop/${otherParty.username}`}
+                    href={otherParty.profileHref}
                     className="border-b border-slate-100 p-4 flex items-center gap-3 hover:bg-slate-50 transition"
                 >
                     {otherParty.image ? (
@@ -90,7 +91,7 @@ const MessageThread = ({ conversationId, currentUserId, otherParty, initialMessa
                     )}
                     <div className="min-w-0">
                         <p className="text-sm font-semibold text-slate-900 truncate hover:underline">{otherParty.name}</p>
-                        <p className="text-xs text-slate-500 capitalize">{otherParty.role} · view profile</p>
+                        <p className="text-xs text-slate-500 capitalize">{otherParty.role} · {otherParty.profileLabel}</p>
                     </div>
                 </Link>
             ) : (

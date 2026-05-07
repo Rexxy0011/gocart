@@ -33,19 +33,30 @@ export default async function ConversationPage({ params }) {
 
     const isBuyer = conversation.buyer_id === user.id
     const otherParty = isBuyer ? conversation.seller : conversation.buyer
-    const otherPartyId = isBuyer ? conversation.seller_id : conversation.buyer_id
     const listing = conversation.listing
     const listingHref = listing?.service ? `/service/${listing.id}` : `/product/${listing?.id}`
 
-    // Other party's shop username — sellers always have one; buyers do
-    // too if they've ever posted a listing themselves. Drives the
-    // clickable avatar in the thread header.
-    const { data: otherStore } = await supabase
-        .from('stores')
-        .select('username')
-        .eq('user_id', otherPartyId)
-        .maybeSingle()
-    const otherUsername = otherStore?.username || null
+    // Buyer-side avatar click destination:
+    //   service convo → seller's /shop/[username] (the provider profile —
+    //                   reviews, badge, full service catalogue)
+    //   product convo → /product/[id] (the listing itself; products are
+    //                   one-off classifieds, the seller has no real brand
+    //                   page to land on)
+    // Seller-side header stays a plain block — the buyer's other identities
+    // shouldn't leak out of this private thread.
+    let otherProfileHref = null
+    if (isBuyer && listing) {
+        if (listing.service) {
+            const { data: sellerStore } = await supabase
+                .from('stores')
+                .select('username')
+                .eq('user_id', conversation.seller_id)
+                .maybeSingle()
+            if (sellerStore?.username) otherProfileHref = `/shop/${sellerStore.username}`
+        } else {
+            otherProfileHref = `/product/${listing.id}`
+        }
+    }
 
     // Mark this side's read receipt on every render — opening the thread
     // clears it from the navbar's unread count. Fire-and-forget; if the
@@ -105,7 +116,8 @@ export default async function ConversationPage({ params }) {
                         name: otherParty?.name || (isBuyer ? 'Seller' : 'Buyer'),
                         image: otherParty?.image,
                         role: isBuyer ? 'seller' : 'buyer',
-                        username: otherUsername,
+                        profileHref: otherProfileHref,
+                        profileLabel: listing?.service ? 'view profile' : 'view listing',
                     }}
                     initialMessages={initialMessages || []}
                 />

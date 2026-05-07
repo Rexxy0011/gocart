@@ -201,9 +201,9 @@ export default async function Dashboard() {
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                     <div className="min-w-0">
                         <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Seller dashboard</p>
-                        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1 inline-flex items-center gap-2">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1 inline-flex items-center gap-0">
                             Hi {sellerName.split(' ')[0]}
-                            {isVerified && <VerifiedCheck size={20} />}
+                            {isVerified && <VerifiedCheck size={20} className="-ml-0.5" />}
                         </h1>
                         <p className="text-sm text-slate-600 mt-1">
                             Listings, inquiries, and reviews — all in one place.

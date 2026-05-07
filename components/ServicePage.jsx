@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button'
 import Dropdown from '@/components/Dropdown'
 import AddressInput from '@/components/AddressInput'
 import MilestoneBadge from '@/components/MilestoneBadge'
+import VerifiedCheck from '@/components/VerifiedCheck'
 import { stateAreas } from '@/assets/assets'
 import { useAuthGate } from '@/hooks/useAuthGate'
 import { startConversation } from '@/app/actions/messages'
@@ -206,32 +207,35 @@ const ServicePage = ({ product }) => {
                     {/* LEFT */}
                     <div className='lg:col-span-8 min-w-0 space-y-8'>
 
-                        {/* Stats banner */}
-                        <div className='grid grid-cols-2 sm:grid-cols-4 divide-x divide-slate-200 border border-slate-200 rounded-xl bg-white'>
-                            <div className='p-4'>
-                                <p className='text-xs text-slate-500'>Price range</p>
-                                <p className='text-base sm:text-lg font-bold text-emerald-600 mt-1 leading-tight'>{priceRange}</p>
+                        {/* Stats banner — 2x2 on phones, single row on sm+.
+                            Mobile padding/font is tightened so the price
+                            range string ("₦50,000 – ₦300,000") doesn't
+                            wrap mid-number on small screens. */}
+                        <div className='grid grid-cols-2 sm:grid-cols-4 divide-x divide-y sm:divide-y-0 divide-slate-200 border border-slate-200 rounded-xl bg-white overflow-hidden'>
+                            <div className='p-2.5 sm:p-4'>
+                                <p className='text-[10px] sm:text-xs text-slate-500'>Price range</p>
+                                <p className='text-[13px] sm:text-lg font-bold text-emerald-600 mt-0.5 sm:mt-1 leading-tight whitespace-nowrap'>{priceRange}</p>
                             </div>
-                            <div className='p-4'>
-                                <p className='text-xs text-slate-500'>Jobs completed</p>
-                                <p className='inline-flex items-center gap-1.5 text-base sm:text-lg font-bold text-emerald-700 mt-1'>
-                                    <ShieldCheck size={18} className='shrink-0' />
+                            <div className='p-2.5 sm:p-4'>
+                                <p className='text-[10px] sm:text-xs text-slate-500'>Jobs completed</p>
+                                <p className='inline-flex items-center gap-1 sm:gap-1.5 text-[13px] sm:text-lg font-bold text-emerald-700 mt-0.5 sm:mt-1'>
+                                    <ShieldCheck size={14} className='shrink-0 sm:size-[18px]' />
                                     {(service.jobsCompleted ?? 0).toLocaleString()}
                                 </p>
                             </div>
-                            <div className='p-4'>
-                                <p className='text-xs text-slate-500'>Rating</p>
-                                <p className='inline-flex items-center gap-1 text-base sm:text-lg font-bold text-amber-500 mt-1'>
-                                    <Star size={18} className='fill-current shrink-0' />
+                            <div className='p-2.5 sm:p-4'>
+                                <p className='text-[10px] sm:text-xs text-slate-500'>Rating</p>
+                                <p className='inline-flex items-center gap-1 text-[13px] sm:text-lg font-bold text-amber-500 mt-0.5 sm:mt-1'>
+                                    <Star size={14} className='fill-current shrink-0 sm:size-[18px]' />
                                     {averageRating ? averageRating.toFixed(1) : 'New'}
-                                    {ratingCount > 0 && <span className='text-slate-500 font-normal text-sm'>({ratingCount})</span>}
+                                    {ratingCount > 0 && <span className='text-slate-500 font-normal text-[11px] sm:text-sm'>({ratingCount})</span>}
                                 </p>
                             </div>
-                            <div className='p-4'>
-                                <p className='text-xs text-slate-500'>Response</p>
-                                <p className='inline-flex items-center gap-1.5 text-base sm:text-lg font-bold text-slate-900 mt-1'>
-                                    <Clock size={16} className='shrink-0 text-slate-500' />
-                                    {service.responseTime || '—'}
+                            <div className='p-2.5 sm:p-4'>
+                                <p className='text-[10px] sm:text-xs text-slate-500'>Response</p>
+                                <p className='inline-flex items-center gap-1 sm:gap-1.5 text-[13px] sm:text-lg font-bold text-slate-900 mt-0.5 sm:mt-1 leading-tight'>
+                                    <Clock size={13} className='shrink-0 text-slate-500 sm:size-4' />
+                                    <span className='truncate'>{service.responseTime || '—'}</span>
                                 </p>
                             </div>
                         </div>
@@ -392,16 +396,14 @@ const ServicePage = ({ product }) => {
                                     )}
                                 </div>
                                 <div className='min-w-0 flex-1'>
-                                    <p className='text-base font-semibold text-slate-900 truncate group-hover:underline'>{sellerName}</p>
+                                    <p className='inline-flex items-center gap-0 text-base font-semibold text-slate-900 group-hover:underline'>
+                                        <span className='truncate'>{sellerName}</span>
+                                        {isVerified && <VerifiedCheck size={28} className='-ml-0.5' title='Verified provider' />}
+                                    </p>
                                     <div className='flex items-center gap-1.5 mt-1'>
                                         <p className='text-xs text-slate-500 truncate'>@{sellerUsername}</p>
                                         <MilestoneBadge jobsCompleted={service.jobsCompleted ?? 0} size='sm' />
                                     </div>
-                                    {isVerified && (
-                                        <span className='mt-1.5 inline-flex items-center text-[10px] font-semibold uppercase tracking-wide bg-sky-50 text-sky-700 ring-1 ring-sky-200 rounded-full px-2 py-0.5'>
-                                            Verified seller
-                                        </span>
-                                    )}
                                 </div>
                             </Link>
                             <hr className='border-slate-200 my-4' />

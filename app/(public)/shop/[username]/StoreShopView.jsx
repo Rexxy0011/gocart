@@ -72,9 +72,9 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
                             )}
                         </div>
                         <div className="min-w-0 flex-1">
-                            <h1 className="inline-flex items-center gap-2 text-2xl sm:text-3xl font-bold text-slate-900">
+                            <h1 className="inline-flex items-center gap-0 text-2xl sm:text-3xl font-bold text-slate-900">
                                 <span className="truncate">{sellerName}</span>
-                                {isVerified && <VerifiedCheck size={22} />}
+                                {isVerified && <VerifiedCheck size={22} className="-ml-0.5" />}
                             </h1>
                             <div className="flex items-center gap-2 mt-2">
                                 <div className="flex items-center">
