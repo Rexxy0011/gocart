@@ -107,7 +107,6 @@ const ServicePage = ({ product }) => {
             : `Hi ${sellerName.split(' ')[0]},\n\nI'd like to book your ${product.category?.toLowerCase() || 'service'}. Could you confirm availability and rough pricing?\n\nThanks`
     )
 
-    const requireAuth = useAuthGate()
     const productId = product.id
     const firstName = sellerName.split(' ')[0]
 
