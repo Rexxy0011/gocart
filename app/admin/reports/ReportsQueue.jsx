@@ -99,6 +99,34 @@ const ReportsQueue = ({ groups: initialGroups }) => {
                                             {r.description && (
                                                 <p className='text-sm text-slate-600 mt-1 leading-relaxed'>{r.description}</p>
                                             )}
+                                            {r.evidence_urls?.length > 0 && (
+                                                <div className='mt-2'>
+                                                    <p className='text-[10px] font-semibold uppercase tracking-wide text-slate-400 mb-1'>
+                                                        Picture evidence ({r.evidence_urls.length})
+                                                    </p>
+                                                    <div className='flex flex-wrap gap-2'>
+                                                        {r.evidence_urls.map((url, i) => (
+                                                            <a
+                                                                key={url}
+                                                                href={url}
+                                                                target='_blank'
+                                                                rel='noreferrer'
+                                                                className='relative size-16 rounded-md overflow-hidden ring-1 ring-slate-200 hover:ring-slate-400 bg-slate-100 transition'
+                                                                title='Open full size in a new tab'
+                                                            >
+                                                                <Image
+                                                                    src={url}
+                                                                    alt={`Evidence ${i + 1}`}
+                                                                    fill
+                                                                    sizes='64px'
+                                                                    className='object-cover'
+                                                                    unoptimized
+                                                                />
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </li>
                                     ))}
                                 </ul>

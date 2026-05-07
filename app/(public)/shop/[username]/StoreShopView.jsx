@@ -1,11 +1,14 @@
 'use client'
 import { useMemo, useState } from "react"
 import Image from "next/image"
-import { ShieldCheck, Star, MessageSquareText, BadgeCheck } from "lucide-react"
+import Link from "next/link"
+import { ShieldCheck, Star, MessageSquareText, BadgeCheck, Pencil, Plus, LayoutDashboard } from "lucide-react"
 import { differenceInMonths, differenceInYears, formatDistanceToNow } from "date-fns"
 import ProductRow from "@/components/ProductRow"
 import VerifiedCheck from "@/components/VerifiedCheck"
 import ReviewModal from "@/components/ReviewModal"
+import EditProfileModal from "@/components/EditProfileModal"
+import OwnerListingActions from "@/components/OwnerListingActions"
 import { useAuthGate } from "@/hooks/useAuthGate"
 import { categoryGroups } from "@/assets/assets"
 
@@ -30,7 +33,16 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
 
     const [activeTab, setActiveTab] = useState('Listings')
     const [reviewOpen, setReviewOpen] = useState(false)
+    const [editOpen, setEditOpen] = useState(false)
     const requireAuth = useAuthGate()
+
+    // Owner navigation targets — providers manage from /pro, plain
+    // sellers from /store. Picking the right one removes a hop for
+    // people who land on their own profile.
+    const dashboardHref = providerVerified ? '/pro' : '/store'
+    const dashboardLabel = providerVerified ? 'Provider dashboard' : 'Seller dashboard'
+    const addListingHref = providerVerified ? '/pro/add-service' : '/store/add-product'
+    const addListingLabel = providerVerified ? 'Add a service' : 'Post an ad'
 
     const categoryCounts = useMemo(() => {
         const counts = new Map()
@@ -60,6 +72,35 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
 
     return (
         <div className="min-h-[70vh]">
+
+            {/* Owner banner — only the signed-in owner sees this strip.
+                Mirrors Jiji's blend: profile management lives where buyers
+                see the profile, not behind a separate route. */}
+            {viewerIsSelf && (
+                <section className="bg-amber-50 border-b border-amber-200">
+                    <div className="max-w-7xl mx-auto px-6 py-2.5 flex flex-wrap items-center gap-x-4 gap-y-2">
+                        <p className="text-xs sm:text-sm text-amber-900">
+                            <span className="font-semibold">This is your public profile.</span>
+                            <span className="hidden sm:inline text-amber-800/80"> Only you see this strip.</span>
+                        </p>
+                        <div className="ml-auto flex items-center gap-2">
+                            <Link
+                                href={dashboardHref}
+                                className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900 hover:text-amber-950 transition"
+                            >
+                                <LayoutDashboard size={13} /> {dashboardLabel}
+                            </Link>
+                            <Link
+                                href={addListingHref}
+                                className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-full px-3 py-1.5 transition"
+                            >
+                                <Plus size={13} /> {addListingLabel}
+                            </Link>
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {/* Seller header banner */}
             <section className="bg-slate-100 border-b border-slate-200">
                 <div className="max-w-7xl mx-auto px-6 py-8 sm:py-10">
@@ -116,6 +157,17 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
                                     className="mt-5 inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-full px-4 py-2 transition"
                                 >
                                     <MessageSquareText size={14} /> Leave a review
+                                </button>
+                            )}
+
+                            {/* Edit-profile CTA — only the owner sees this. */}
+                            {viewerIsSelf && (
+                                <button
+                                    type="button"
+                                    onClick={() => setEditOpen(true)}
+                                    className="mt-5 inline-flex items-center gap-2 ring-1 ring-slate-300 hover:ring-slate-500 text-slate-800 text-sm font-semibold rounded-full px-4 py-2 transition"
+                                >
+                                    <Pencil size={14} /> Edit profile
                                 </button>
                             )}
                         </div>
@@ -181,7 +233,15 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
                             </p>
                             <div className="border-t border-slate-200 max-w-3xl">
                                 {products.map((product) => (
-                                    <ProductRow key={product.id} product={product} />
+                                    <div key={product.id}>
+                                        <ProductRow product={product} />
+                                        {viewerIsSelf && (
+                                            <OwnerListingActions
+                                                listingId={product.id}
+                                                initialInStock={product.inStock !== false}
+                                            />
+                                        )}
+                                    </div>
                                 ))}
                             </div>
                         </>
@@ -256,6 +316,20 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
                 onClose={() => setReviewOpen(false)}
                 listings={products.map(p => ({ id: p.id, name: p.name }))}
             />
+
+            {/* Edit-profile modal — owner only */}
+            {viewerIsSelf && (
+                <EditProfileModal
+                    open={editOpen}
+                    onClose={() => setEditOpen(false)}
+                    initial={{
+                        name: storeInfo?.name || '',
+                        description: storeInfo?.description || '',
+                        contact: storeInfo?.contact || '',
+                        logo: storeInfo?.logo || '',
+                    }}
+                />
+            )}
         </div>
     )
 }

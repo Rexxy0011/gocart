@@ -8,10 +8,16 @@ import { isAdminEmail } from '@/lib/auth/admins'
 // — only an admin's "action" decision actually removes it. Each report is
 // its own row, so 10 reports on one listing = 10 rows; admin sees them all
 // and decides once.
-export async function submitReport({ listingId, reason, description }) {
+export async function submitReport({ listingId, reason, description, evidenceUrls = [] }) {
     if (!listingId || !reason?.trim()) {
         return { error: 'Pick a reason for the report.' }
     }
+
+    // Sanitise evidence list — must be http(s) URLs, capped at 5 to match
+    // the column-level check constraint.
+    const cleanEvidence = (Array.isArray(evidenceUrls) ? evidenceUrls : [])
+        .filter(u => typeof u === 'string' && /^https?:\/\//.test(u))
+        .slice(0, 5)
 
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -36,6 +42,7 @@ export async function submitReport({ listingId, reason, description }) {
             listing_id: listingId,
             reason: reason.trim(),
             description: description?.trim() || null,
+            evidence_urls: cleanEvidence,
         })
 
     if (error) return { error: error.message }

@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { mapProductRow, PRODUCT_WITH_STORE_SELECT } from '@/lib/supabase/mappers'
 import ProductCard from '@/components/ProductCard'
+import ServiceCard from '@/components/ServiceCard'
 
 // Saved listings page (still routed at /cart for legacy URL stability —
 // the cart slice was repurposed as the favorites store way back). Reads
@@ -77,8 +78,16 @@ export default async function SavedListings() {
                     <Link href='/shop' className='text-sm text-sky-700 hover:underline shrink-0'>Add more →</Link>
                 </div>
 
+                {/* Service rows render with ServiceCard; everything else
+                    falls back to ProductCard. Same grid; the dispatch
+                    happens per-row so a buyer sees each saved listing in
+                    its own correct shape. */}
                 <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
-                    {products.map(p => <ProductCard key={p.id} product={p} />)}
+                    {products.map(p => (
+                        p.service
+                            ? <ServiceCard key={p.id} product={p} />
+                            : <ProductCard key={p.id} product={p} />
+                    ))}
                 </div>
             </div>
         </main>

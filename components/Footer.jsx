@@ -45,7 +45,7 @@ const socialLinks = [
 
 const Footer = () => {
     return (
-        <footer className="bg-[#1F1A35] text-slate-300 mt-20">
+        <footer className="bg-slate-900 text-slate-300 mt-20">
             <div className="max-w-7xl mx-auto px-6 py-14">
                 {/* Link columns + Mobile Apps */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-10">

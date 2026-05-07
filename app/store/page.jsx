@@ -85,17 +85,22 @@ export default async function Dashboard() {
         pendingReviewRes,
         newInquiriesRes,
     ] = await Promise.all([
+        // Services (.service is non-null) are scoped to /pro — exclude
+        // them so a seller-and-provider account sees product-only stats
+        // here, not a mixed total.
         supabase
             .from('products')
             .select('id', { count: 'exact', head: true })
             .eq('store_id', store.id)
             .eq('review_status', 'approved')
+            .is('service', null)
             .is('removed_at', null),
         supabase
             .from('products')
             .select('id', { count: 'exact', head: true })
             .eq('store_id', store.id)
             .eq('review_status', 'pending')
+            .is('service', null)
             .is('removed_at', null),
         supabase
             .from('conversations')
@@ -114,6 +119,7 @@ export default async function Dashboard() {
         .select('id, name, images, price, free, created_at')
         .eq('store_id', store.id)
         .eq('review_status', 'approved')
+        .is('service', null)
         .is('removed_at', null)
         .order('bumped_at', { ascending: false, nullsFirst: false })
         .order('created_at', { ascending: false })

@@ -12,7 +12,7 @@ export default async function AdminReports() {
     const { data: reports } = await supabase
         .from('reports')
         .select(`
-            id, reason, description, status, created_at,
+            id, reason, description, evidence_urls, status, created_at,
             reporter:profiles!reports_reporter_id_fkey(id, name, email),
             listing:products!reports_listing_id_fkey(
                 id, name, images, removed_at, service,
