@@ -29,7 +29,7 @@ const PARCEL_SIZE_OPTIONS = [
 const formatPriceRange = (service) => {
     if (!service?.priceRange) return 'Quote on request'
     const { min, max, unit } = service.priceRange
-    const symbol = service.currency === 'NGN' ? '₦' : '$'
+    const symbol = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
     const u = unit === 'hour' ? '/hr' : unit === 'job' ? '/job' : ''
     if (min == null && max == null) return 'Quote on request'
     if (min != null && max != null) return `${symbol}${min.toLocaleString()} – ${symbol}${max.toLocaleString()}${u}`
@@ -69,7 +69,7 @@ const ServicePage = ({ product }) => {
         if (peers.length === 0) return null
         const avgMin = Math.round(peers.reduce((s, p) => s + p.service.priceRange.min, 0) / peers.length)
         const avgMax = Math.round(peers.reduce((s, p) => s + p.service.priceRange.max, 0) / peers.length)
-        const symbol = service.currency === 'NGN' ? '₦' : '$'
+        const symbol = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
         const thisMid = (service.priceRange.min + service.priceRange.max) / 2
         const marketMid = (avgMin + avgMax) / 2
         let tone = 'inline'
@@ -97,7 +97,7 @@ const ServicePage = ({ product }) => {
         const sizeMultiplier = parcelSize === 'small' ? 1 : parcelSize === 'medium' ? 1.6 : 2.4
         const estMin = Math.round(min * sizeMultiplier)
         const estMax = Math.round(max * sizeMultiplier * 0.8)
-        const symbol = service.currency === 'NGN' ? '₦' : '$'
+        const symbol = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
         return `${symbol}${estMin.toLocaleString()} – ${symbol}${estMax.toLocaleString()}`
     }, [isCourier, service.priceRange, service.currency, pickup, dropoff, parcelSize])
 

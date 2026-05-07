@@ -9,7 +9,7 @@ import { signOut } from "@/app/actions/auth";
 
 const ALL_LOCATIONS = 'All locations'
 
-const Navbar = ({ user = null, providerStatus = null }) => {
+const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
 
     const router = useRouter();
     const [openUserMenu, setOpenUserMenu] = useState(false)
@@ -270,8 +270,13 @@ const Navbar = ({ user = null, providerStatus = null }) => {
 
                         {/* Messages — desktop only (mobile has it in the drawer) */}
                         {user && (
-                            <Link href="/messages" aria-label="Messages" className="hidden sm:inline text-slate-600 hover:text-slate-900 transition">
+                            <Link href="/messages" aria-label={unreadCount ? `Messages (${unreadCount} unread)` : 'Messages'} className="hidden sm:inline relative text-slate-600 hover:text-slate-900 transition">
                                 <MessageSquareText size={22} />
+                                {unreadCount > 0 && (
+                                    <span className="absolute -top-1.5 -right-2 text-[10px] text-white bg-rose-500 min-w-4 h-4 px-1 rounded-full flex items-center justify-center font-semibold">
+                                        {unreadCount > 9 ? '9+' : unreadCount}
+                                    </span>
+                                )}
                             </Link>
                         )}
 
@@ -307,7 +312,14 @@ const Navbar = ({ user = null, providerStatus = null }) => {
                                             <p className="text-xs text-slate-500 truncate">{user.email}</p>
                                         </div>
                                         <Link href="/store" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">My listings</Link>
-                                        <Link href="/messages" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Messages</Link>
+                                        <Link href="/messages" className="flex items-center justify-between px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
+                                            <span>Messages</span>
+                                            {unreadCount > 0 && (
+                                                <span className="text-[10px] text-white bg-rose-500 min-w-4 h-4 px-1.5 rounded-full inline-flex items-center justify-center font-semibold">
+                                                    {unreadCount > 9 ? '9+' : unreadCount}
+                                                </span>
+                                            )}
+                                        </Link>
                                         <Link href="/orders" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">My orders</Link>
                                         <Link href="/cart" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Saved items</Link>
                                         <form action={signOut} className="border-t border-slate-100 mt-1 pt-1">
@@ -447,8 +459,15 @@ const Navbar = ({ user = null, providerStatus = null }) => {
                             {user && (
                                 <>
                                     <p className="px-5 pt-3 pb-1 text-[11px] font-bold uppercase tracking-wide text-slate-400 border-t border-slate-100 mt-2">Account</p>
-                                    <Link href="/messages" onClick={() => setOpenMobileMenu(false)} className="flex items-center gap-3 px-5 py-3 text-sm text-slate-700 hover:bg-slate-50">
-                                        <MessageSquareText size={16} className="text-slate-500" /> Messages
+                                    <Link href="/messages" onClick={() => setOpenMobileMenu(false)} className="flex items-center justify-between gap-3 px-5 py-3 text-sm text-slate-700 hover:bg-slate-50">
+                                        <span className="flex items-center gap-3">
+                                            <MessageSquareText size={16} className="text-slate-500" /> Messages
+                                        </span>
+                                        {unreadCount > 0 && (
+                                            <span className="text-[10px] text-white bg-rose-500 min-w-4 h-4 px-1.5 rounded-full inline-flex items-center justify-center font-semibold">
+                                                {unreadCount > 9 ? '9+' : unreadCount}
+                                            </span>
+                                        )}
                                     </Link>
                                     <Link href="/cart" onClick={() => setOpenMobileMenu(false)} className="flex items-center justify-between gap-3 px-5 py-3 text-sm text-slate-700 hover:bg-slate-50">
                                         <span className="flex items-center gap-3">

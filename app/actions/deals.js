@@ -105,6 +105,7 @@ export async function markDealDone({ conversationId }) {
     if (error) return { error: error.message }
 
     revalidatePath(`/messages/${conversationId}`)
+    if (updated.status === 'verified') revalidatePath('/pro')
     return { ok: true, deal: updated }
 }
 

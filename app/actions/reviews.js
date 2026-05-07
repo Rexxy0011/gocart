@@ -78,5 +78,6 @@ export async function submitReview({ productId, rating, comment, dealId = null }
     revalidatePath('/shop')
     revalidatePath(`/product/${productId}`)
     revalidatePath(`/service/${productId}`)
+    if (validatedDealId) revalidatePath('/pro')
     return { ok: true }
 }

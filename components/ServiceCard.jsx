@@ -10,7 +10,7 @@ import { formatLocation } from '@/lib/format-location'
 const formatPriceRange = (service) => {
     if (!service?.priceRange) return 'Quote on request'
     const { min, max, unit } = service.priceRange
-    const symbol = service.currency === 'NGN' ? '₦' : '$'
+    const symbol = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
     const u = unit === 'hour' ? '/hr' : unit === 'job' ? '/job' : ''
     if (min == null && max == null) return 'Quote on request'
     if (min != null && max != null) return `${symbol}${min.toLocaleString()} – ${symbol}${max.toLocaleString()}${u}`

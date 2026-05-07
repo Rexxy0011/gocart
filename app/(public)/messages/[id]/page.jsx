@@ -36,6 +36,16 @@ export default async function ConversationPage({ params }) {
     const listing = conversation.listing
     const listingHref = listing?.service ? `/service/${listing.id}` : `/product/${listing?.id}`
 
+    // Mark this side's read receipt on every render — opening the thread
+    // clears it from the navbar's unread count. Fire-and-forget; if the
+    // update fails the badge just stays a beat longer.
+    await supabase
+        .from('conversations')
+        .update(isBuyer
+            ? { buyer_last_read_at:  new Date().toISOString() }
+            : { seller_last_read_at: new Date().toISOString() })
+        .eq('id', id)
+
     const { data: initialMessages } = await supabase
         .from('messages')
         .select('id, conversation_id, sender_id, body, created_at')

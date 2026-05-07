@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import {
-    FileText, MessageSquareText, Star, Plus, Search,
+    FileText, MessageSquareText, Star, Plus, Search, BadgeCheck,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import AvatarPrompt from '@/components/AvatarPrompt'
@@ -38,6 +38,7 @@ export default async function ProviderDashboard() {
     let listingIds = []
     let newInquiriesCount = 0
     let ratings = []
+    let verifiedJobsCount = 0
 
     if (store) {
         // Service listings owned by this provider.
@@ -67,6 +68,14 @@ export default async function ProviderDashboard() {
                 .in('product_id', listingIds)
             ratings = ratingRows || []
         }
+
+        // Jobs both sides confirmed — drives the "Jobs done" stat.
+        const { count: verifiedCount } = await supabase
+            .from('deals')
+            .select('id', { count: 'exact', head: true })
+            .eq('seller_id', user.id)
+            .eq('status', 'verified')
+        verifiedJobsCount = verifiedCount || 0
     }
 
     // Provider name from the application (the layout already fetched it
@@ -97,6 +106,13 @@ export default async function ProviderDashboard() {
             icon: MessageSquareText,
             tone: 'bg-emerald-50 text-emerald-600 ring-emerald-200',
             hint: 'Last 7 days',
+        },
+        {
+            title: 'Jobs done',
+            value: verifiedJobsCount,
+            icon: BadgeCheck,
+            tone: 'bg-violet-50 text-violet-600 ring-violet-200',
+            hint: verifiedJobsCount ? 'Both sides confirmed' : 'Confirmed deals show here',
         },
         {
             title: 'Rating',
@@ -151,7 +167,7 @@ export default async function ProviderDashboard() {
             </section>
 
             {/* Stats — real data, no mocks */}
-            <section className='grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8'>
+            <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8'>
                 {stats.map((card) => (
                     <div key={card.title} className='bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-sm transition'>
                         <span className={`inline-flex items-center justify-center size-10 rounded-xl ring-1 ${card.tone}`}>
