@@ -1,10 +1,10 @@
 'use client'
 import dynamic from 'next/dynamic'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
-    BadgeCheck, CalendarClock, ChevronDown, Clock, Flag, Heart, MapPin, Package, Phone, ShieldCheck, Star, Wrench,
+    BadgeCheck, CalendarClock, ChevronLeft, ChevronRight, Clock, Flag, Heart, MapPin, Package, Phone, ShieldCheck, Star, Wrench, X,
 } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-hot-toast'
@@ -119,34 +119,46 @@ const ServicePage = ({ product }) => {
         `Sign in to view ${firstName}'s phone number.`
     )
 
-    // All three CTAs (Book / Send Message / Request quote) start a
-    // conversation. They differ only in the opening message text — until
-    // we have a real booking/quote primitive, every contact is just a
-    // chat with a different opener. Auth-gated; first-time clickers get
-    // bounced to /login with a return-to-this-page redirect.
-    const sendStarter = (opener, action) => {
+    // Portfolio lightbox — clicking a thumbnail opens the full image
+    // with prev/next + escape navigation. Buyers want to actually see
+    // a plumber's past work, not just postage-stamp thumbnails.
+    const [lightboxIndex, setLightboxIndex] = useState(-1)  // -1 = closed
+    const lightboxOpen = lightboxIndex >= 0
+    const closeLightbox = () => setLightboxIndex(-1)
+    const showPrev = () => setLightboxIndex(i => Math.max(0, i - 1))
+    const showNext = () => setLightboxIndex(i => Math.min(portfolio.length - 1, i + 1))
+
+    useEffect(() => {
+        if (!lightboxOpen) return
+        const onKey = (e) => {
+            if (e.key === 'Escape')     closeLightbox()
+            if (e.key === 'ArrowLeft')  showPrev()
+            if (e.key === 'ArrowRight') showNext()
+        }
+        document.addEventListener('keydown', onKey)
+        const prevOverflow = document.body.style.overflow
+        document.body.style.overflow = 'hidden'
+        return () => {
+            document.removeEventListener('keydown', onKey)
+            document.body.style.overflow = prevOverflow
+        }
+    }, [lightboxOpen, portfolio.length])
+
+    // Single primary action: "Book this service" opens a conversation
+    // with the seller and uses the buyer's typed note as the first
+    // message (or a polite default if empty). Anything else the buyer
+    // wants to say — quote questions, scheduling — continues in that
+    // same chat thread once it's open.
+    const handleBook = () => {
+        const note = message.trim()
+        const opener = isCourier
+            ? `Hi ${firstName}, I'd like to book a courier pickup.${note ? '\n\n' + note : ''}`
+            : `Hi ${firstName}, I'd like to book your ${product.category?.toLowerCase() || 'service'}.${note ? '\n\n' + note : ' When are you available?'}`
         requireAuth(async () => {
             const result = await startConversation({ listingId: productId, message: opener })
             if (result?.error) toast.error(result.error)
-        }, `Sign in to ${action} ${firstName}.`)
+        }, `Sign in to ${isCourier ? 'book the courier with' : 'book this service with'} ${firstName}.`)
     }
-
-    const handleBook = () => sendStarter(
-        isCourier
-            ? `Hi ${firstName},\n\nI'd like to book a courier pickup. Details follow.\n\n${message.trim() || ''}`.trim()
-            : `Hi ${firstName},\n\nI'd like to book your ${product.category?.toLowerCase() || 'service'}. ${message.trim() ? '\n\n' + message.trim() : 'When are you available?'}`,
-        isCourier ? 'book the courier with' : 'book this service with'
-    )
-
-    const handleSendMessage = () => sendStarter(
-        message.trim() || `Hi ${firstName}, I'd like to chat about your service.`,
-        'message'
-    )
-
-    const handleQuote = () => sendStarter(
-        `Hi ${firstName}, could you give me a quote for your ${product.category?.toLowerCase() || 'service'}?`,
-        'request a quote from'
-    )
 
     return (
         <div className='mx-6'>
@@ -257,13 +269,21 @@ const ServicePage = ({ product }) => {
                             </div>
                         )}
 
-                        {/* Portfolio */}
+                        {/* Portfolio — click any thumbnail to open the
+                            lightbox below. Cursor flips to zoom-in to
+                            signal interactivity. */}
                         {portfolio.length > 0 && (
                             <section>
                                 <h2 className='text-lg font-semibold text-slate-900 mb-3'>Showcase of past work</h2>
                                 <div className='grid grid-cols-2 sm:grid-cols-3 gap-3'>
                                     {portfolio.map((img, i) => (
-                                        <div key={i} className='relative aspect-square bg-slate-100 rounded-lg overflow-hidden ring-1 ring-slate-200'>
+                                        <button
+                                            key={i}
+                                            type='button'
+                                            onClick={() => setLightboxIndex(i)}
+                                            className='relative aspect-square bg-slate-100 rounded-lg overflow-hidden ring-1 ring-slate-200 hover:ring-slate-400 hover:shadow-sm transition cursor-zoom-in'
+                                            aria-label={`View past work ${i + 1}`}
+                                        >
                                             <Image
                                                 src={img}
                                                 alt={`Past work ${i + 1}`}
@@ -271,7 +291,7 @@ const ServicePage = ({ product }) => {
                                                 sizes='(min-width: 640px) 220px, 50vw'
                                                 className='object-cover'
                                             />
-                                        </div>
+                                        </button>
                                     ))}
                                 </div>
                             </section>
@@ -470,24 +490,6 @@ const ServicePage = ({ product }) => {
                                 >
                                     <CalendarClock size={18} /> {isCourier ? 'Book courier' : 'Book this service'}
                                 </Button>
-                                <Button
-                                    size='lg'
-                                    variant='outline'
-                                    onClick={handleSendMessage}
-                                    className='w-full justify-center text-base'
-                                >
-                                    Send Message
-                                </Button>
-                                {!isCourier && (
-                                    <Button
-                                        size='lg'
-                                        variant='ghost'
-                                        onClick={handleQuote}
-                                        className='w-full justify-center text-base'
-                                    >
-                                        Request quote <ChevronDown size={16} />
-                                    </Button>
-                                )}
 
                                 {/* Gated phone reveal — buyers who'd rather
                                     just call instead of message. Number is
@@ -539,6 +541,69 @@ const ServicePage = ({ product }) => {
                 listingId={product.id}
                 listingName={product.name}
             />
+
+            {/* Portfolio lightbox. Click outside (the dark backdrop) or
+                press Escape to close; arrows / on-screen buttons step
+                through the gallery. */}
+            {lightboxOpen && (
+                <div
+                    role='dialog'
+                    aria-modal='true'
+                    aria-label='Portfolio image viewer'
+                    onClick={closeLightbox}
+                    className='fixed inset-0 z-50 bg-black/90 flex items-center justify-center'
+                >
+                    <button
+                        type='button'
+                        onClick={(e) => { e.stopPropagation(); closeLightbox() }}
+                        aria-label='Close viewer'
+                        className='absolute top-4 right-4 size-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition'
+                    >
+                        <X size={20} />
+                    </button>
+
+                    {lightboxIndex > 0 && (
+                        <button
+                            type='button'
+                            onClick={(e) => { e.stopPropagation(); showPrev() }}
+                            aria-label='Previous image'
+                            className='absolute left-4 size-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition'
+                        >
+                            <ChevronLeft size={22} />
+                        </button>
+                    )}
+
+                    <div
+                        className='relative w-full max-w-5xl mx-4'
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <Image
+                            src={portfolio[lightboxIndex]}
+                            alt={`Past work ${lightboxIndex + 1}`}
+                            width={1600}
+                            height={1200}
+                            sizes='(min-width: 1024px) 1024px, 90vw'
+                            className='w-full h-auto max-h-[85vh] object-contain mx-auto'
+                            priority
+                        />
+                    </div>
+
+                    {lightboxIndex < portfolio.length - 1 && (
+                        <button
+                            type='button'
+                            onClick={(e) => { e.stopPropagation(); showNext() }}
+                            aria-label='Next image'
+                            className='absolute right-4 size-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition'
+                        >
+                            <ChevronRight size={22} />
+                        </button>
+                    )}
+
+                    <p className='absolute bottom-4 left-1/2 -translate-x-1/2 text-white/80 text-sm tabular-nums'>
+                        {lightboxIndex + 1} / {portfolio.length}
+                    </p>
+                </div>
+            )}
         </div>
     )
 }
