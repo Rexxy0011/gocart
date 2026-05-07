@@ -1,7 +1,7 @@
 'use client'
 import { useMemo, useState } from "react"
 import Image from "next/image"
-import { ShieldCheck, Star, MessageSquareText } from "lucide-react"
+import { ShieldCheck, Star, MessageSquareText, BadgeCheck } from "lucide-react"
 import { differenceInMonths, differenceInYears, formatDistanceToNow } from "date-fns"
 import ProductRow from "@/components/ProductRow"
 import VerifiedCheck from "@/components/VerifiedCheck"
@@ -232,6 +232,11 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
                                             </div>
                                             {r.productName && (
                                                 <p className="text-xs text-slate-500 mt-1 truncate">on “{r.productName}”</p>
+                                            )}
+                                            {r.verifiedJob && (
+                                                <span className="mt-1.5 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 rounded-full px-2 py-0.5">
+                                                    <BadgeCheck size={10} /> Verified job
+                                                </span>
                                             )}
                                         </div>
                                     </header>

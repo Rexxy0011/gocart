@@ -8,7 +8,11 @@ import { submitReview } from '@/app/actions/reviews'
 // than one), 1–5 star rating, optional 1000-char comment. Calls the
 // server action then closes itself + refreshes the page so the new
 // review renders. Modal style matches BoostPicker / PolicyModal.
-const ReviewModal = ({ open, onClose, listings = [] }) => {
+// `dealId` (optional): when present, the resulting review is stamped
+// with it and renders as a "Verified job" — the buyer is reviewing
+// from a confirmed deal-confirmation flow rather than the open
+// /shop/[username] page. Passed straight through to submitReview.
+const ReviewModal = ({ open, onClose, listings = [], dealId = null }) => {
 
     const [productId, setProductId] = useState(listings[0]?.id || '')
     const [rating, setRating] = useState(0)
@@ -48,7 +52,7 @@ const ReviewModal = ({ open, onClose, listings = [] }) => {
 
         setSaving(true)
         try {
-            const result = await submitReview({ productId, rating, comment })
+            const result = await submitReview({ productId, rating, comment, dealId })
             if (result?.error) {
                 toast.error(result.error)
                 return

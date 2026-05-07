@@ -3,6 +3,8 @@ import Link from "next/link"
 import Image from "next/image"
 import { ChevronLeft } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
+import { getDealForConversation } from "@/app/actions/deals"
+import DealBanner from "@/components/messages/DealBanner"
 import MessageThread from "./MessageThread"
 
 export default async function ConversationPage({ params }) {
@@ -40,6 +42,10 @@ export default async function ConversationPage({ params }) {
         .eq('conversation_id', id)
         .order('created_at', { ascending: true })
 
+    // Lazy-create the deal row if it doesn't exist yet so the banner
+    // always has a status to render.
+    const deal = await getDealForConversation(id)
+
     return (
         <div className="mx-6">
             <div className="max-w-3xl mx-auto py-6">
@@ -62,6 +68,14 @@ export default async function ConversationPage({ params }) {
                         </p>
                     </Link>
                 )}
+
+                <DealBanner
+                    deal={deal}
+                    conversationId={id}
+                    viewerIsBuyer={isBuyer}
+                    otherPartyName={otherParty?.name?.split(' ')[0] || (isBuyer ? 'the seller' : 'the buyer')}
+                    listing={listing ? { id: listing.id, name: listing.name } : null}
+                />
 
                 <MessageThread
                     conversationId={id}

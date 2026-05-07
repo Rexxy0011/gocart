@@ -55,8 +55,9 @@ export default async function StoreShop({ params }) {
         const { data: ratingRows } = await supabase
             .from('ratings')
             .select(`
-                id, rating, review, created_at, product_id,
-                user:profiles!ratings_user_id_fkey(id, name, image)
+                id, rating, review, created_at, product_id, deal_id,
+                user:profiles!ratings_user_id_fkey(id, name, image),
+                deal:deals!ratings_deal_id_fkey(id, status)
             `)
             .in('product_id', productIds)
             .order('created_at', { ascending: false })
@@ -67,6 +68,9 @@ export default async function StoreShop({ params }) {
             createdAt: r.created_at,
             productId: r.product_id,
             user: r.user,
+            // Verified-job flag — true only when the rating is tied to
+            // a deal that actually reached the verified state.
+            verifiedJob: r.deal?.status === 'verified',
             productName: products.find(p => p.id === r.product_id)?.name || '',
         }))
     }

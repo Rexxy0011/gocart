@@ -32,6 +32,8 @@ export async function startConversation({ listingId, message, redirectAfter = tr
     // 2. Find or create the conversation. The (listing_id, buyer_id) unique
     // constraint means a re-message just reopens the existing thread.
     let conversationId
+    let isNewConversation = false
+
     const { data: existing } = await supabase
         .from('conversations')
         .select('id')
@@ -53,10 +55,15 @@ export async function startConversation({ listingId, message, redirectAfter = tr
             .single()
         if (createErr) return { error: createErr.message }
         conversationId = created.id
+        isNewConversation = true
     }
 
-    // 3. Post the initial message if one was provided.
-    if (message?.trim()) {
+    // 3. Post the initial templated message ONLY for brand-new conversations.
+    // Otherwise returning buyers — clicking "Book this service" or "Send
+    // Message" again from the listing — would spam the seller with copies
+    // of the same opener every visit. They just land in the existing
+    // thread instead, where any further conversation is human-typed.
+    if (isNewConversation && message?.trim()) {
         const { error: msgErr } = await supabase
             .from('messages')
             .insert({
