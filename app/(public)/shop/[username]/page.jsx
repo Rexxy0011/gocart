@@ -80,6 +80,16 @@ export default async function StoreShop({ params }) {
     const { data: { user: viewer } } = await supabase.auth.getUser()
     const viewerIsSelf = viewer?.id === storeRow.user_id
 
+    // Provider verification — separate from store-approval. KYC-approved
+    // providers carry the badge even if their store status is something
+    // else, and vice versa.
+    const { data: providerApp } = await supabase
+        .from('provider_applications')
+        .select('status')
+        .eq('user_id', storeRow.user_id)
+        .maybeSingle()
+    const providerVerified = providerApp?.status === 'approved'
+
     const storeInfo = mapStoreRow(storeRow)
 
     return (
@@ -89,6 +99,7 @@ export default async function StoreShop({ params }) {
             reviews={reviews}
             viewerIsSelf={viewerIsSelf}
             viewerSignedIn={!!viewer}
+            providerVerified={providerVerified}
         />
     )
 }

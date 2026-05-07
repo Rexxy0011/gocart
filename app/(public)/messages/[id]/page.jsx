@@ -33,8 +33,19 @@ export default async function ConversationPage({ params }) {
 
     const isBuyer = conversation.buyer_id === user.id
     const otherParty = isBuyer ? conversation.seller : conversation.buyer
+    const otherPartyId = isBuyer ? conversation.seller_id : conversation.buyer_id
     const listing = conversation.listing
     const listingHref = listing?.service ? `/service/${listing.id}` : `/product/${listing?.id}`
+
+    // Other party's shop username — sellers always have one; buyers do
+    // too if they've ever posted a listing themselves. Drives the
+    // clickable avatar in the thread header.
+    const { data: otherStore } = await supabase
+        .from('stores')
+        .select('username')
+        .eq('user_id', otherPartyId)
+        .maybeSingle()
+    const otherUsername = otherStore?.username || null
 
     // Mark this side's read receipt on every render — opening the thread
     // clears it from the navbar's unread count. Fire-and-forget; if the
@@ -94,6 +105,7 @@ export default async function ConversationPage({ params }) {
                         name: otherParty?.name || (isBuyer ? 'Seller' : 'Buyer'),
                         image: otherParty?.image,
                         role: isBuyer ? 'seller' : 'buyer',
+                        username: otherUsername,
                     }}
                     initialMessages={initialMessages || []}
                 />

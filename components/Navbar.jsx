@@ -268,9 +268,10 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                             <span className="text-xs leading-none whitespace-nowrap">{providerLabel}</span>
                         </Link>
 
-                        {/* Messages — desktop only (mobile has it in the drawer) */}
+                        {/* Messages — always visible. The unread pill is high-signal
+                            for a marketplace; hiding it on mobile defeats the point. */}
                         {user && (
-                            <Link href="/messages" aria-label={unreadCount ? `Messages (${unreadCount} unread)` : 'Messages'} className="hidden sm:inline relative text-slate-600 hover:text-slate-900 transition">
+                            <Link href="/messages" aria-label={unreadCount ? `Messages (${unreadCount} unread)` : 'Messages'} className="relative text-slate-600 hover:text-slate-900 transition">
                                 <MessageSquareText size={22} />
                                 {unreadCount > 0 && (
                                     <span className="absolute -top-1.5 -right-2 text-[10px] text-white bg-rose-500 min-w-4 h-4 px-1 rounded-full flex items-center justify-center font-semibold">

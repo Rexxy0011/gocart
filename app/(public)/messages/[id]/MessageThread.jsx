@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { format, isToday, isYesterday } from "date-fns"
 import { Send } from "lucide-react"
 import { toast } from "react-hot-toast"
@@ -72,20 +73,41 @@ const MessageThread = ({ conversationId, currentUserId, otherParty, initialMessa
     return (
         <div className="bg-white border border-slate-200 rounded-2xl flex flex-col h-[70vh] min-h-[480px] overflow-hidden">
 
-            {/* Other-party header */}
-            <div className="border-b border-slate-100 p-4 flex items-center gap-3">
-                {otherParty.image ? (
-                    <Image src={otherParty.image} alt={otherParty.name} width={40} height={40} className="size-10 rounded-full object-cover ring-1 ring-slate-200" />
-                ) : (
-                    <div className="size-10 rounded-full bg-slate-100 ring-1 ring-slate-200 flex items-center justify-center text-slate-600 font-semibold">
-                        {initial}
+            {/* Other-party header — linked to their shop profile when they
+                have one (sellers always do; buyers do iff they've ever
+                posted a listing). Falls back to a plain block otherwise. */}
+            {otherParty.username ? (
+                <Link
+                    href={`/shop/${otherParty.username}`}
+                    className="border-b border-slate-100 p-4 flex items-center gap-3 hover:bg-slate-50 transition"
+                >
+                    {otherParty.image ? (
+                        <Image src={otherParty.image} alt={otherParty.name} width={40} height={40} className="size-10 rounded-full object-cover ring-1 ring-slate-200" />
+                    ) : (
+                        <div className="size-10 rounded-full bg-slate-100 ring-1 ring-slate-200 flex items-center justify-center text-slate-600 font-semibold">
+                            {initial}
+                        </div>
+                    )}
+                    <div className="min-w-0">
+                        <p className="text-sm font-semibold text-slate-900 truncate hover:underline">{otherParty.name}</p>
+                        <p className="text-xs text-slate-500 capitalize">{otherParty.role} · view profile</p>
                     </div>
-                )}
-                <div className="min-w-0">
-                    <p className="text-sm font-semibold text-slate-900 truncate">{otherParty.name}</p>
-                    <p className="text-xs text-slate-500 capitalize">{otherParty.role}</p>
+                </Link>
+            ) : (
+                <div className="border-b border-slate-100 p-4 flex items-center gap-3">
+                    {otherParty.image ? (
+                        <Image src={otherParty.image} alt={otherParty.name} width={40} height={40} className="size-10 rounded-full object-cover ring-1 ring-slate-200" />
+                    ) : (
+                        <div className="size-10 rounded-full bg-slate-100 ring-1 ring-slate-200 flex items-center justify-center text-slate-600 font-semibold">
+                            {initial}
+                        </div>
+                    )}
+                    <div className="min-w-0">
+                        <p className="text-sm font-semibold text-slate-900 truncate">{otherParty.name}</p>
+                        <p className="text-xs text-slate-500 capitalize">{otherParty.role}</p>
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Messages scroller */}
             <div ref={scrollerRef} className="flex-1 overflow-y-auto p-4 space-y-3">

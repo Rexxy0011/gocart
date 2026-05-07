@@ -26,7 +26,7 @@ const groupForCategory = (category) => {
     return category
 }
 
-const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false, viewerSignedIn = false }) => {
+const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false, viewerSignedIn = false, providerVerified = false }) => {
 
     const [activeTab, setActiveTab] = useState('Listings')
     const [reviewOpen, setReviewOpen] = useState(false)
@@ -45,7 +45,7 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
     const initial = sellerName.charAt(0).toUpperCase()
     const avatar = storeInfo?.user?.image || storeInfo?.logo
     const postingDuration = formatPostingDuration(storeInfo?.createdAt)
-    const isVerified = storeInfo?.status === 'approved'
+    const isVerified = storeInfo?.status === 'approved' || providerVerified
 
     // Aggregate stars across every review on this seller's listings.
     const ratingCount = reviews.length
