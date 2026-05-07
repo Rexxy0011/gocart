@@ -1,10 +1,12 @@
 'use client'
 import { useMemo, useState } from "react"
 import Image from "next/image"
-import { ShieldCheck, Star } from "lucide-react"
-import { differenceInMonths, differenceInYears } from "date-fns"
+import { ShieldCheck, Star, MessageSquareText } from "lucide-react"
+import { differenceInMonths, differenceInYears, formatDistanceToNow } from "date-fns"
 import ProductRow from "@/components/ProductRow"
 import VerifiedCheck from "@/components/VerifiedCheck"
+import ReviewModal from "@/components/ReviewModal"
+import { useAuthGate } from "@/hooks/useAuthGate"
 import { categoryGroups } from "@/assets/assets"
 
 const formatPostingDuration = (createdAt) => {
@@ -24,9 +26,11 @@ const groupForCategory = (category) => {
     return category
 }
 
-const StoreShopView = ({ storeInfo, products }) => {
+const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false, viewerSignedIn = false }) => {
 
     const [activeTab, setActiveTab] = useState('Listings')
+    const [reviewOpen, setReviewOpen] = useState(false)
+    const requireAuth = useAuthGate()
 
     const categoryCounts = useMemo(() => {
         const counts = new Map()
@@ -43,10 +47,16 @@ const StoreShopView = ({ storeInfo, products }) => {
     const postingDuration = formatPostingDuration(storeInfo?.createdAt)
     const isVerified = storeInfo?.status === 'approved'
 
-    // Reviews: ratings table not yet wired — placeholder until that lands.
-    const reviews = []
-    const ratingCount = 0
-    const averageRating = 0
+    // Aggregate stars across every review on this seller's listings.
+    const ratingCount = reviews.length
+    const averageRating = ratingCount
+        ? reviews.reduce((s, r) => s + r.rating, 0) / ratingCount
+        : 0
+
+    const openReviewModal = () => requireAuth(
+        () => setReviewOpen(true),
+        `Sign in to review ${sellerName.split(' ')[0]}.`,
+    )
 
     return (
         <div className="min-h-[70vh]">
@@ -78,7 +88,14 @@ const StoreShopView = ({ storeInfo, products }) => {
                                         />
                                     ))}
                                 </div>
-                                <span className="text-sm text-slate-600">({ratingCount})</span>
+                                {ratingCount > 0 ? (
+                                    <span className="text-sm text-slate-700">
+                                        <span className="font-semibold">{averageRating.toFixed(1)}</span>
+                                        <span className="text-slate-500"> ({ratingCount} review{ratingCount === 1 ? '' : 's'})</span>
+                                    </span>
+                                ) : (
+                                    <span className="text-sm text-slate-500">No reviews yet</span>
+                                )}
                             </div>
                             {postingDuration && (
                                 <p className="text-sm text-slate-600 mt-3">{postingDuration}</p>
@@ -87,6 +104,20 @@ const StoreShopView = ({ storeInfo, products }) => {
                                 <ShieldCheck size={18} className="text-emerald-600" />
                                 Email address verified
                             </p>
+
+                            {/* Leave-a-review CTA — hidden on the seller's
+                                own profile. Buyers who haven't signed in
+                                yet still see the button; clicking goes
+                                through useAuthGate and redirects them. */}
+                            {!viewerIsSelf && products.length > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={openReviewModal}
+                                    className="mt-5 inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-full px-4 py-2 transition"
+                                >
+                                    <MessageSquareText size={14} /> Leave a review
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -132,6 +163,9 @@ const StoreShopView = ({ storeInfo, products }) => {
                             } px-6 py-3 text-sm font-medium transition`}
                         >
                             {tab}
+                            {tab === 'Reviews' && ratingCount > 0 && (
+                                <span className="ml-1.5 text-xs text-slate-400">({ratingCount})</span>
+                            )}
                         </button>
                     ))}
                 </div>
@@ -153,13 +187,70 @@ const StoreShopView = ({ storeInfo, products }) => {
                         </>
                     )
                 ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-4 max-w-3xl">
                         {reviews.length === 0 ? (
-                            <p className="text-sm text-slate-500 py-12 text-center">No reviews yet</p>
-                        ) : null}
+                            <div className="py-12 text-center">
+                                <p className="text-sm text-slate-500">No reviews yet.</p>
+                                {!viewerIsSelf && products.length > 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={openReviewModal}
+                                        className="mt-4 text-sm font-semibold text-sky-700 hover:underline"
+                                    >
+                                        Be the first to review {sellerName.split(' ')[0]}
+                                    </button>
+                                )}
+                            </div>
+                        ) : (
+                            reviews.map((r) => (
+                                <article key={r.id} className="bg-white border border-slate-200 rounded-xl p-4">
+                                    <header className="flex items-start gap-3">
+                                        <div className="size-9 rounded-full overflow-hidden bg-slate-100 ring-1 ring-slate-200 flex items-center justify-center text-xs font-semibold text-slate-600 shrink-0">
+                                            {r.user?.image ? (
+                                                <Image src={r.user.image} alt={r.user.name || 'Reviewer'} width={36} height={36} className="size-full object-cover" />
+                                            ) : (
+                                                (r.user?.name?.charAt(0) || '?').toUpperCase()
+                                            )}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-semibold text-slate-900 truncate">{r.user?.name || 'Buyer'}</p>
+                                            <div className="flex items-center gap-2 mt-0.5">
+                                                <div className="flex items-center">
+                                                    {Array.from({ length: 5 }).map((_, i) => (
+                                                        <Star
+                                                            key={i}
+                                                            size={13}
+                                                            className={i < r.rating ? 'text-amber-400' : 'text-slate-300'}
+                                                            fill={i < r.rating ? 'currentColor' : 'none'}
+                                                            strokeWidth={1.5}
+                                                        />
+                                                    ))}
+                                                </div>
+                                                <span className="text-xs text-slate-500">
+                                                    {formatDistanceToNow(new Date(r.createdAt), { addSuffix: true })}
+                                                </span>
+                                            </div>
+                                            {r.productName && (
+                                                <p className="text-xs text-slate-500 mt-1 truncate">on “{r.productName}”</p>
+                                            )}
+                                        </div>
+                                    </header>
+                                    {r.comment && (
+                                        <p className="text-sm text-slate-700 mt-3 leading-relaxed whitespace-pre-line">{r.comment}</p>
+                                    )}
+                                </article>
+                            ))
+                        )}
                     </div>
                 )}
             </div>
+
+            {/* Review modal — listings prop scopes the picker to this seller */}
+            <ReviewModal
+                open={reviewOpen}
+                onClose={() => setReviewOpen(false)}
+                listings={products.map(p => ({ id: p.id, name: p.name }))}
+            />
         </div>
     )
 }

@@ -10,7 +10,7 @@ export default async function StoreShop({ params }) {
     const { data: storeRow } = await supabase
         .from('stores')
         .select(`
-            id, name, username, description, address, status, logo, contact, email, created_at,
+            id, name, username, description, address, status, logo, contact, email, created_at, user_id,
             user:profiles!stores_user_id_fkey(id, name, image)
         `)
         .eq('username', username)
@@ -30,21 +30,61 @@ export default async function StoreShop({ params }) {
         )
     }
 
-    // Per services-separation rule: products only on a seller profile.
-    // Service listings show on a separate provider profile (future).
+    // Show every approved listing this seller has — products and
+    // services together. The original "products only on profile" rule
+    // assumed a separate provider profile that we never built, and
+    // splitting two URLs for the same identity confuses buyers more
+    // than it helps.
     const { data: productRows } = await supabase
         .from('products')
         .select(PRODUCT_WITH_STORE_SELECT)
         .eq('store_id', storeRow.id)
         .eq('review_status', 'approved')
-        .is('service', null)
         .is('removed_at', null)
         .order('featured', { ascending: false })
         .order('bumped_at', { ascending: false, nullsFirst: false })
         .order('created_at', { ascending: false })
 
-    const storeInfo = mapStoreRow(storeRow)
     const products = (productRows || []).map(mapProductRow)
+    const productIds = products.map(p => p.id)
 
-    return <StoreShopView storeInfo={storeInfo} products={products} />
+    // Pull every review on this seller's listings, joined with the
+    // reviewer's profile for display. Sorted newest-first.
+    let reviews = []
+    if (productIds.length) {
+        const { data: ratingRows } = await supabase
+            .from('ratings')
+            .select(`
+                id, rating, review, created_at, product_id,
+                user:profiles!ratings_user_id_fkey(id, name, image)
+            `)
+            .in('product_id', productIds)
+            .order('created_at', { ascending: false })
+        reviews = (ratingRows || []).map(r => ({
+            id: r.id,
+            rating: r.rating,
+            comment: r.review,
+            createdAt: r.created_at,
+            productId: r.product_id,
+            user: r.user,
+            productName: products.find(p => p.id === r.product_id)?.name || '',
+        }))
+    }
+
+    // Identify the viewer so we can hide the "Leave a review" CTA on
+    // the seller's own profile.
+    const { data: { user: viewer } } = await supabase.auth.getUser()
+    const viewerIsSelf = viewer?.id === storeRow.user_id
+
+    const storeInfo = mapStoreRow(storeRow)
+
+    return (
+        <StoreShopView
+            storeInfo={storeInfo}
+            products={products}
+            reviews={reviews}
+            viewerIsSelf={viewerIsSelf}
+            viewerSignedIn={!!viewer}
+        />
+    )
 }

@@ -4,9 +4,10 @@ import { useMemo, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
-    BadgeCheck, CalendarClock, ChevronDown, Clock, Flag, Heart, MapPin, Package, ShieldCheck, Star, Wrench,
+    BadgeCheck, CalendarClock, ChevronDown, Clock, Flag, Heart, MapPin, Package, Phone, ShieldCheck, Star, Wrench,
 } from 'lucide-react'
 import { useSelector } from 'react-redux'
+import { toast } from 'react-hot-toast'
 import { useToggleFavorite } from '@/lib/features/cart/useToggleFavorite'
 import { formatLocation } from '@/lib/format-location'
 import { Button } from '@/components/ui/button'
@@ -15,6 +16,7 @@ import AddressInput from '@/components/AddressInput'
 import MilestoneBadge from '@/components/MilestoneBadge'
 import { stateAreas } from '@/assets/assets'
 import { useAuthGate } from '@/hooks/useAuthGate'
+import { startConversation } from '@/app/actions/messages'
 
 const ReportModal = dynamic(() => import('@/components/ReportModal'), { ssr: false })
 
@@ -103,6 +105,48 @@ const ServicePage = ({ product }) => {
         isCourier
             ? `Hi ${sellerName.split(' ')[0]},\n\nDetails of the parcel and special handling notes…`
             : `Hi ${sellerName.split(' ')[0]},\n\nI'd like to book your ${product.category?.toLowerCase() || 'service'}. Could you confirm availability and rough pricing?\n\nThanks`
+    )
+
+    const requireAuth = useAuthGate()
+    const productId = product.id
+    const firstName = sellerName.split(' ')[0]
+
+    // Gated phone reveal — same pattern as the product page. Hidden
+    // until the buyer signs in, then visible for the rest of the session.
+    const sellerContact = product.store?.contact?.trim()
+    const [contactRevealed, setContactRevealed] = useState(false)
+    const revealContact = () => requireAuth(
+        () => setContactRevealed(true),
+        `Sign in to view ${firstName}'s phone number.`
+    )
+
+    // All three CTAs (Book / Send Message / Request quote) start a
+    // conversation. They differ only in the opening message text — until
+    // we have a real booking/quote primitive, every contact is just a
+    // chat with a different opener. Auth-gated; first-time clickers get
+    // bounced to /login with a return-to-this-page redirect.
+    const sendStarter = (opener, action) => {
+        requireAuth(async () => {
+            const result = await startConversation({ listingId: productId, message: opener })
+            if (result?.error) toast.error(result.error)
+        }, `Sign in to ${action} ${firstName}.`)
+    }
+
+    const handleBook = () => sendStarter(
+        isCourier
+            ? `Hi ${firstName},\n\nI'd like to book a courier pickup. Details follow.\n\n${message.trim() || ''}`.trim()
+            : `Hi ${firstName},\n\nI'd like to book your ${product.category?.toLowerCase() || 'service'}. ${message.trim() ? '\n\n' + message.trim() : 'When are you available?'}`,
+        isCourier ? 'book the courier with' : 'book this service with'
+    )
+
+    const handleSendMessage = () => sendStarter(
+        message.trim() || `Hi ${firstName}, I'd like to chat about your service.`,
+        'message'
+    )
+
+    const handleQuote = () => sendStarter(
+        `Hi ${firstName}, could you give me a quote for your ${product.category?.toLowerCase() || 'service'}?`,
+        'request a quote from'
     )
 
     return (
@@ -420,16 +464,54 @@ const ServicePage = ({ product }) => {
                             />
 
                             <div className='flex flex-col gap-2 mt-4'>
-                                <Button size='lg' className='w-full bg-slate-900 hover:bg-slate-800 text-white text-base'>
+                                <Button
+                                    size='lg'
+                                    onClick={handleBook}
+                                    className='w-full bg-slate-900 hover:bg-slate-800 text-white text-base'
+                                >
                                     <CalendarClock size={18} /> {isCourier ? 'Book courier' : 'Book this service'}
                                 </Button>
-                                <Button size='lg' variant='outline' className='w-full justify-center text-base'>
+                                <Button
+                                    size='lg'
+                                    variant='outline'
+                                    onClick={handleSendMessage}
+                                    className='w-full justify-center text-base'
+                                >
                                     Send Message
                                 </Button>
                                 {!isCourier && (
-                                    <Button size='lg' variant='ghost' className='w-full justify-center text-base'>
+                                    <Button
+                                        size='lg'
+                                        variant='ghost'
+                                        onClick={handleQuote}
+                                        className='w-full justify-center text-base'
+                                    >
                                         Request quote <ChevronDown size={16} />
                                     </Button>
+                                )}
+
+                                {/* Gated phone reveal — buyers who'd rather
+                                    just call instead of message. Number is
+                                    hidden until sign-in to keep scrapers
+                                    away from a public listing page. */}
+                                {sellerContact && (
+                                    contactRevealed ? (
+                                        <a
+                                            href={`tel:${sellerContact}`}
+                                            className='inline-flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-base font-semibold rounded-md px-4 py-3 transition'
+                                        >
+                                            <Phone size={16} /> {sellerContact}
+                                        </a>
+                                    ) : (
+                                        <Button
+                                            size='lg'
+                                            variant='outline'
+                                            onClick={revealContact}
+                                            className='w-full justify-center text-base'
+                                        >
+                                            <Phone size={16} /> Show contact
+                                        </Button>
+                                    )
                                 )}
                             </div>
 
