@@ -117,7 +117,7 @@ export const subCategories = categoryGroups.flatMap(g => g.items);
 
 // Curated, ordered roughly by listing volume on real Nigerian classifieds
 // (Jiji + Property24 reference). Lagos is the deepest because it's where
-// most GoCart listings will land - we split Lekki into phases + Oniru
+// most Kakimart listings will land - we split Lekki into phases + Oniru
 // since that area alone moves a lot of housing/electronics inventory.
 export const stateAreas = {
     'Lagos': [
@@ -633,8 +633,8 @@ export const productDummyData = [
     {
         id: "prod_17",
         location: "Lagos",
-        name: "Same-day courier - pick up your GoCart purchase",
-        description: "Last-mile pickup and delivery for items bought on GoCart. Bike for small parcels, van for furniture and appliances. Live tracking, photo proof of delivery.",
+        name: "Same-day courier - pick up your Kakimart purchase",
+        description: "Last-mile pickup and delivery for items bought on Kakimart. Bike for small parcels, van for furniture and appliances. Live tracking, photo proof of delivery.",
         mrp: null,
         price: 2500,
         images: [product_img2],

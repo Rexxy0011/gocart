@@ -2,8 +2,8 @@ import { isAdminAuthenticated } from '@/lib/auth/admin-pass'
 import AdminLayout from '@/components/admin/AdminLayout'
 
 export const metadata = {
-    title: 'GoCart. - Admin',
-    description: 'GoCart. - Admin',
+    title: 'Kakimart. - Admin',
+    description: 'Kakimart. - Admin',
 }
 
 // Render bare children when the visitor is not yet authenticated - this is

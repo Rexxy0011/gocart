@@ -9,7 +9,7 @@ import { format } from 'date-fns'
 // What it shows today (free):
 //   - Luhn pass / fail (catches mistyped or fabricated IMEIs)
 //   - TAC-decoded brand / model when a public DB had a hit
-//   - Past listings on GoCart (rebadge / re-list audit trail)
+//   - Past listings on Kakimart (rebadge / re-list audit trail)
 //
 // Not yet:
 //   - Stolen / blacklist status (paid)
@@ -67,11 +67,11 @@ const ImeiReportSection = ({ imeiReport, claimedCondition }) => {
                     )}
                 </div>
 
-                {/* GoCart re-listing trail */}
+                {/* Kakimart re-listing trail */}
                 {history?.length > 1 && (
                     <div className='bg-white rounded-lg p-3 ring-1 ring-emerald-100 sm:col-span-2'>
                         <p className='text-[10px] font-bold uppercase tracking-wide text-slate-500 mb-2'>
-                            Past listings on GoCart ({history.length})
+                            Past listings on Kakimart ({history.length})
                         </p>
                         <ul className='text-xs text-slate-700 space-y-1.5'>
                             {history.slice(0, 5).map((h) => (

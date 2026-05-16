@@ -615,7 +615,7 @@ export default function StoreAddProduct() {
                 <Info size={16} className="text-slate-500 mt-0.5 shrink-0" />
                 <p className="text-sm text-slate-600">
                     <span className="font-semibold text-slate-900">How it works:</span>{' '}
-                    Buyers contact you directly through GoCart messaging. We don&apos;t take any cut on offline sales - listing is free and stays free.
+                    Buyers contact you directly through Kakimart messaging. We don&apos;t take any cut on offline sales - listing is free and stays free.
                 </p>
             </div>
 
@@ -678,7 +678,7 @@ export default function StoreAddProduct() {
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-emerald-900">Sell quicker with a verified IMEI</p>
                             <p className="text-xs text-emerald-900/80 mt-0.5">
-                                Add the IMEI (dial *#06# on the phone) and we&apos;ll attach a free verification - brand match, checksum, and any past listings on GoCart - to your ad. Buyers trust verified used phones faster.
+                                Add the IMEI (dial *#06# on the phone) and we&apos;ll attach a free verification - brand match, checksum, and any past listings on Kakimart - to your ad. Buyers trust verified used phones faster.
                             </p>
                             <input
                                 value={productInfo.phone.imei}

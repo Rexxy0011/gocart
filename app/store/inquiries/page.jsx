@@ -22,7 +22,7 @@ export default async function StoreInquiries() {
                 </span>
                 <div>
                     <h1 className='text-2xl text-slate-900 font-semibold'>Inquiries</h1>
-                    <p className='text-sm text-slate-500'>Buyer messages on your product listings. Reply directly - GoCart never takes a cut on offline sales.</p>
+                    <p className='text-sm text-slate-500'>Buyer messages on your product listings. Reply directly - Kakimart never takes a cut on offline sales.</p>
                 </div>
             </div>
 

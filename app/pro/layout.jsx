@@ -4,8 +4,8 @@ import ProLayout from "@/components/pro/ProLayout"
 import { createClient } from "@/lib/supabase/server"
 
 export const metadata = {
-    title: "GoCart. - Provider Dashboard",
-    description: "GoCart. - Provider Dashboard",
+    title: "Kakimart. - Provider Dashboard",
+    description: "Kakimart. - Provider Dashboard",
 }
 
 export default async function ProRootLayout({ children }) {

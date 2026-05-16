@@ -98,10 +98,10 @@ const VinReportSection = ({ vinReport, listingMileage }) => {
                     </div>
                 )}
 
-                {/* GoCart history - only meaningful if this VIN appeared before */}
+                {/* Kakimart history - only meaningful if this VIN appeared before */}
                 {history.length > 1 && (
                     <div className='bg-white rounded-lg p-3 ring-1 ring-emerald-100'>
-                        <p className='text-[10px] font-bold uppercase tracking-wide text-slate-500 mb-1'>Past listings on GoCart</p>
+                        <p className='text-[10px] font-bold uppercase tracking-wide text-slate-500 mb-1'>Past listings on Kakimart</p>
                         <ul className='text-xs text-slate-700 space-y-1'>
                             {history.slice(0, 4).map((h) => (
                                 <li key={h.recorded_at} className='inline-flex items-center gap-2'>

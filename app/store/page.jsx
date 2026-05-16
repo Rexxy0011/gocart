@@ -64,7 +64,7 @@ export default async function Dashboard() {
                         Hi {sellerName.split(' ')[0]}
                     </h1>
                     <p className="text-sm text-slate-600 mt-2 max-w-md">
-                        Your shop is empty. Post your first ad - buyers reach you directly through GoCart messaging. Free, no commission on offline sales.
+                        Your shop is empty. Post your first ad - buyers reach you directly through Kakimart messaging. Free, no commission on offline sales.
                     </p>
                     <Link
                         href="/store/add-product"
@@ -357,7 +357,7 @@ export default async function Dashboard() {
                 <div className="flex items-end justify-between mb-4">
                     <div>
                         <h2 className="text-lg font-semibold text-slate-900">Recent reviews</h2>
-                        <p className="text-xs text-slate-500 mt-0.5">From buyers you&apos;ve served on GoCart.</p>
+                        <p className="text-xs text-slate-500 mt-0.5">From buyers you&apos;ve served on Kakimart.</p>
                     </div>
                     {ratingCount > 0 && (
                         <p className="text-sm text-slate-500">

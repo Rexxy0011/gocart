@@ -53,7 +53,7 @@ function SignupForm() {
         // admin-alert emails, then full page nav so the freshly-written auth
         // cookie is sent on the next request. (With confirm-email on there's
         // no session here - the welcome fires on the user's first sign-in.)
-        toast.success('Welcome to GoCart.')
+        toast.success('Welcome to Kakimart.')
         await notifyAuthEvent('signup')
         window.location.assign(next)
     }

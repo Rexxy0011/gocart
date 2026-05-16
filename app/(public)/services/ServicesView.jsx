@@ -98,7 +98,7 @@ const ServicesView = ({ services = [], providerStatus = null }) => {
                     <div className='max-w-2xl'>
                         <h1 className='text-2xl sm:text-3xl font-bold text-slate-900'>Repairs &amp; Services</h1>
                         <p className='text-sm text-slate-600 mt-2'>
-                            Find trusted local providers - from picking up your latest GoCart purchase to fixing what&apos;s broken at home. Verified, rated, and paid only when the job is done.
+                            Find trusted local providers - from picking up your latest Kakimart purchase to fixing what&apos;s broken at home. Verified, rated, and paid only when the job is done.
                         </p>
                     </div>
 

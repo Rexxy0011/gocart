@@ -585,7 +585,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                                     </div>
                                 </div>
                             ) : (
-                                <p className="text-sm font-semibold text-slate-900">Welcome to GoCart</p>
+                                <p className="text-sm font-semibold text-slate-900">Welcome to Kakimart</p>
                             )}
                             <button
                                 type="button"
@@ -673,7 +673,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                             {/* Help & Trust */}
                             <p className="px-5 pt-3 pb-1 text-[11px] font-bold uppercase tracking-wide text-slate-400 border-t border-slate-100 mt-2">Help &amp; Trust</p>
                             <Link href="/about" onClick={() => setOpenMobileMenu(false)} className="flex items-center gap-3 px-5 py-3 text-sm text-slate-700 hover:bg-slate-50">
-                                <Info size={16} className="text-slate-500" /> About GoCart
+                                <Info size={16} className="text-slate-500" /> About Kakimart
                             </Link>
                             <Link href="/safety" onClick={() => setOpenMobileMenu(false)} className="flex items-center gap-3 px-5 py-3 text-sm text-slate-700 hover:bg-slate-50">
                                 <ShieldCheck size={16} className="text-slate-500" /> Safety tips

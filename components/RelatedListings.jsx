@@ -64,7 +64,7 @@ const RelatedListings = async ({ product }) => {
                     <p className='text-sm text-slate-500 mt-1'>
                         {product.category
                             ? `More ${product.category.toLowerCase()} listings`
-                            : 'More listings on GoCart'}
+                            : 'More listings on Kakimart'}
                         {product.location ? ` near ${formatLocation(product.location)}` : ''}
                     </p>
                 </div>

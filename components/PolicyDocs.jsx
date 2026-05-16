@@ -20,7 +20,7 @@ const SAFETY_TIPS = [
     },
     {
         Icon: MessageSquare,
-        title: 'Keep the chat on GoCart',
+        title: 'Keep the chat on Kakimart',
         body: 'WhatsApp and Telegram conversations leave us no record if something goes wrong. The in-app messages are timestamped and we can review them when you report a problem.',
     },
     {
@@ -37,9 +37,9 @@ const SAFETY_TIPS = [
 
 export const SafetyContent = () => (
     <>
-        <h1 className='text-2xl sm:text-3xl font-semibold text-slate-900'>Stay safe on GoCart</h1>
+        <h1 className='text-2xl sm:text-3xl font-semibold text-slate-900'>Stay safe on Kakimart</h1>
         <p className='text-slate-600 mt-3 leading-relaxed text-sm sm:text-base'>
-            The vast majority of trades on GoCart are honest neighbours doing honest deals. Five rules cover almost every
+            The vast majority of trades on Kakimart are honest neighbours doing honest deals. Five rules cover almost every
             situation that goes wrong. Read them once - they take a minute and they&apos;ll save you a headache.
         </p>
         <ol className='mt-8 space-y-4'>
@@ -64,13 +64,13 @@ export const TermsContent = () => (
         <h1 className='text-2xl sm:text-3xl font-semibold text-slate-900'>Terms of Use</h1>
         <p className='text-xs text-slate-500 mt-1'>Last updated: 2026-04</p>
         <p className='mt-5 text-sm text-slate-700 leading-relaxed'>
-            These terms govern your use of GoCart. By creating an account, posting an ad, or messaging another user, you
+            These terms govern your use of Kakimart. By creating an account, posting an ad, or messaging another user, you
             agree to them. If you don&apos;t, please don&apos;t use the service.
         </p>
 
-        <h2 className='text-base font-semibold text-slate-900 mt-7'>1. What GoCart is</h2>
+        <h2 className='text-base font-semibold text-slate-900 mt-7'>1. What Kakimart is</h2>
         <p className='mt-2 text-sm text-slate-700 leading-relaxed'>
-            GoCart is a classifieds platform. We connect buyers and sellers and let them message each other. We&apos;re not a
+            Kakimart is a classifieds platform. We connect buyers and sellers and let them message each other. We&apos;re not a
             party to any transaction, and we don&apos;t take payment for offline sales. For Verified-tick businesses, embedded
             checkout flows may be operated by the seller or their payment provider; commission, if any, is disclosed at checkout.
         </p>
@@ -117,7 +117,7 @@ export const TermsContent = () => (
         </p>
 
         <p className='text-xs text-slate-400 mt-10'>
-            GoCart Limited, registered company number TBD. Contact:{' '}
+            Kakimart Limited, registered company number TBD. Contact:{' '}
             <Link href='/contact' className='text-sky-700 hover:underline'>/contact</Link>.
         </p>
     </>
@@ -129,7 +129,7 @@ export const PrivacyContent = () => (
         <p className='text-xs text-slate-500 mt-1'>Last updated: 2026-05</p>
 
         <p className='mt-5 text-sm text-slate-700 leading-relaxed'>
-            This notice explains what GoCart Limited (&quot;GoCart&quot;, &quot;we&quot;) collects, why, and how long we keep it.
+            This notice explains what Kakimart Limited (&quot;Kakimart&quot;, &quot;we&quot;) collects, why, and how long we keep it.
             We comply with the Nigerian Data Protection Act (NDPA) 2023.
         </p>
 
@@ -154,7 +154,7 @@ export const PrivacyContent = () => (
             <li><strong>Paystack:</strong> the minimum needed to process a boost payment. We never see your card details.</li>
             <li><strong>Supabase:</strong> our database, storage, and auth provider.</li>
             <li><strong>Resend:</strong> handles transactional email (e.g. boost-expiry reminders).</li>
-            <li><strong>GoCart admin team:</strong> only the small group needed to review applications and respond to reports. ID documents live in a private Storage bucket; admins access them through short-lived signed URLs that expire automatically.</li>
+            <li><strong>Kakimart admin team:</strong> only the small group needed to review applications and respond to reports. ID documents live in a private Storage bucket; admins access them through short-lived signed URLs that expire automatically.</li>
             <li><strong>Authorities:</strong> when legally required.</li>
         </ul>
         <p className='mt-2 text-sm text-slate-700 leading-relaxed'>
@@ -195,7 +195,7 @@ export const PrivacyContent = () => (
         </p>
 
         <p className='text-xs text-slate-400 mt-10'>
-            GoCart Limited. Contact:{' '}
+            Kakimart Limited. Contact:{' '}
             <Link href='/contact' className='text-sky-700 hover:underline'>/contact</Link>.
         </p>
     </>

@@ -1,7 +1,7 @@
 export const metadata = {
-    title: 'About - GoCart',
+    title: 'About - Kakimart',
     description:
-        "GoCart is a next-generation Nigerian marketplace combining innovation, security, transparency, and simplicity. " +
+        "Kakimart is a next-generation Nigerian marketplace combining innovation, security, transparency, and simplicity. " +
         "Smarter marketplace. Safer transactions.",
 }
 
@@ -26,7 +26,7 @@ const PROBLEMS = [
 const DIFFERENTIATORS = [
     {
         title: 'Advanced verification systems',
-        body: 'GoCart is designed around identity and trust verification systems that help improve platform credibility and reduce fraudulent activity. Verification processes may include account authentication, seller reviews, activity monitoring, and other security measures aimed at building a safer marketplace environment.',
+        body: 'Kakimart is designed around identity and trust verification systems that help improve platform credibility and reduce fraudulent activity. Verification processes may include account authentication, seller reviews, activity monitoring, and other security measures aimed at building a safer marketplace environment.',
     },
     {
         title: 'Intelligent fraud prevention',
@@ -38,15 +38,15 @@ const DIFFERENTIATORS = [
     },
     {
         title: 'User-focused experience',
-        body: 'GoCart is designed to be simple, accessible, and efficient for both buyers and sellers. We focus heavily on usability, smooth navigation, modern interface design, and better communication experiences.',
+        body: 'Kakimart is designed to be simple, accessible, and efficient for both buyers and sellers. We focus heavily on usability, smooth navigation, modern interface design, and better communication experiences.',
     },
     {
         title: 'Nigerian-focused solutions',
-        body: 'GoCart is built specifically with the Nigerian market in mind. We understand the unique challenges, behaviors, and realities of online trading within Nigeria, and we are developing solutions tailored to local users and businesses.',
+        body: 'Kakimart is built specifically with the Nigerian market in mind. We understand the unique challenges, behaviors, and realities of online trading within Nigeria, and we are developing solutions tailored to local users and businesses.',
     },
     {
         title: 'Continuous innovation',
-        body: 'We believe trust and safety are ongoing responsibilities. GoCart continuously evolves through platform improvements, smarter moderation systems, new safety features, and technology upgrades designed to improve user confidence over time.',
+        body: 'We believe trust and safety are ongoing responsibilities. Kakimart continuously evolves through platform improvements, smarter moderation systems, new safety features, and technology upgrades designed to improve user confidence over time.',
     },
 ]
 
@@ -67,16 +67,16 @@ export default function AboutPage() {
         <main className="mx-6 mb-24">
             <article className="max-w-3xl mx-auto pt-14 pb-6 text-slate-700 leading-relaxed">
 
-                {/* ─── About GoCart ─────────────────────────────────────── */}
+                {/* ─── About Kakimart ─────────────────────────────────────── */}
                 <section>
-                    <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">About GoCart</h1>
+                    <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">About Kakimart</h1>
                     <div className="mt-6 space-y-5">
                         <p>
-                            Welcome to GoCart - a next-generation Nigerian marketplace built to redefine how
+                            Welcome to Kakimart - a next-generation Nigerian marketplace built to redefine how
                             people buy, sell, and connect online.
                         </p>
                         <p>
-                            GoCart was created with a simple but powerful goal: to solve the trust problems
+                            Kakimart was created with a simple but powerful goal: to solve the trust problems
                             that have affected online marketplaces for years. Across many digital trading
                             platforms, users often face fake listings, scam attempts, unreliable sellers,
                             poor moderation, and unsafe transactions. These challenges have reduced confidence
@@ -86,7 +86,7 @@ export default function AboutPage() {
                             We believe Nigerians deserve better.
                         </p>
                         <p>
-                            GoCart is designed as a modern, security-focused marketplace where technology,
+                            Kakimart is designed as a modern, security-focused marketplace where technology,
                             verification, and intelligent moderation work together to create a safer and more
                             reliable trading environment for everyone.
                         </p>
@@ -94,13 +94,13 @@ export default function AboutPage() {
                             Our platform combines a clean user experience with advanced trust and safety
                             systems that help reduce fraudulent activity, detect suspicious behavior, and
                             improve transparency between buyers and sellers. From verified user systems to
-                            smarter listing reviews and risk-monitoring technologies, every part of GoCart is
+                            smarter listing reviews and risk-monitoring technologies, every part of Kakimart is
                             built with long-term trust in mind.
                         </p>
                         <p>
                             Whether you are an individual seller, a growing business, a student entrepreneur,
                             a real estate agent, a gadget dealer, or someone simply looking for great products
-                            and services, GoCart provides a platform built for modern commerce in Nigeria.
+                            and services, Kakimart provides a platform built for modern commerce in Nigeria.
                         </p>
                         <p className="text-lg font-semibold text-slate-900">
                             We are not just building another classifieds app.
@@ -119,9 +119,9 @@ export default function AboutPage() {
 
                 <Divider />
 
-                {/* ─── Why GoCart Exists ────────────────────────────────── */}
+                {/* ─── Why Kakimart Exists ────────────────────────────────── */}
                 <section>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Why GoCart exists</h2>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Why Kakimart exists</h2>
                     <div className="mt-6 space-y-5">
                         <p>
                             Online marketplaces have made buying and selling easier, but many users still
@@ -136,7 +136,7 @@ export default function AboutPage() {
                             ))}
                         </ul>
                         <p>
-                            GoCart was created to directly address these problems through stronger platform
+                            Kakimart was created to directly address these problems through stronger platform
                             standards, improved verification systems, and continuous safety innovation.
                         </p>
                         <p>
@@ -148,10 +148,10 @@ export default function AboutPage() {
 
                 <Divider />
 
-                {/* ─── What Makes GoCart Different ──────────────────────── */}
+                {/* ─── What Makes Kakimart Different ──────────────────────── */}
                 <section>
                     <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-                        What makes GoCart different?
+                        What makes Kakimart different?
                     </h2>
                     <div className="mt-8 space-y-8">
                         {DIFFERENTIATORS.map(({ title, body }) => (
@@ -204,7 +204,7 @@ export default function AboutPage() {
                             Trust is the foundation of every successful marketplace.
                         </p>
                         <p>
-                            At GoCart, we are committed to investing in systems and technologies that improve
+                            At Kakimart, we are committed to investing in systems and technologies that improve
                             platform integrity and user protection. Our approach to trust and safety includes:
                         </p>
                         <ul className="space-y-2 pl-1">
@@ -216,7 +216,7 @@ export default function AboutPage() {
                             ))}
                         </ul>
                         <p>
-                            While no online platform can completely eliminate fraud, GoCart is committed to
+                            While no online platform can completely eliminate fraud, Kakimart is committed to
                             reducing risks through proactive technology, strong moderation standards, and
                             responsible platform management.
                         </p>
@@ -231,14 +231,14 @@ export default function AboutPage() {
                         Built for the future of commerce
                     </h2>
                     <div className="mt-6 space-y-5">
-                        <p className="text-lg font-semibold text-slate-900">GoCart is more than a marketplace.</p>
+                        <p className="text-lg font-semibold text-slate-900">Kakimart is more than a marketplace.</p>
                         <p>
                             We are building a long-term digital commerce platform designed for the future of
                             buying and selling in Nigeria - one that combines technology, trust, accessibility,
                             and innovation into a single ecosystem that empowers both individuals and businesses.
                         </p>
                         <p>
-                            As digital commerce continues to evolve, GoCart aims to remain at the forefront by
+                            As digital commerce continues to evolve, Kakimart aims to remain at the forefront by
                             continuously improving safety systems, expanding marketplace opportunities, and
                             creating a more dependable online trading experience for millions of users.
                         </p>
@@ -247,18 +247,18 @@ export default function AboutPage() {
 
                 <Divider />
 
-                {/* ─── Join the GoCart Community ────────────────────────── */}
+                {/* ─── Join the Kakimart Community ────────────────────────── */}
                 <section>
                     <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-                        Join the GoCart community
+                        Join the Kakimart community
                     </h2>
                     <div className="mt-6 space-y-5">
                         <p>
                             Whether you are buying, selling, promoting your business, or exploring opportunities
-                            online, GoCart provides a smarter and safer platform built for modern Nigeria.
+                            online, Kakimart provides a smarter and safer platform built for modern Nigeria.
                         </p>
                         <p className="text-lg font-semibold text-slate-900 pt-2">
-                            GoCart - Smarter Marketplace. Safer Transactions.
+                            Kakimart - Smarter Marketplace. Safer Transactions.
                         </p>
                     </div>
                 </section>

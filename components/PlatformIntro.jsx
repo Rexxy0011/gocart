@@ -8,12 +8,12 @@ import { Check, ArrowRight } from 'lucide-react'
 // list. Path is absolute from the site root, so the assets.js static
 // imports aren't needed for these.
 const slides = [
-    { src: '/njo1.jpeg', alt: 'GoCart' },
-    { src: '/njo2.jpeg', alt: 'GoCart' },
-    { src: '/njo3.jpeg', alt: 'GoCart' },
-    { src: '/njo4.jpeg', alt: 'GoCart' },
-    { src: '/njo5.jpeg', alt: 'GoCart' },
-    { src: '/njo6.jpeg', alt: 'GoCart' },
+    { src: '/njo1.jpeg', alt: 'Kakimart' },
+    { src: '/njo2.jpeg', alt: 'Kakimart' },
+    { src: '/njo3.jpeg', alt: 'Kakimart' },
+    { src: '/njo4.jpeg', alt: 'Kakimart' },
+    { src: '/njo5.jpeg', alt: 'Kakimart' },
+    { src: '/njo6.jpeg', alt: 'Kakimart' },
 ]
 
 const SLIDE_INTERVAL_MS = 4500

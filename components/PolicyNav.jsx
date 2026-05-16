@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-// Pill-tab navigator across GoCart's policy pages. Sits between the
+// Pill-tab navigator across Kakimart's policy pages. Sits between the
 // app navbar and a policy page's hero - same visual rhythm as the
 // reference (Skilltwins-style). The active pill goes white on dark;
 // the rest stay translucent.

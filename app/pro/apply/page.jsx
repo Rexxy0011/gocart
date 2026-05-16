@@ -440,7 +440,7 @@ export default function ProviderApply() {
                         className="mt-0.5 size-4 accent-slate-900 cursor-pointer"
                     />
                     <span className="text-sm text-slate-700 leading-relaxed">
-                        I consent to GoCart storing this ID document and selfie for verification purposes.
+                        I consent to Kakimart storing this ID document and selfie for verification purposes.
                         Documents are kept for up to <strong>30 days after a decision</strong> and then automatically deleted.
                         I&apos;ve read the{' '}
                         <button type="button" onClick={() => setPolicyOpen('privacy')} className="text-sky-700 hover:underline">Privacy Notice</button>.

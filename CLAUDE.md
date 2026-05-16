@@ -13,7 +13,7 @@ There is no test runner configured.
 
 ## Architecture
 
-GoCart is a Next.js 15 (App Router) + React 19 multi-vendor e-commerce frontend, styled with Tailwind CSS v4 (`@tailwindcss/postcss`). State is managed with Redux Toolkit.
+Kakimart is a Next.js 15 (App Router) + React 19 multi-vendor e-commerce frontend, styled with Tailwind CSS v4 (`@tailwindcss/postcss`). State is managed with Redux Toolkit.
 
 ### Route groups
 

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Mail, MessageSquare, ShieldAlert } from "lucide-react"
 
-export const metadata = { title: 'Contact - GoCart' }
+export const metadata = { title: 'Contact - Kakimart' }
 
 const CHANNELS = [
     {

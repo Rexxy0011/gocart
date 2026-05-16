@@ -3,8 +3,8 @@ import StoreStatusBanner from "@/components/store/StoreStatusBanner"
 import { createClient } from "@/lib/supabase/server"
 
 export const metadata = {
-    title: "GoCart. - Store Dashboard",
-    description: "GoCart. - Store Dashboard",
+    title: "Kakimart. - Store Dashboard",
+    description: "Kakimart. - Store Dashboard",
 };
 
 // Authenticated dashboard shell. Auth itself is enforced by middleware, so

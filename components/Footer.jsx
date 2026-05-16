@@ -27,7 +27,7 @@ const linkColumns = [
     {
         title: "Help & Trust",
         links: [
-            { text: "About GoCart", href: "/about" },
+            { text: "About Kakimart", href: "/about" },
             { text: "Safety tips", href: "/safety" },
             { text: "Contact us", href: "/contact" },
             { text: "Terms of Use", href: "/terms" },
@@ -67,7 +67,7 @@ const Footer = () => {
                     <div>
                         <h3 className="text-base font-bold text-slate-100 mb-4">Mobile Apps</h3>
                         <p className="text-xs text-slate-400 mb-4 leading-relaxed">
-                            Native apps coming soon - meanwhile GoCart works great on mobile browsers.
+                            Native apps coming soon - meanwhile Kakimart works great on mobile browsers.
                         </p>
                         <div className="space-y-3">
                             <span
@@ -96,7 +96,7 @@ const Footer = () => {
 
                 {/* Community */}
                 <div className="border-t border-slate-700/40 mt-12 pt-8 text-center">
-                    <h3 className="text-base font-bold text-slate-100 mb-5">Join GoCart Community</h3>
+                    <h3 className="text-base font-bold text-slate-100 mb-5">Join Kakimart Community</h3>
                     <div className="flex items-center justify-center gap-3">
                         {socialLinks.map(({ Icon, href, label }) => (
                             <Link
@@ -113,10 +113,10 @@ const Footer = () => {
 
                 {/* Legal block */}
                 <div className="border-t border-slate-700/40 mt-8 pt-8 max-w-3xl mx-auto text-center text-xs text-slate-400 leading-relaxed space-y-4">
-                    <p>© 2025-2026 GoCart Limited. All rights reserved.</p>
+                    <p>© 2025-2026 Kakimart Limited. All rights reserved.</p>
 
                     <p>
-                        GoCart is a classifieds marketplace. We facilitate connections between buyers and sellers but are not a party to
+                        Kakimart is a classifieds marketplace. We facilitate connections between buyers and sellers but are not a party to
                         transactions. Sellers are responsible for the accuracy of their listings and for fulfilling any agreements made
                         directly with buyers. See our{" "}
                         <Link href="/safety" className="text-sky-200 hover:underline">Safety</Link> guidelines and{" "}
@@ -125,11 +125,11 @@ const Footer = () => {
 
                     <p>
                         Verified business sellers may transact through embedded checkout flows operated by the seller or their payment
-                        provider. In those transactions, GoCart receives a commission disclosed at checkout. GoCart does not handle
+                        provider. In those transactions, Kakimart receives a commission disclosed at checkout. Kakimart does not handle
                         fulfilment or shipping; logistics are the responsibility of the seller.
                     </p>
 
-                    <p>GoCart Limited, registered company number TBD. Registered office: TBD.</p>
+                    <p>Kakimart Limited, registered company number TBD. Registered office: TBD.</p>
 
                     <p className="text-slate-300">
                         <Link href="/terms" className="text-sky-200 hover:underline">Terms of Use</Link>

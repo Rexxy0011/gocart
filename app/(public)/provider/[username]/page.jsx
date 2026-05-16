@@ -28,7 +28,7 @@ export default async function ProviderShop({ params, searchParams }) {
             <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-6">
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Provider not found</h1>
                 <p className="text-sm text-slate-600 mt-2 max-w-md">
-                    No GoCart provider exists at <span className="font-mono text-slate-900">/provider/{username}</span>. Check the link or browse all services instead.
+                    No Kakimart provider exists at <span className="font-mono text-slate-900">/provider/{username}</span>. Check the link or browse all services instead.
                 </p>
                 <a href="/services" className="mt-6 inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-full px-5 py-2.5 transition">
                     Browse all services

@@ -7,9 +7,9 @@ import {
 import StickyTOC from "@/components/StickyTOC"
 
 export const metadata = {
-    title: 'Safety Tips - GoCart',
+    title: 'Safety Tips - Kakimart',
     description:
-        "How to stay safe on GoCart - meeting buyers and sellers, inspecting products, " +
+        "How to stay safe on Kakimart - meeting buyers and sellers, inspecting products, " +
         "avoiding scams, protecting personal information, and reporting suspicious activity.",
 }
 
@@ -19,7 +19,7 @@ const TOC = [
     { id: 'general',        label: 'General safety tips' },
     { id: 'sellers',        label: 'Safety tips for sellers' },
     { id: 'scam-awareness', label: 'Online scam awareness' },
-    { id: 'commitment',     label: "GoCart's commitment" },
+    { id: 'commitment',     label: "Kakimart's commitment" },
     { id: 'shared',         label: 'Shared responsibility' },
     { id: 'help',           label: 'Need help?' },
 ]
@@ -126,14 +126,14 @@ export default function SafetyPage() {
                 <div className="relative max-w-6xl mx-auto px-6 py-24 sm:py-32 text-white">
                     <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-300">Safety tips</p>
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mt-3 leading-[1.05] tracking-tight max-w-3xl">
-                        Stay safe on GoCart
+                        Stay safe on Kakimart
                     </h1>
                     <p className="mt-6 text-xl font-semibold text-emerald-200">
                         Your safety is one of our highest priorities.
                     </p>
                     <div className="mt-6 space-y-4 text-slate-200 leading-relaxed max-w-3xl">
                         <p>
-                            GoCart is built with modern trust and safety systems designed to reduce
+                            Kakimart is built with modern trust and safety systems designed to reduce
                             scams, fake listings, suspicious activity, and fraudulent behavior.
                             However, online safety also depends on users making informed and careful
                             decisions during transactions.
@@ -143,7 +143,7 @@ export default function SafetyPage() {
                             proper safety practices can significantly reduce risks and improve your
                             overall marketplace experience.
                         </p>
-                        <p>This guide provides important recommendations to help you trade more safely on GoCart.</p>
+                        <p>This guide provides important recommendations to help you trade more safely on Kakimart.</p>
                     </div>
                 </div>
             </section>
@@ -160,7 +160,7 @@ export default function SafetyPage() {
                         <SectionHeader
                             index={1}
                             title="General safety tips"
-                            lead="Read these once. They cover the situations almost every GoCart user runs into."
+                            lead="Read these once. They cover the situations almost every Kakimart user runs into."
                         />
 
                         <div className="space-y-6">
@@ -202,11 +202,11 @@ export default function SafetyPage() {
                             </SubSection>
 
                             <SubSection Icon={Lock} title="Protect your personal information">
-                                <p>Never share sensitive financial or security information with anyone on GoCart.</p>
+                                <p>Never share sensitive financial or security information with anyone on Kakimart.</p>
                                 <p className="text-slate-900 font-semibold">This includes:</p>
                                 <DotList items={SENSITIVE_INFO} tone="rose" />
                                 <CriticalCallout>
-                                    GoCart representatives will never ask for your password, PIN, or OTP.
+                                    Kakimart representatives will never ask for your password, PIN, or OTP.
                                 </CriticalCallout>
                                 <p>Be cautious of impersonators pretending to be customer support agents.</p>
                             </SubSection>
@@ -229,20 +229,20 @@ export default function SafetyPage() {
                                 <Note>If something feels suspicious, trust your judgment and avoid proceeding.</Note>
                             </SubSection>
 
-                            <SubSection Icon={MessageSquareLock} title="Keep conversations within GoCart">
+                            <SubSection Icon={MessageSquareLock} title="Keep conversations within Kakimart">
                                 <p>
-                                    Using GoCart&apos;s in-app messaging system improves transparency and helps maintain
+                                    Using Kakimart&apos;s in-app messaging system improves transparency and helps maintain
                                     communication records for safety and moderation purposes.
                                 </p>
                                 <p>Avoid moving conversations immediately to unsecured external platforms unless necessary.</p>
-                                <p className="text-slate-900 font-semibold">Maintaining communication within GoCart helps:</p>
+                                <p className="text-slate-900 font-semibold">Maintaining communication within Kakimart helps:</p>
                                 <DotList items={IN_APP_BENEFITS} />
                             </SubSection>
 
                             <SubSection Icon={Flag} title="Report suspicious behavior immediately">
                                 <p>If you notice:</p>
                                 <DotList items={REPORT_TRIGGERS} tone="rose" />
-                                <p>Please report the account or listing immediately through the GoCart platform.</p>
+                                <p>Please report the account or listing immediately through the Kakimart platform.</p>
                                 <Note>Fast reporting helps protect other users and improves marketplace safety for everyone.</Note>
                             </SubSection>
                         </div>
@@ -304,11 +304,11 @@ export default function SafetyPage() {
 
                     <hr className="my-16 border-slate-200" />
 
-                    {/* ── 04. GoCart's Commitment ───────────────── */}
+                    {/* ── 04. Kakimart's Commitment ───────────────── */}
                     <section id="commitment" className="scroll-mt-24">
                         <SectionHeader
                             index={4}
-                            title="GoCart's commitment to marketplace safety"
+                            title="Kakimart's commitment to marketplace safety"
                             lead="We invest in systems and technologies designed to improve user protection and reduce fraudulent activity across the platform."
                         />
                         <div className="bg-white ring-1 ring-slate-200 rounded-2xl p-6 sm:p-7 space-y-5">
@@ -317,7 +317,7 @@ export default function SafetyPage() {
                             </p>
                             <DotList items={SAFETY_INFRASTRUCTURE} />
                             <Note>
-                                Our moderation and security systems continuously evolve to respond to emerging threats and improve trust within the GoCart ecosystem.
+                                Our moderation and security systems continuously evolve to respond to emerging threats and improve trust within the Kakimart ecosystem.
                             </Note>
                         </div>
                     </section>
@@ -334,7 +334,7 @@ export default function SafetyPage() {
                             </p>
                             <p className="text-slate-700 mt-4 leading-relaxed">
                                 By staying alert, following safety practices, and reporting suspicious activity,
-                                every user contributes to making GoCart a more trusted environment for buying and
+                                every user contributes to making Kakimart a more trusted environment for buying and
                                 selling across Nigeria.
                             </p>
                         </div>
@@ -352,11 +352,11 @@ export default function SafetyPage() {
                             <div className="min-w-0">
                                 <p className="leading-relaxed">
                                     If you encounter suspicious activity or need assistance, please contact the
-                                    GoCart support or safety team through the official support channels available
+                                    Kakimart support or safety team through the official support channels available
                                     within the platform.
                                 </p>
                                 <p className="mt-5 text-emerald-300 font-bold text-lg">
-                                    GoCart - Building a safer marketplace for everyone.
+                                    Kakimart - Building a safer marketplace for everyone.
                                 </p>
                             </div>
                         </div>

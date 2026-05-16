@@ -5,7 +5,7 @@ import { PRODUCT_WITH_STORE_SELECT, mapProductRow } from '@/lib/supabase/mappers
 import { activeBoostFilter } from '@/lib/boosts'
 import ProductCard from '@/components/ProductCard'
 
-export const metadata = { title: 'Hot listings - GoCart' }
+export const metadata = { title: 'Hot listings - Kakimart' }
 
 // /hot - every paid placement in one place. Sellers who paid for the
 // Featured ribbon, Urgent tag, or Bulk-sale tag all surface here. Three

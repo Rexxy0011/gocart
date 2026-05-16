@@ -92,7 +92,7 @@ export default async function ProMilestones() {
             </div>
 
             <p className='text-xs text-slate-500 mt-6'>
-                A &quot;verified job&quot; is one where both you and the buyer confirmed completion in the GoCart app. Self-claimed counts don&apos;t add to milestones.
+                A &quot;verified job&quot; is one where both you and the buyer confirmed completion in the Kakimart app. Self-claimed counts don&apos;t add to milestones.
             </p>
         </div>
     )

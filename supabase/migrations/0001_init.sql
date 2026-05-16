@@ -1,4 +1,4 @@
--- GoCart initial schema. Translated from prisma/schema.prisma.
+-- Kakimart initial schema. Translated from prisma/schema.prisma.
 -- Uses snake_case (Postgres convention) and references auth.users for the user table.
 
 -- Extensions ---------------------------------------------------------------

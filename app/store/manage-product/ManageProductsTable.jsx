@@ -223,7 +223,7 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                         {hasStore ? 'No listings yet' : 'Your shop is empty'}
                     </h2>
                     <p className='text-sm text-slate-600 mt-2 max-w-md mx-auto'>
-                        Post your first ad - buyers reach you directly through GoCart messaging. Free, no commission on offline sales.
+                        Post your first ad - buyers reach you directly through Kakimart messaging. Free, no commission on offline sales.
                     </p>
                     <div className='mt-6'>
                         <Link

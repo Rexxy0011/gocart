@@ -23,7 +23,7 @@ export default async function ProInquiries() {
                 </span>
                 <div>
                     <h1 className='text-2xl text-slate-900 font-semibold'>Inquiries</h1>
-                    <p className='text-sm text-slate-500'>Buyer messages on your service listings. Reply directly - GoCart never takes a cut on offline jobs.</p>
+                    <p className='text-sm text-slate-500'>Buyer messages on your service listings. Reply directly - Kakimart never takes a cut on offline jobs.</p>
                 </div>
             </div>
 

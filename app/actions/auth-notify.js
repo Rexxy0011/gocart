@@ -45,9 +45,9 @@ export async function notifyAuthEvent(event) {
         if (!user.user_metadata?.welcomed) {
             await sendEmail({
                 to: user.email,
-                subject: 'Welcome to GoCart',
+                subject: 'Welcome to Kakimart',
                 html: welcomeEmailHtml({ name, siteUrl }),
-                text: `Welcome to GoCart - your account is live. Browse listings at ${siteUrl}/shop`,
+                text: `Welcome to Kakimart - your account is live. Browse listings at ${siteUrl}/shop`,
             })
             // Stamp the flag as soon as the welcome lands so a later failure
             // can't cause a duplicate welcome on the next event.
@@ -62,7 +62,7 @@ export async function notifyAuthEvent(event) {
                 try {
                     await sendEmail({
                         to: adminTo,
-                        subject: `New GoCart signup: ${user.email}`,
+                        subject: `New Kakimart signup: ${user.email}`,
                         html: adminNewUserHtml({ name, email: user.email, atIso: new Date().toISOString() }),
                     })
                 } catch (err) {
@@ -79,7 +79,7 @@ export async function notifyAuthEvent(event) {
             const device = h.get('user-agent') || ''
             await sendEmail({
                 to: user.email,
-                subject: 'New sign-in to your GoCart account',
+                subject: 'New sign-in to your Kakimart account',
                 html: signinAlertHtml({
                     name,
                     atIso: new Date().toISOString(),

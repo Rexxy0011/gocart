@@ -1,9 +1,9 @@
 import { ChevronRight } from "lucide-react"
 
 export const metadata = {
-    title: 'Terms of Use - GoCart',
+    title: 'Terms of Use - Kakimart',
     description:
-        "GoCart's Terms of Use - user responsibilities, prohibited activities, " +
+        "Kakimart's Terms of Use - user responsibilities, prohibited activities, " +
         "moderation, transactions, enforcement, and limitations.",
 }
 
@@ -116,13 +116,13 @@ export default function TermsPage() {
 
                 <div className="mt-10 space-y-5 text-slate-600 leading-relaxed">
                     <p>
-                        Welcome to GoCart. By accessing or using the GoCart platform, website, or
+                        Welcome to Kakimart. By accessing or using the Kakimart platform, website, or
                         services, you agree to comply with these Terms of Use. These terms are
                         designed to help maintain a safe, fair, and trusted marketplace experience
                         for all users.
                     </p>
                     <p>
-                        GoCart provides a digital marketplace that connects buyers, sellers,
+                        Kakimart provides a digital marketplace that connects buyers, sellers,
                         businesses, and service providers across Nigeria. While we work to maintain
                         platform safety and integrity, users remain responsible for their
                         activities, listings, communications, and transactions conducted through the
@@ -136,19 +136,19 @@ export default function TermsPage() {
             <section className="max-w-4xl mx-auto px-6 border-t border-slate-200">
 
                 <AccordionRow index={1} title="User responsibilities">
-                    <p>By using GoCart, users agree to:</p>
+                    <p>By using Kakimart, users agree to:</p>
                     <DashList items={USER_DUTIES} />
                     <p>
                         Users are responsible for ensuring that any products, services, or content
-                        they post comply with applicable laws and GoCart policies.
+                        they post comply with applicable laws and Kakimart policies.
                     </p>
                 </AccordionRow>
 
                 <AccordionRow index={2} title="Prohibited activities">
-                    <p>The following activities are strictly prohibited on GoCart:</p>
+                    <p>The following activities are strictly prohibited on Kakimart:</p>
                     <DashList items={PROHIBITED} />
                     <p className="text-slate-900 font-semibold">
-                        GoCart reserves the right to take action against accounts or content
+                        Kakimart reserves the right to take action against accounts or content
                         involved in prohibited activities.
                     </p>
                 </AccordionRow>
@@ -156,19 +156,19 @@ export default function TermsPage() {
                 <AccordionRow index={3} title="Listings & marketplace content">
                     <p>Users are responsible for the accuracy and legality of their listings and content.</p>
                     <p>
-                        GoCart may review, moderate, restrict, reject, or remove listings, accounts,
+                        Kakimart may review, moderate, restrict, reject, or remove listings, accounts,
                         or content that:
                     </p>
                     <DashList items={MODERATION_REASONS} />
                     <p>
-                        GoCart is not obligated to publish or maintain any listing submitted to the
+                        Kakimart is not obligated to publish or maintain any listing submitted to the
                         platform.
                     </p>
                 </AccordionRow>
 
                 <AccordionRow index={4} title="Transactions between users">
                     <p>
-                        GoCart serves as a marketplace platform and is not directly involved in
+                        Kakimart serves as a marketplace platform and is not directly involved in
                         transactions between users.
                     </p>
                     <p>Buyers and sellers are individually responsible for:</p>
@@ -178,7 +178,7 @@ export default function TermsPage() {
 
                 <AccordionRow index={5} title="Account suspension & enforcement">
                     <p>
-                        GoCart reserves the right to suspend, restrict, or permanently remove accounts that:
+                        Kakimart reserves the right to suspend, restrict, or permanently remove accounts that:
                     </p>
                     <DashList items={SUSPENSION_TRIGGERS} />
                     <p className="text-slate-900 font-semibold">
@@ -193,18 +193,18 @@ export default function TermsPage() {
                         business content.
                     </p>
                     <p>
-                        GoCart branding, platform design, and proprietary content remain the property
-                        of GoCart unless otherwise stated.
+                        Kakimart branding, platform design, and proprietary content remain the property
+                        of Kakimart unless otherwise stated.
                     </p>
                 </AccordionRow>
 
                 <AccordionRow index={7} title="Limitation of liability">
                     <p>
-                        GoCart works to provide a secure and reliable marketplace environment, but
+                        Kakimart works to provide a secure and reliable marketplace environment, but
                         cannot guarantee the actions, behavior, quality, or legitimacy of users,
                         listings, or transactions conducted through the platform.
                     </p>
-                    <p>To the extent permitted by law, GoCart shall not be held liable for:</p>
+                    <p>To the extent permitted by law, Kakimart shall not be held liable for:</p>
                     <DashList items={LIABILITY_EXCLUSIONS} />
                     <p className="text-slate-900 font-semibold">
                         Users access and use the platform at their own discretion and responsibility.
@@ -213,7 +213,7 @@ export default function TermsPage() {
 
                 <AccordionRow index={8} title="Changes to terms">
                     <p>
-                        GoCart may update these Terms of Use periodically to reflect platform
+                        Kakimart may update these Terms of Use periodically to reflect platform
                         improvements, operational changes, legal requirements, or security updates.
                     </p>
                     <p className="text-slate-900 font-semibold">
@@ -225,7 +225,7 @@ export default function TermsPage() {
                 <AccordionRow index={9} title="Contact us">
                     <p>
                         For questions, concerns, or reports related to these Terms of Use, users may
-                        contact GoCart through the official support channels available on the
+                        contact Kakimart through the official support channels available on the
                         platform.
                     </p>
                 </AccordionRow>
@@ -235,7 +235,7 @@ export default function TermsPage() {
             {/* Closing tagline */}
             <div className="max-w-4xl mx-auto px-6 py-12">
                 <p className="text-xs sm:text-sm uppercase tracking-[0.18em] text-slate-500">
-                    GoCart - Building a safer and more trusted marketplace experience.
+                    Kakimart - Building a safer and more trusted marketplace experience.
                 </p>
             </div>
         </main>

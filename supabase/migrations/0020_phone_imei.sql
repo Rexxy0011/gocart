@@ -8,7 +8,7 @@
 -- 3. imei_reports   : cached TAC decode + verification result per IMEI.
 --                     Same caching strategy as vin_reports.
 -- 4. phone_history  : append-only audit trail. Same IMEI listed twice on
---                     GoCart shows up here so buyers can spot rebadged
+--                     Kakimart shows up here so buyers can spot rebadged
 --                     stolen units the same way they'd catch a mileage
 --                     rollback on a car.
 

@@ -4,7 +4,7 @@
 --
 --   ratings(user_id, product_id, order_id NOT NULL, review NOT NULL, ...)
 --
--- GoCart doesn't have orders - buyers and sellers transact off-platform
+-- Kakimart doesn't have orders - buyers and sellers transact off-platform
 -- after messaging. We still want reviews (provider reputation is the
 -- moat), but they have to work without an order id and without forcing
 -- a written comment.

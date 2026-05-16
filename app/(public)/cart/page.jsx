@@ -12,7 +12,7 @@ import SavedTabs from './SavedTabs'
 // the user's favorites joined to products, filters out anything that's
 // no longer publicly visible (rejected, removed, or pulled by the store
 // going inactive), and renders the same ProductCard buyers see on /shop.
-export const metadata = { title: 'Saved listings - GoCart' }
+export const metadata = { title: 'Saved listings - Kakimart' }
 
 export default async function SavedListings() {
 

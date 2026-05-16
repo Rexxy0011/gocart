@@ -1,7 +1,7 @@
 export const metadata = {
-    title: 'Privacy Notice - GoCart',
+    title: 'Privacy Notice - Kakimart',
     description:
-        "How GoCart collects, uses, stores, and protects your personal information. " +
+        "How Kakimart collects, uses, stores, and protects your personal information. " +
         "Your data, your rights, our commitments.",
 }
 
@@ -80,19 +80,19 @@ export default function PrivacyPage() {
 
                 <Row title="Personal statement">
                     <p>
-                        At GoCart, we value your privacy and are committed to protecting your
+                        At Kakimart, we value your privacy and are committed to protecting your
                         personal information. This Privacy Notice explains how we collect, use,
                         store, and protect information when you use our platform and services.
                     </p>
                     <p>
-                        By accessing or using GoCart, you agree to the practices described in
+                        By accessing or using Kakimart, you agree to the practices described in
                         this Privacy Notice.
                     </p>
                 </Row>
 
                 <Row title="Information we collect">
                     <p>
-                        To operate and improve our marketplace, GoCart may collect certain
+                        To operate and improve our marketplace, Kakimart may collect certain
                         information, including:
                     </p>
                     <DashList items={INFO_COLLECTED} />
@@ -104,7 +104,7 @@ export default function PrivacyPage() {
                 </Row>
 
                 <Row title="How we use information">
-                    <p>GoCart uses collected information to:</p>
+                    <p>Kakimart uses collected information to:</p>
                     <DashList items={INFO_USE} />
                     <p>
                         We only use information where necessary for legitimate platform
@@ -114,7 +114,7 @@ export default function PrivacyPage() {
 
                 <Row title="Data protection">
                     <p>
-                        GoCart implements security measures designed to help protect user
+                        Kakimart implements security measures designed to help protect user
                         information from unauthorized access, misuse, alteration, or loss.
                     </p>
                     <p>
@@ -126,7 +126,7 @@ export default function PrivacyPage() {
 
                 <Row title="Information sharing">
                     <p className="text-slate-900 font-semibold">
-                        GoCart does not sell users&apos; personal information to third parties.
+                        Kakimart does not sell users&apos; personal information to third parties.
                     </p>
                     <p>Information may only be shared where necessary for:</p>
                     <DashList items={SHARING_REASONS} />
@@ -147,7 +147,7 @@ export default function PrivacyPage() {
 
                 <Row title="Cookies & platform technologies">
                     <p>
-                        GoCart may use cookies and similar technologies to improve functionality,
+                        Kakimart may use cookies and similar technologies to improve functionality,
                         maintain user sessions, analyze platform performance, and enhance user
                         experience.
                     </p>
@@ -159,7 +159,7 @@ export default function PrivacyPage() {
 
                 <Row title="Updates to this notice">
                     <p>
-                        GoCart may update this Privacy Notice periodically to reflect platform
+                        Kakimart may update this Privacy Notice periodically to reflect platform
                         improvements, operational changes, legal requirements, or security
                         updates.
                     </p>
@@ -172,7 +172,7 @@ export default function PrivacyPage() {
                 <Row title="Contact us">
                     <p>
                         If you have questions or concerns regarding this Privacy Notice or your
-                        personal information, please contact GoCart through the official support
+                        personal information, please contact Kakimart through the official support
                         channels available on the platform.
                     </p>
                 </Row>
@@ -180,7 +180,7 @@ export default function PrivacyPage() {
                 {/* Closing tagline - sits below the last row, no border */}
                 <div className="py-12">
                     <p className="text-xs sm:text-sm uppercase tracking-[0.18em] text-slate-500">
-                        GoCart - Building a safer and more trusted marketplace experience.
+                        Kakimart - Building a safer and more trusted marketplace experience.
                     </p>
                 </div>
             </article>
