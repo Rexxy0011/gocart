@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import { useMemo, useState } from "react"
 import { toast } from "react-hot-toast"
-import { BadgeCheck, Car, Info, MapPin, Phone, Rocket, X } from "lucide-react"
+import { BadgeCheck, Car, Info, MapPin, Phone, Rocket, X, ShieldCheck } from "lucide-react"
 import Dropdown from "@/components/Dropdown"
 import MultiSelect from "@/components/MultiSelect"
 import { createClient } from "@/lib/supabase/client"
@@ -13,6 +13,8 @@ import { uploadProductImages } from "@/lib/supabase/storage"
 import { useUser } from "@/lib/auth/UserContext"
 import { checkListingContent } from "@/lib/moderation"
 import ReviewProgressOverlay from "@/components/ReviewProgressOverlay"
+import { runVinCheck } from "@/app/actions/vin"
+import { runImeiCheck } from "@/app/actions/imei"
 
 const VEHICLE_NUMERIC_FIELDS = new Set([
     'year', 'mileage', 'seats', 'doors', 'luggageCapacity',
@@ -21,15 +23,79 @@ const VEHICLE_NUMERIC_FIELDS = new Set([
 ])
 
 const SERVICES_GROUP_NAME = 'Repairs & Services'
-const VEHICLES_GROUP_NAME = 'Vehicles'
 const serviceSet = new Set(categoryGroups.find(g => g.name === SERVICES_GROUP_NAME)?.items || [])
-const vehicleSet = new Set(categoryGroups.find(g => g.name === VEHICLES_GROUP_NAME)?.items || [])
+
+// "Vehicles" the group contains real motor vehicles AND parts / non-motor
+// items (Bicycles, Heavy equipment, Car tyres, Car batteries, Parts &
+// accessories). Only the motor-vehicle subset has a 17-char VIN, an
+// engine, mileage, transmission, etc. Bicycles and parts post as plain
+// products — no VIN banner, no vehicle-spec form, no vehicle JSONB.
+const MOTOR_VEHICLE_CATEGORIES = new Set([
+    'Sedans', 'SUVs', 'Buses', 'Trucks', 'Motorcycles', 'Tricycles',
+])
 
 const CONDITIONS = [
     { value: 'new',    label: 'New' },
     { value: 'as-new', label: 'As good as new' },
     { value: 'good',   label: 'Good condition' },
     { value: 'fair',   label: 'Fair condition' },
+]
+
+// Nigerian vehicle market uses its own vocabulary — "Tokunbo / Foreign used"
+// vs. "Naija used" — and the generic as-new/good/fair scale doesn't map.
+// When the chosen category is a vehicle, we swap to this list instead.
+const VEHICLE_CONDITIONS = [
+    { value: 'new',           label: 'New' },
+    { value: 'foreign-used',  label: 'Foreign used' },
+    { value: 'nigerian-used', label: 'Nigerian used' },
+]
+
+// Same idea for phones: the way Nigerians actually classify a used handset
+// is by where it lived before, not by some abstract good/fair grade.
+const PHONE_CONDITIONS = [
+    { value: 'new-sealed',    label: 'Brand new (sealed)' },
+    { value: 'open-box',      label: 'Open box (unused)' },
+    { value: 'uk-used',       label: 'UK used' },
+    { value: 'us-used',       label: 'US used' },
+    { value: 'nigerian-used', label: 'Nigerian used' },
+    { value: 'refurbished',   label: 'Refurbished' },
+]
+
+// IMEI verification only runs for conditions where there's something
+// real to verify against — used / refurbished phones. New-sealed phones
+// don't need it (and the seller shouldn't break the seal to read it).
+const PHONE_CONDITIONS_NEEDING_IMEI = new Set([
+    'uk-used', 'us-used', 'nigerian-used', 'refurbished',
+])
+
+// Phones get the same care vehicles do. Categories scoped here trigger
+// the phone-spec block + the IMEI banner.
+const PHONE_CATEGORIES = new Set(['iPhones', 'Androids'])
+
+const PHONE_BRANDS = [
+    'Apple', 'Samsung', 'Tecno', 'Infinix', 'itel', 'Xiaomi', 'Oppo',
+    'Vivo', 'Realme', 'Nokia', 'Huawei', 'Google', 'OnePlus', 'Other',
+].map(b => ({ value: b, label: b }))
+
+const PHONE_STORAGE_OPTIONS = [
+    '16 GB', '32 GB', '64 GB', '128 GB', '256 GB', '512 GB', '1 TB', '2 TB',
+].map(s => ({ value: s, label: s }))
+
+const PHONE_RAM_OPTIONS = [
+    '1 GB', '2 GB', '3 GB', '4 GB', '6 GB', '8 GB', '12 GB', '16 GB',
+].map(r => ({ value: r, label: r }))
+
+const PHONE_NETWORK_LOCK = [
+    { value: 'unlocked',     label: 'Unlocked' },
+    { value: 'mtn',          label: 'Locked to MTN' },
+    { value: 'glo',          label: 'Locked to Glo' },
+    { value: 'airtel',       label: 'Locked to Airtel' },
+    { value: '9mobile',      label: 'Locked to 9mobile' },
+    { value: 'foreign-lock', label: 'Foreign carrier lock' },
+]
+
+const PHONE_ACCESSORIES = [
+    'Box', 'Charger', 'Cable', 'EarPods / Earphones', 'SIM tool', 'Screen protector',
 ]
 
 const PRICE_UNITS = [
@@ -122,16 +188,75 @@ export default function StoreAddProduct() {
         // Vehicle-specific — only filled when category is a vehicle.
         // Mirrors the fields rendered by VehicleSpecs on the product detail page.
         vehicle: {
+            vin: "",
             make: "", model: "",
             year: "", mileage: "", bodyType: "", transmission: "",
             colour: "", seats: "", doors: "", luggageCapacity: "",
             fuelType: "", enginePower: "", engineSize: "", topSpeed: "", acceleration: "",
             fuelConsumption: "", fuelCapacity: "", insuranceGroup: "", co2Emissions: "", euroEmissions: "",
         },
+        // Phone-specific — only filled when category is iPhones / Androids.
+        phone: {
+            imei: "",
+            brand: "", model: "",
+            storage: "", ram: "", colour: "",
+            batteryHealth: "",                  // iPhones especially — null for non-iOS
+            networkLock: "",
+            accessories: [],                    // multi-select chips
+            warranty: "",                       // free text
+        },
     })
+
 
     const setVehicleField = (key, value) => {
         setProductInfo((p) => ({ ...p, vehicle: { ...p.vehicle, [key]: value } }))
+    }
+
+    const setPhoneField = (key, value) => {
+        setProductInfo((p) => ({ ...p, phone: { ...p.phone, [key]: value } }))
+    }
+
+    const togglePhoneAccessory = (label) => {
+        setProductInfo((p) => {
+            const have = p.phone.accessories.includes(label)
+            return {
+                ...p,
+                phone: {
+                    ...p.phone,
+                    accessories: have
+                        ? p.phone.accessories.filter(a => a !== label)
+                        : [...p.phone.accessories, label],
+                },
+            }
+        })
+    }
+
+    // Decoded NHTSA payload, fetched silently inside the submit flow when
+    // the seller has typed a 17-char VIN. Used to back-fill blank vehicle
+    // fields before insert.
+    const mergeDecodedIntoVehicle = (vehicle, d) => {
+        const v = { ...vehicle }
+        const fillIfEmpty = (key, val) => {
+            if ((v[key] === '' || v[key] == null) && val != null && val !== '') v[key] = String(val)
+        }
+        fillIfEmpty('make',       d.make)
+        fillIfEmpty('model',      d.model)
+        fillIfEmpty('year',       d.modelYear)
+        fillIfEmpty('engineSize', d.engineCc)
+        fillIfEmpty('bodyType',   d.bodyClass)
+        if (d.fuelType) {
+            const f = d.fuelType.toLowerCase()
+            if      (f.includes('diesel'))                        fillIfEmpty('fuelType', 'Diesel')
+            else if (f.includes('electric'))                      fillIfEmpty('fuelType', 'Electric')
+            else if (f.includes('hybrid'))                        fillIfEmpty('fuelType', 'Hybrid')
+            else if (f.includes('gasoline') || f.includes('petrol')) fillIfEmpty('fuelType', 'Petrol')
+        }
+        if (d.transmission) {
+            const t = d.transmission.toLowerCase()
+            if      (t.includes('automatic') || t.includes('auto')) fillIfEmpty('transmission', 'Automatic')
+            else if (t.includes('manual'))                          fillIfEmpty('transmission', 'Manual')
+        }
+        return v
     }
     const [loading, setLoading] = useState(false)
     const [uploadProgress, setUploadProgress] = useState(null)
@@ -140,7 +265,15 @@ export default function StoreAddProduct() {
     const [reviewState, setReviewState] = useState(null)
 
     const isService = useMemo(() => serviceSet.has(productInfo.category), [productInfo.category])
-    const isVehicle = useMemo(() => vehicleSet.has(productInfo.category), [productInfo.category])
+    // Motor vehicle = the subset of the Vehicles group that has a real VIN
+    // and an engine. Bicycles / parts / tyres / batteries / heavy equipment
+    // stay in the Vehicles group for browsing but render as plain products
+    // with no VIN flow and no vehicle-spec block.
+    const isVehicle = useMemo(() => MOTOR_VEHICLE_CATEGORIES.has(productInfo.category), [productInfo.category])
+    const isPhone   = useMemo(() => PHONE_CATEGORIES.has(productInfo.category), [productInfo.category])
+    // Show / run the IMEI flow only when both: it's a phone AND the
+    // claimed condition is one of the used / refurbished values.
+    const phoneNeedsImei = isPhone && PHONE_CONDITIONS_NEEDING_IMEI.has(productInfo.condition)
     const availableSpecialties = serviceSpecialties[productInfo.category] || []
 
     const onChangeHandler = (e) => {
@@ -331,7 +464,47 @@ export default function StoreAddProduct() {
             }
         }
 
-        // 3. Build the products row from the form state.
+        // 3. Run the VIN check inline before insert. Decoded fields fill any
+        // gaps the seller didn't type. We never block the listing on a flaky
+        // NHTSA call — failure here just skips the auto-fill and leaves
+        // payload.vin set so the report can populate later. (The product
+        // page reads vin_reports lazily when it first renders, but doing it
+        // here means by the time the buyer arrives the row is already cached.)
+        let mergedVehicle = productInfo.vehicle
+        const vinTyped = (productInfo.vehicle.vin || '').toUpperCase()
+        if (isVehicle && vinTyped.length === 17) {
+            try {
+                const result = await runVinCheck({ vin: vinTyped })
+                if (result?.ok && result.report?.decoded) {
+                    mergedVehicle = mergeDecodedIntoVehicle(productInfo.vehicle, result.report.decoded)
+                }
+            } catch {
+                // Network blip on NHTSA shouldn't block the ad.
+            }
+        }
+
+        // Same idea for phones — runs only when the condition warrants
+        // verification (new sealed / open box are skipped).
+        const imeiTyped = (productInfo.phone.imei || '').replace(/\D/g, '')
+        if (phoneNeedsImei && imeiTyped.length === 15) {
+            try {
+                const result = await runImeiCheck({ imei: imeiTyped })
+                if (result?.error) {
+                    // A bad Luhn here means the seller mistyped the IMEI.
+                    // Block submission so they can fix it — unlike VIN
+                    // failures (network blips), Luhn is deterministic and
+                    // a bad IMEI is the seller's typo, not a flaky API.
+                    toast.error(result.error)
+                    setLoading(false)
+                    return
+                }
+            } catch {
+                // External API blip is non-fatal — Luhn already ran, the
+                // product can post and the report will populate next time.
+            }
+        }
+
+        // 4. Build the products row from the (possibly-merged) form state.
         const payload = {
             store_id: store.id,
             name: effectiveName.trim(),
@@ -356,9 +529,29 @@ export default function StoreAddProduct() {
             condition: !isService ? (productInfo.condition || null) : null,
             delivery_available: productInfo.deliveryAvailable,
 
+            // Phone-specific blob and IMEI. IMEI is only attached if the
+            // condition warrants verification — new sealed phones get to
+            // skip the entire flow (and shouldn't be forced to break a
+            // factory seal to read the IMEI sticker).
+            phone: isPhone ? {
+                brand:         productInfo.phone.brand || null,
+                model:         (productInfo.phone.model || '').trim() || null,
+                storage:       productInfo.phone.storage || null,
+                ram:           productInfo.phone.ram || null,
+                colour:        (productInfo.phone.colour || '').trim() || null,
+                batteryHealth: productInfo.phone.batteryHealth !== '' ? Number(productInfo.phone.batteryHealth) : null,
+                networkLock:   productInfo.phone.networkLock || null,
+                accessories:   productInfo.phone.accessories || [],
+                warranty:      (productInfo.phone.warranty || '').trim() || null,
+            } : null,
+            imei: (phoneNeedsImei && (productInfo.phone.imei || '').length === 15)
+                ? productInfo.phone.imei
+                : null,
+
             // Type-specific blobs
             service: isService ? buildServicePayload(portfolioUrls) : null,
-            vehicle: isVehicle ? buildVehiclePayload(productInfo.vehicle) : null,
+            vehicle: isVehicle ? buildVehiclePayload(mergedVehicle) : null,
+            vin:     (isVehicle && vinTyped.length === 17) ? vinTyped : null,
         }
 
         // Pull review_status back so we can tell the seller whether the
@@ -376,6 +569,31 @@ export default function StoreAddProduct() {
         if (insertErr) {
             toast.error(insertErr.message || 'Could not post listing.')
             return
+        }
+
+        // Append the VIN + declared mileage to vehicle_history so future
+        // listings of this same VIN can prove no rollback. Fire-and-forget
+        // — failure here doesn't block the listing from publishing.
+        if (payload.vin) {
+            const mileageMiles = productInfo.vehicle.mileage !== ''
+                ? parseInt(productInfo.vehicle.mileage, 10) || null
+                : null
+            const { recordVehicleHistory } = await import('@/app/actions/vin')
+            recordVehicleHistory({
+                vin: payload.vin,
+                listingId: inserted.id,
+                mileageMiles,
+            })
+        }
+
+        // Phone re-listing trail — same shape as vehicle_history.
+        if (payload.imei) {
+            const { recordPhoneHistory } = await import('@/app/actions/imei')
+            recordPhoneHistory({
+                imei: payload.imei,
+                listingId: inserted.id,
+                claimedCondition: payload.condition,
+            })
         }
 
         // Show the animated review overlay. It auto-routes to
@@ -443,18 +661,170 @@ export default function StoreAddProduct() {
 
             {/* Vehicle perk — Free VIN check */}
             {isVehicle && (
-                <div className="mb-6 bg-emerald-50 ring-1 ring-emerald-200 rounded-xl p-4 flex items-start gap-3 max-w-xl">
-                    <span className="inline-flex items-center justify-center size-9 rounded-full bg-emerald-600 text-white shrink-0">
-                        <Car size={16} />
-                    </span>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-emerald-900">Free VIN check available</p>
-                        <p className="text-xs text-emerald-900/80 mt-0.5">
-                            Add your car&apos;s VIN and we&apos;ll attach a free history report (mileage, accidents, ownership) to your ad — buyers trust faster.
-                        </p>
-                        <button type="button" className="mt-2 text-xs font-semibold text-emerald-800 hover:underline">
-                            Run free VIN check →
-                        </button>
+                <div className="mb-6 bg-emerald-50 ring-1 ring-emerald-200 rounded-xl p-4 max-w-xl">
+                    <div className="flex items-start gap-3">
+                        <span className="inline-flex items-center justify-center size-9 rounded-full bg-emerald-600 text-white shrink-0">
+                            <Car size={16} />
+                        </span>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-emerald-900">Want to be more transparent and sell quicker?</p>
+                            <p className="text-xs text-emerald-900/80 mt-0.5">
+                                Add your car&apos;s VIN and we&apos;ll attach a free history report (mileage, accidents, ownership) to your ad — buyers trust faster.
+                            </p>
+                            <input
+                                value={productInfo.vehicle.vin}
+                                onChange={(e) => setVehicleField(
+                                    'vin',
+                                    e.target.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g, '').slice(0, 17),
+                                )}
+                                placeholder="e.g. 1HGBH41JXMN109186"
+                                maxLength={17}
+                                className="mt-3 w-full text-sm bg-white ring-1 ring-emerald-200 focus:ring-emerald-500 rounded-md px-3 py-2 outline-none transition font-mono uppercase tracking-wide"
+                            />
+                            <p className="mt-1.5 text-[11px] text-emerald-900/70">
+                                We&apos;ll verify the VIN and build the report automatically when you post the ad.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Phone perk — Free IMEI check (only for used / refurbished
+                phones; new sealed phones don't need it). */}
+            {phoneNeedsImei && (
+                <div className="mb-6 bg-emerald-50 ring-1 ring-emerald-200 rounded-xl p-4 max-w-xl">
+                    <div className="flex items-start gap-3">
+                        <span className="inline-flex items-center justify-center size-9 rounded-full bg-emerald-600 text-white shrink-0">
+                            <BadgeCheck size={16} />
+                        </span>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-emerald-900">Sell quicker with a verified IMEI</p>
+                            <p className="text-xs text-emerald-900/80 mt-0.5">
+                                Add the IMEI (dial *#06# on the phone) and we&apos;ll attach a free verification — brand match, checksum, and any past listings on GoCart — to your ad. Buyers trust verified used phones faster.
+                            </p>
+                            <input
+                                value={productInfo.phone.imei}
+                                onChange={(e) => setPhoneField('imei', e.target.value.replace(/\D/g, '').slice(0, 15))}
+                                placeholder="15-digit IMEI"
+                                maxLength={15}
+                                inputMode="numeric"
+                                className="mt-3 w-full text-sm bg-white ring-1 ring-emerald-200 focus:ring-emerald-500 rounded-md px-3 py-2 outline-none transition font-mono tracking-wide"
+                            />
+                            <p className="mt-1.5 text-[11px] text-emerald-900/70">
+                                We&apos;ll verify the IMEI automatically when you post the ad.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Phone-specific spec fields */}
+            {isPhone && (
+                <div className="my-6 max-w-xl">
+                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-3">Phone details</p>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                        <div className="flex flex-col gap-1.5">
+                            <span className="text-xs text-slate-600">Brand *</span>
+                            <Dropdown
+                                value={productInfo.phone.brand}
+                                onChange={(v) => setPhoneField('brand', v)}
+                                placeholder="Pick brand"
+                                options={PHONE_BRANDS}
+                            />
+                        </div>
+                        <label className="flex flex-col gap-1.5">
+                            <span className="text-xs text-slate-600">Model *</span>
+                            <input
+                                type="text"
+                                value={productInfo.phone.model}
+                                onChange={(e) => setPhoneField('model', e.target.value)}
+                                placeholder="e.g. iPhone 13 Pro / Galaxy S24 Ultra"
+                                className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                            />
+                        </label>
+                        <div className="flex flex-col gap-1.5">
+                            <span className="text-xs text-slate-600">Storage</span>
+                            <Dropdown
+                                value={productInfo.phone.storage}
+                                onChange={(v) => setPhoneField('storage', v)}
+                                placeholder="Pick storage"
+                                options={PHONE_STORAGE_OPTIONS}
+                            />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <span className="text-xs text-slate-600">RAM</span>
+                            <Dropdown
+                                value={productInfo.phone.ram}
+                                onChange={(v) => setPhoneField('ram', v)}
+                                placeholder="Pick RAM"
+                                options={PHONE_RAM_OPTIONS}
+                            />
+                        </div>
+                        <label className="flex flex-col gap-1.5">
+                            <span className="text-xs text-slate-600">Colour</span>
+                            <input
+                                type="text"
+                                value={productInfo.phone.colour}
+                                onChange={(e) => setPhoneField('colour', e.target.value)}
+                                placeholder="e.g. Sierra Blue"
+                                className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                            />
+                        </label>
+                        {productInfo.phone.brand === 'Apple' && (
+                            <label className="flex flex-col gap-1.5">
+                                <span className="text-xs text-slate-600">Battery health % <span className="text-slate-400">(iPhone)</span></span>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    value={productInfo.phone.batteryHealth}
+                                    onChange={(e) => setPhoneField('batteryHealth', e.target.value)}
+                                    placeholder="e.g. 92"
+                                    className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                                />
+                            </label>
+                        )}
+                        <div className="flex flex-col gap-1.5 sm:col-span-2">
+                            <span className="text-xs text-slate-600">Network lock</span>
+                            <Dropdown
+                                value={productInfo.phone.networkLock}
+                                onChange={(v) => setPhoneField('networkLock', v)}
+                                placeholder="Pick lock status"
+                                options={PHONE_NETWORK_LOCK}
+                            />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <span className="text-xs text-slate-600">Box & accessories included</span>
+                            <div className="flex flex-wrap gap-1.5 mt-2">
+                                {PHONE_ACCESSORIES.map((a) => {
+                                    const active = productInfo.phone.accessories.includes(a)
+                                    return (
+                                        <button
+                                            key={a}
+                                            type="button"
+                                            onClick={() => togglePhoneAccessory(a)}
+                                            className={`text-xs ring-1 rounded-full px-2.5 py-1 transition ${
+                                                active
+                                                    ? 'bg-slate-900 text-white ring-slate-900'
+                                                    : 'bg-white text-slate-700 ring-slate-200 hover:ring-slate-400'
+                                            }`}
+                                        >
+                                            {a}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <label className="flex flex-col gap-1.5 sm:col-span-2">
+                            <span className="text-xs text-slate-600">Warranty / coverage</span>
+                            <input
+                                type="text"
+                                value={productInfo.phone.warranty}
+                                onChange={(e) => setPhoneField('warranty', e.target.value)}
+                                placeholder="e.g. AppleCare+ until Jan 2027 · No warranty"
+                                className="p-2 px-3 outline-none border border-slate-200 rounded text-sm"
+                            />
+                        </label>
                     </div>
                 </div>
             )}
@@ -561,7 +931,7 @@ export default function StoreAddProduct() {
                             onChange={(v) => setProductInfo({ ...productInfo, condition: v })}
                             placeholder="Select condition"
                             leftIcon={<BadgeCheck size={15} className="text-slate-400 shrink-0" />}
-                            options={CONDITIONS}
+                            options={isVehicle ? VEHICLE_CONDITIONS : isPhone ? PHONE_CONDITIONS : CONDITIONS}
                         />
                     </div>
                     <label className="flex items-center gap-2 mt-7">

@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
     return (
         <Link
             href={`/product/${product.id}`}
-            className='group flex flex-col w-full sm:w-60 bg-white rounded-2xl ring-1 ring-slate-200/70 hover:ring-slate-300 hover:shadow-md transition overflow-hidden max-xl:mx-auto'
+            className='group flex flex-col w-full bg-white rounded-2xl ring-1 ring-slate-200/70 hover:ring-slate-300 hover:shadow-md transition overflow-hidden'
         >
             {/* Image + favorite */}
             <div className='relative aspect-square bg-[#F5F5F5] overflow-hidden'>

@@ -27,6 +27,55 @@ export default async function Product({ params }) {
     // under review is fine UX. RLS will tighten this down later.
     const product = mapProductRow(row)
 
+    // Free VIN report — only fetched for vehicles that have a VIN. Reads
+    // from the cached vin_reports table (populated when the seller ran
+    // the check; if they skipped it, we have no report and the section
+    // simply doesn't render).
+    let vinReport = null
+    if (product.vin) {
+        const { data: report } = await supabase
+            .from('vin_reports')
+            .select('decoded, recalls, last_checked_at')
+            .eq('vin', product.vin)
+            .maybeSingle()
+        if (report) {
+            const { data: history } = await supabase
+                .from('vehicle_history')
+                .select('mileage_miles, recorded_at, listing_id')
+                .eq('vin', product.vin)
+                .order('recorded_at', { ascending: true })
+            vinReport = {
+                decoded:       report.decoded,
+                recalls:       report.recalls || [],
+                lastCheckedAt: report.last_checked_at,
+                history:       history || [],
+            }
+        }
+    }
+
+    // Same shape for phones — fetch the IMEI report + history when this
+    // listing has an IMEI. Sealed-new phones won't have one and skip.
+    let imeiReport = null
+    if (product.imei) {
+        const { data: report } = await supabase
+            .from('imei_reports')
+            .select('decoded, last_checked_at')
+            .eq('imei', product.imei)
+            .maybeSingle()
+        if (report) {
+            const { data: history } = await supabase
+                .from('phone_history')
+                .select('claimed_condition, recorded_at, listing_id')
+                .eq('imei', product.imei)
+                .order('recorded_at', { ascending: true })
+            imeiReport = {
+                decoded:       report.decoded,
+                lastCheckedAt: report.last_checked_at,
+                history:       history || [],
+            }
+        }
+    }
+
     return (
         <div className="mx-6">
             <div className="max-w-7xl mx-auto py-6">
@@ -46,7 +95,7 @@ export default async function Product({ params }) {
                     )}
                 </nav>
 
-                <ProductDetails product={product} />
+                <ProductDetails product={product} vinReport={vinReport} imeiReport={imeiReport} />
                 <RelatedListings product={product} />
             </div>
         </div>

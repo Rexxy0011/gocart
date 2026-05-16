@@ -10,6 +10,9 @@ import {
 import { useToggleFavorite } from "@/lib/features/cart/useToggleFavorite"
 import { Button } from "@/components/ui/button"
 import VehicleSpecs from "@/components/VehicleSpecs"
+import VinReportSection from "@/components/VinReportSection"
+import PhoneSpecs from "@/components/PhoneSpecs"
+import ImeiReportSection from "@/components/ImeiReportSection"
 import ServiceDetails from "@/components/ServiceDetails"
 import VerifiedCheck from "@/components/VerifiedCheck"
 import {
@@ -26,17 +29,30 @@ import { startConversation } from "@/app/actions/messages"
 const ReportModal = dynamic(() => import("@/components/ReportModal"), { ssr: false })
 
 const CONDITION_LABEL = {
-    'new':    'New',
-    'as-new': 'As good as new',
-    'good':   'Good condition',
-    'fair':   'Fair condition',
+    'new':           'New',
+    'as-new':        'As good as new',
+    'good':          'Good condition',
+    'fair':          'Fair condition',
+    // Vehicle-specific.
+    'foreign-used':  'Foreign used',
+    'nigerian-used': 'Nigerian used',
+    // Phone-specific.
+    'new-sealed':    'Brand new (sealed)',
+    'open-box':      'Open box',
+    'uk-used':       'UK used',
+    'us-used':       'US used',
+    'refurbished':   'Refurbished',
 }
 
 const VEHICLE_CATEGORIES = new Set(
     categoryGroups.find(g => g.name === 'Vehicles')?.items || []
 )
 
-const ProductDetails = ({ product }) => {
+const PHONE_CATEGORIES = new Set(['iPhones', 'Androids'])
+
+const ProductDetails = ({ product, vinReport = null, imeiReport = null }) => {
+
+    const isPhone = PHONE_CATEGORIES.has(product.category)
 
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
     const productId = product.id
@@ -360,6 +376,26 @@ const ProductDetails = ({ product }) => {
                     )}
 
                     {isVehicle && <VehicleSpecs vehicle={product.vehicle} />}
+
+                    {/* Free VIN history report — only renders when the seller
+                        ran the VIN check at listing time (vin_reports has a
+                        cached row). Pre-fetched server-side so display is
+                        instant. */}
+                    {isVehicle && vinReport && (
+                        <VinReportSection
+                            vinReport={vinReport}
+                            listingMileage={product.vehicle?.mileage}
+                        />
+                    )}
+
+                    {/* Phone-spec block + free IMEI report — same pattern. */}
+                    {isPhone && product.phone && <PhoneSpecs phone={product.phone} />}
+                    {isPhone && imeiReport && (
+                        <ImeiReportSection
+                            imeiReport={imeiReport}
+                            claimedCondition={product.condition}
+                        />
+                    )}
 
                     {/* Specs — universal facts. Vehicle-specific specs live in VehicleSpecs above. */}
                     <section>

@@ -44,7 +44,7 @@ const ServiceCard = ({ product }) => {
         if (!sellerUsername) return
         e.preventDefault()
         e.stopPropagation()
-        router.push(`/shop/${sellerUsername}`)
+        router.push(`/provider/${sellerUsername}`)
     }
 
     return (

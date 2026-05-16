@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { mapProductRow, PRODUCT_WITH_STORE_SELECT } from '@/lib/supabase/mappers'
 import ProductCard from '@/components/ProductCard'
 import ServiceCard from '@/components/ServiceCard'
+import SavedTabs from './SavedTabs'
 
 // Saved listings page (still routed at /cart for legacy URL stability —
 // the cart slice was repurposed as the favorites store way back). Reads
@@ -67,28 +68,41 @@ export default async function SavedListings() {
         )
     }
 
+    // Strict split: products and services live under separate tabs so a
+    // buyer's saved-products surface and saved-services surface mirror
+    // the seller/provider split everywhere else.
+    const savedProducts = products.filter(p => !p.service)
+    const savedServices = products.filter(p => p.service)
+
+    const productGrid = (
+        <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
+            {savedProducts.map(p => <ProductCard key={p.id} product={p} />)}
+        </div>
+    )
+
+    const serviceGrid = (
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+            {savedServices.map(p => <ServiceCard key={p.id} product={p} />)}
+        </div>
+    )
+
     return (
         <main className='min-h-[70vh] mx-6'>
             <div className='max-w-7xl mx-auto py-8'>
                 <div className='flex items-end justify-between gap-3 mb-6'>
                     <div>
-                        <h1 className='text-2xl font-semibold text-slate-900'>Saved listings</h1>
-                        <p className='text-sm text-slate-500 mt-1'>{products.length} item{products.length === 1 ? '' : 's'} saved</p>
+                        <h1 className='text-2xl font-semibold text-slate-900'>Saved</h1>
+                        <p className='text-sm text-slate-500 mt-1'>{products.length} saved · {savedProducts.length} product{savedProducts.length === 1 ? '' : 's'}, {savedServices.length} service{savedServices.length === 1 ? '' : 's'}</p>
                     </div>
                     <Link href='/shop' className='text-sm text-sky-700 hover:underline shrink-0'>Add more →</Link>
                 </div>
 
-                {/* Service rows render with ServiceCard; everything else
-                    falls back to ProductCard. Same grid; the dispatch
-                    happens per-row so a buyer sees each saved listing in
-                    its own correct shape. */}
-                <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
-                    {products.map(p => (
-                        p.service
-                            ? <ServiceCard key={p.id} product={p} />
-                            : <ProductCard key={p.id} product={p} />
-                    ))}
-                </div>
+                <SavedTabs
+                    productCount={savedProducts.length}
+                    serviceCount={savedServices.length}
+                    productGrid={productGrid}
+                    serviceGrid={serviceGrid}
+                />
             </div>
         </main>
     )

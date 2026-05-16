@@ -385,7 +385,7 @@ const ServicePage = ({ product }) => {
 
                             {/* Provider header */}
                             <Link
-                                href={sellerUsername ? `/shop/${sellerUsername}` : '#'}
+                                href={sellerUsername ? `/provider/${sellerUsername}` : '#'}
                                 className='flex items-center gap-3 group'
                             >
                                 <div className='size-12 rounded-full overflow-hidden bg-slate-100 ring-1 ring-slate-200 flex items-center justify-center shrink-0'>

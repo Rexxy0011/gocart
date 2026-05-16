@@ -41,30 +41,75 @@ export const assets = {
 
 export const categories = ["Headphones", "Speakers", "Watch", "Earbuds", "Mouse", "Decoration"];
 
+// Top-level groups are locked at five — these match what the homepage
+// "Top categories" tiles, navbar dropdown, and /shop filter all key off.
+// Only the leaf items inside each group expand over time, sourced from
+// listing-volume data on Jiji. Aim is ~15-20 items per group max so the
+// dropdowns stay scannable.
 export const categoryGroups = [
     {
         name: "Home & Appliances",
         items: [
+            // Furniture
             "Sofas", "Beds", "Mattresses", "Wardrobes", "Dining sets",
-            "Fridges", "Washing machines", "Microwaves", "Gas cookers", "Generators",
-            "Cookware", "Decor", "Rugs",
+            // Kitchen
+            "Fridges", "Freezers", "Microwaves", "Gas cookers", "Blenders", "Cookware", "Kitchen utensils",
+            // Laundry
+            "Washing machines",
+            // Climate / utilities
+            "Air conditioners", "Water dispensers",
+            // Power (huge in the Naija market)
+            "Generators", "Inverters", "Solar panels",
+            // Decorative
+            "Decor", "Rugs",
         ],
     },
     {
         name: "Electronics",
-        items: ["iPhones", "Androids", "Laptops", "TVs", "Speakers", "Headphones", "Cameras", "Smartwatches"],
+        items: [
+            "iPhones", "Androids", "Tablets", "Phone accessories", "Power banks",
+            "Laptops", "Monitors", "Printers", "Routers",
+            "TVs", "Speakers", "Headphones", "Cameras", "CCTV cameras",
+            "Smartwatches", "Gaming consoles",
+        ],
     },
     {
         name: "Vehicles",
-        items: ["Sedans", "SUVs", "Motorcycles", "Bicycles", "Parts & accessories"],
+        items: [
+            "Sedans", "SUVs", "Buses", "Trucks", "Tricycles",
+            "Motorcycles", "Bicycles", "Heavy equipment",
+            "Car tyres", "Car batteries", "Parts & accessories",
+        ],
     },
     {
         name: "Pets & Lifestyle",
-        items: ["Pets", "Fashion", "Books", "Other"],
+        items: [
+            // Pets (split out the Jiji way — Dogs is the biggest pet leaf)
+            "Dogs", "Cats", "Birds", "Pet food",
+            // Fashion (split by gender/category, no generic "Fashion")
+            "Men's fashion", "Women's fashion", "Shoes", "Bags", "Watches", "Jewelry",
+            // Beauty
+            "Perfumes", "Skincare", "Makeup",
+            // Family / hobby
+            "Baby items", "Sports gear", "Books",
+            "Other",
+        ],
     },
     {
         name: "Repairs & Services",
-        items: ["Plumbing", "Electrician", "Carpentry", "Cleaning", "Mechanic", "Phone repair", "AC Repair", "Appliance repair", "Moving", "Courier"],
+        items: [
+            // Home trades
+            "Plumbing", "Electrician", "Carpentry", "Cleaning", "Fumigation",
+            "Borehole drilling", "Solar installation",
+            // Devices
+            "Phone repair", "AC Repair", "Appliance repair",
+            // Auto
+            "Mechanic", "Driver hire",
+            // Logistics
+            "Moving", "Courier",
+            // Events / personal
+            "Catering", "Event rentals", "Photography", "Tailoring", "Tutoring", "Laundry",
+        ],
     },
 ];
 

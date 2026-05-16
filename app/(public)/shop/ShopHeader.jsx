@@ -11,7 +11,7 @@ const ShopHeader = ({ search }) => {
         >
             {search && <MoveLeftIcon size={20} />}
             All <span className="text-slate-700 font-medium">Listings</span>
-            {search && <span className="text-sm text-slate-400">— "{search}"</span>}
+            {search && <span className="text-sm text-slate-400">— &quot;{search}&quot;</span>}
         </h1>
     )
 }

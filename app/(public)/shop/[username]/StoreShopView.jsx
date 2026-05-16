@@ -2,9 +2,10 @@
 import { useMemo, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ShieldCheck, Star, MessageSquareText, BadgeCheck, Pencil, Plus, LayoutDashboard } from "lucide-react"
+import { ShieldCheck, Star, MessageSquareText, BadgeCheck, Pencil, Plus, LayoutDashboard, Eye } from "lucide-react"
 import { differenceInMonths, differenceInYears, formatDistanceToNow } from "date-fns"
 import ProductRow from "@/components/ProductRow"
+import ServiceCard from "@/components/ServiceCard"
 import VerifiedCheck from "@/components/VerifiedCheck"
 import ReviewModal from "@/components/ReviewModal"
 import EditProfileModal from "@/components/EditProfileModal"
@@ -29,20 +30,37 @@ const groupForCategory = (category) => {
     return category
 }
 
-const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false, viewerSignedIn = false, providerVerified = false }) => {
+const StoreShopView = ({
+    storeInfo,
+    products,
+    reviews = [],
+    viewerIsSelf = false,
+    viewerSignedIn = false,
+    providerVerified = false,
+    profileMode = 'seller',          // 'seller' | 'provider'
+    crossProfileHref = null,         // link to the other identity's profile when applicable
+    crossProfileLabel = '',
+    ownerPreviewing = false,         // owner has flipped into ?preview=buyer mode
+}) => {
+
+    const isProviderProfile = profileMode === 'provider'
 
     const [activeTab, setActiveTab] = useState('Listings')
     const [reviewOpen, setReviewOpen] = useState(false)
     const [editOpen, setEditOpen] = useState(false)
     const requireAuth = useAuthGate()
 
-    // Owner navigation targets — providers manage from /pro, plain
-    // sellers from /store. Picking the right one removes a hop for
-    // people who land on their own profile.
-    const dashboardHref = providerVerified ? '/pro' : '/store'
-    const dashboardLabel = providerVerified ? 'Provider dashboard' : 'Seller dashboard'
-    const addListingHref = providerVerified ? '/pro/add-service' : '/store/add-product'
-    const addListingLabel = providerVerified ? 'Add a service' : 'Post an ad'
+    // Owner CTAs are now strictly tied to which surface the owner is on,
+    // not which roles they happen to hold. Provider profile → /pro tools.
+    // Seller profile → /store tools. Even if a user is both, each profile
+    // only ever exposes its own surface.
+    const dashboardHref  = isProviderProfile ? '/pro'                   : '/store'
+    const dashboardLabel = isProviderProfile ? 'Provider dashboard'     : 'Seller dashboard'
+    const addListingHref = isProviderProfile ? '/pro/add-service'       : '/store/add-product'
+    const addListingLabel = isProviderProfile ? 'Add a service'         : 'Post an ad'
+    const listingNoun     = isProviderProfile ? 'service'               : 'item'
+    const listingNounP    = isProviderProfile ? 'services'              : 'items'
+    const sellingNoun     = isProviderProfile ? 'Service history'       : 'Selling history'
 
     const categoryCounts = useMemo(() => {
         const counts = new Map()
@@ -70,12 +88,16 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
         `Sign in to review ${sellerName.split(' ')[0]}.`,
     )
 
+    // Path used to toggle in/out of buyer preview without rebuilding state.
+    const profilePath = `/${profileMode === 'provider' ? 'provider' : 'shop'}/${storeInfo?.username || ''}`
+
     return (
         <div className="min-h-[70vh]">
 
-            {/* Owner banner — only the signed-in owner sees this strip.
-                Mirrors Jiji's blend: profile management lives where buyers
-                see the profile, not behind a separate route. */}
+            {/* Owner banner — only the signed-in owner (and not in buyer
+                preview) sees this strip. Mirrors Jiji's blend: profile
+                management lives where buyers see the profile, not behind
+                a separate route. */}
             {viewerIsSelf && (
                 <section className="bg-amber-50 border-b border-amber-200">
                     <div className="max-w-7xl mx-auto px-6 py-2.5 flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -83,7 +105,13 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
                             <span className="font-semibold">This is your public profile.</span>
                             <span className="hidden sm:inline text-amber-800/80"> Only you see this strip.</span>
                         </p>
-                        <div className="ml-auto flex items-center gap-2">
+                        <div className="ml-auto flex items-center gap-2 flex-wrap">
+                            <Link
+                                href={`${profilePath}?preview=buyer`}
+                                className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900 hover:text-amber-950 transition"
+                            >
+                                <Eye size={13} /> View as buyer
+                            </Link>
                             <Link
                                 href={dashboardHref}
                                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900 hover:text-amber-950 transition"
@@ -97,6 +125,26 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
                                 <Plus size={13} /> {addListingLabel}
                             </Link>
                         </div>
+                    </div>
+                </section>
+            )}
+
+            {/* Owner-in-preview bar — slim slate strip above the profile so
+                the owner remembers they're looking at the buyer's view and
+                can hop back to owner mode in one click. */}
+            {ownerPreviewing && (
+                <section className="bg-slate-900 text-white">
+                    <div className="max-w-7xl mx-auto px-6 py-2 flex items-center gap-3 text-xs">
+                        <Eye size={13} className="shrink-0" />
+                        <p className="flex-1 min-w-0">
+                            You&apos;re viewing your profile as a buyer would see it.
+                        </p>
+                        <Link
+                            href={profilePath}
+                            className="inline-flex items-center gap-1 bg-white text-slate-900 font-semibold rounded-full px-3 py-1 hover:bg-slate-100 transition shrink-0"
+                        >
+                            Exit preview
+                        </Link>
                     </div>
                 </section>
             )}
@@ -176,12 +224,28 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
             </section>
 
             <div className="max-w-7xl mx-auto px-6 py-8">
-                {/* Selling history block */}
+                {/* Cross-profile link — when this person also has the
+                    other identity, surface it as a small strip so buyers
+                    can hop without having to guess. Each profile stays
+                    strictly its own surface; the link is the only bridge. */}
+                {crossProfileHref && (
+                    <div className="mb-4 flex items-center gap-2 text-sm">
+                        <span className="text-slate-500">{crossProfileLabel}.</span>
+                        <a
+                            href={crossProfileHref}
+                            className="font-semibold text-emerald-700 hover:text-emerald-900 underline-offset-2 hover:underline transition"
+                        >
+                            View {isProviderProfile ? 'their products' : 'their services'} →
+                        </a>
+                    </div>
+                )}
+
+                {/* History block */}
                 <section className="mb-6 border border-slate-200 rounded-lg p-5 bg-white">
-                    <h2 className="text-lg font-semibold text-slate-900 mb-4">Selling history</h2>
+                    <h2 className="text-lg font-semibold text-slate-900 mb-4">{sellingNoun}</h2>
                     <dl className="space-y-2 text-sm">
                         <div className="flex items-center gap-3">
-                            <dt className="text-slate-500">Total items</dt>
+                            <dt className="text-slate-500">Total {listingNounP}</dt>
                             <dd className="font-semibold text-slate-900">{products.length}</dd>
                         </div>
                         {categoryCounts.length > 0 && (
@@ -225,11 +289,34 @@ const StoreShopView = ({ storeInfo, products, reviews = [], viewerIsSelf = false
                 {/* Tab content */}
                 {activeTab === 'Listings' ? (
                     products.length === 0 ? (
-                        <p className="text-sm text-slate-500 py-12 text-center">No listings yet.</p>
+                        <p className="text-sm text-slate-500 py-12 text-center">
+                            No {listingNounP} yet.
+                        </p>
+                    ) : isProviderProfile ? (
+                        // Provider profile renders services as cards in a grid,
+                        // matching how /services lists them.
+                        <>
+                            <p className="text-sm text-slate-600 mb-4">
+                                {products.length} {products.length === 1 ? listingNoun : listingNounP} on offer
+                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {products.map((product) => (
+                                    <div key={product.id}>
+                                        <ServiceCard product={product} />
+                                        {viewerIsSelf && (
+                                            <OwnerListingActions
+                                                listingId={product.id}
+                                                initialInStock={product.inStock !== false}
+                                            />
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </>
                     ) : (
                         <>
                             <p className="text-sm text-slate-600 mb-4">
-                                {products.length} {products.length === 1 ? 'item' : 'items'} for sale
+                                {products.length} {products.length === 1 ? listingNoun : listingNounP} for sale
                             </p>
                             <div className="border-t border-slate-200 max-w-3xl">
                                 {products.map((product) => (

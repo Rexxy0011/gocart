@@ -45,7 +45,7 @@ const LatestProducts = async () => {
                 description={`${products.length} boosted listing${products.length === 1 ? '' : 's'} buyers are seeing first`}
                 href='/shop'
             />
-            <div className='mt-12 grid grid-cols-2 sm:flex flex-wrap gap-6 justify-between'>
+            <div className='mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6'>
                 {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}

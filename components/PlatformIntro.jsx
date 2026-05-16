@@ -3,18 +3,17 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Check, ArrowRight } from 'lucide-react'
-import { assets } from '@/assets/assets'
 
+// Hero photos live in /public — drop new files there and update this
+// list. Path is absolute from the site root, so the assets.js static
+// imports aren't needed for these.
 const slides = [
-    { src: assets.hero_sofa_blue,    alt: 'Blue velvet sofa' },
-    { src: assets.hero_mattress,     alt: 'Mattress' },
-    { src: assets.hero_sedan,        alt: 'Mercedes sedan' },
-    { src: assets.hero_tv_unit,      alt: 'TV unit' },
-    { src: assets.hero_mini_fridge,  alt: 'Mini fridge' },
-    { src: assets.hero_cookware,     alt: 'Cookware set' },
-    { src: assets.hero_gas_cooker,   alt: 'Gas cooker' },
-    { src: assets.hero_sofa_club,    alt: 'Club sofa' },
-    { src: assets.hero_dog,          alt: 'Pets' },
+    { src: '/njo1.jpeg', alt: 'GoCart' },
+    { src: '/njo2.jpeg', alt: 'GoCart' },
+    { src: '/njo3.jpeg', alt: 'GoCart' },
+    { src: '/njo4.jpeg', alt: 'GoCart' },
+    { src: '/njo5.jpeg', alt: 'GoCart' },
+    { src: '/njo6.jpeg', alt: 'GoCart' },
 ]
 
 const SLIDE_INTERVAL_MS = 4500

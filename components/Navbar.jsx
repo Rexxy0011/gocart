@@ -1,5 +1,5 @@
 'use client'
-import { Search, Heart, UserPlus, ChevronDown, Plus, MapPin, Wrench, LogOut, MessageSquareText, Menu, X, ShoppingBag, Wrench as WrenchIcon, Info, ShieldCheck, Mail } from "lucide-react";
+import { Search, Heart, UserPlus, ChevronDown, Plus, MapPin, Wrench, LogOut, MessageSquareText, Menu, X, ShoppingBag, Wrench as WrenchIcon, Info, ShieldCheck, Mail, Tag, Check } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -8,6 +8,19 @@ import { categoryGroups } from "@/assets/assets";
 import { signOut } from "@/app/actions/auth";
 
 const ALL_LOCATIONS = 'All locations'
+
+// Price-filter presets — same set used to live in the on-page chip
+// before we promoted it into the navbar. `max` null = no upper bound.
+const PRICE_PRESETS = [
+    { id: 'any',   label: 'Any price',         min: null, max: null,   free: false },
+    { id: 'free',  label: 'Free only',         min: null, max: null,   free: true  },
+    { id: 'u5k',   label: 'Under ₦5,000',      min: null, max: 5000,   free: false },
+    { id: 'u20k',  label: 'Under ₦20,000',     min: null, max: 20000,  free: false },
+    { id: 'u50k',  label: 'Under ₦50,000',     min: null, max: 50000,  free: false },
+    { id: 'u100k', label: 'Under ₦100,000',    min: null, max: 100000, free: false },
+    { id: 'u500k', label: 'Under ₦500,000',    min: null, max: 500000, free: false },
+]
+const fmtNaira = (n) => `₦${Number(n).toLocaleString()}`
 
 const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
 
@@ -26,6 +39,18 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
     const [openLocDropdown, setOpenLocDropdown] = useState(false)
     const catDropdownRef = useRef(null)
     const locDropdownRef = useRef(null)
+
+    // Price filter — promoted from the on-page chip. Lives next to
+    // category/location and applies on the same form submit.
+    const [pricePresetId, setPricePresetId] = useState('any')
+    const [priceMin, setPriceMin] = useState(null)        // numeric or null
+    const [priceMax, setPriceMax] = useState(null)
+    const [priceFree, setPriceFree] = useState(false)
+    const [openPriceDropdown, setOpenPriceDropdown] = useState(false)
+    const [showPriceCustom, setShowPriceCustom] = useState(false)
+    const [customMinInput, setCustomMinInput] = useState('')
+    const [customMaxInput, setCustomMaxInput] = useState('')
+    const priceDropdownRef = useRef(null)
 
     const cartCount = useSelector(state => state.cart.total)
     const products = useSelector(state => state.product.list)
@@ -53,6 +78,10 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
             }
             if (locDropdownRef.current && !locDropdownRef.current.contains(e.target)) {
                 setOpenLocDropdown(false)
+            }
+            if (priceDropdownRef.current && !priceDropdownRef.current.contains(e.target)) {
+                setOpenPriceDropdown(false)
+                setShowPriceCustom(false)
             }
             if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
                 setOpenUserMenu(false)
@@ -90,9 +119,53 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
         if (category !== 'All' && !isServiceCategory) params.set('category', category)
         if (isServiceCategory && category !== 'Repairs & Services') params.set('category', category)
 
+        // Price params — only attached when the user actually picked one,
+        // and only meaningful on /shop. The /services route ignores them.
+        if (priceFree) {
+            params.set('free', 'true')
+        } else {
+            if (priceMin != null && priceMin > 0) params.set('min', String(priceMin))
+            if (priceMax != null && priceMax > 0) params.set('max', String(priceMax))
+        }
+
         const qs = params.toString()
         router.push(qs ? `${base}?${qs}` : base)
     }
+
+    const pickPricePreset = (preset) => {
+        setPricePresetId(preset.id)
+        setPriceMin(preset.min)
+        setPriceMax(preset.max)
+        setPriceFree(preset.free)
+        setOpenPriceDropdown(false)
+        setShowPriceCustom(false)
+    }
+
+    const applyPriceCustom = () => {
+        const minN = customMinInput !== '' ? parseInt(customMinInput, 10) : null
+        const maxN = customMaxInput !== '' ? parseInt(customMaxInput, 10) : null
+        setPricePresetId('custom')
+        setPriceMin(Number.isFinite(minN) && minN > 0 ? minN : null)
+        setPriceMax(Number.isFinite(maxN) && maxN > 0 ? maxN : null)
+        setPriceFree(false)
+        setOpenPriceDropdown(false)
+        setShowPriceCustom(false)
+    }
+
+    const clearPrice = () => {
+        setPricePresetId('any')
+        setPriceMin(null)
+        setPriceMax(null)
+        setPriceFree(false)
+    }
+
+    const priceLabel = (() => {
+        if (pricePresetId === 'custom') {
+            return `${priceMin ? fmtNaira(priceMin) : '₦0'} – ${priceMax ? fmtNaira(priceMax) : '∞'}`
+        }
+        return PRICE_PRESETS.find(p => p.id === pricePresetId)?.label || 'Any price'
+    })()
+    const priceIsActive = pricePresetId !== 'any'
 
     const pickCategory = (value) => {
         setCategory(value)
@@ -207,6 +280,121 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                                                 </button>
                                             ))}
                                         </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <span className="h-6 w-px bg-slate-300 shrink-0 hidden sm:inline-block" />
+
+                            {/* Price dropdown — sits between location and the
+                                search input on desktop. Hidden on mobile to
+                                keep the filter pill from wrapping awkwardly;
+                                mobile users get the same options inside the
+                                ☰ drawer (added below). */}
+                            <div className="relative shrink-0 hidden sm:block" ref={priceDropdownRef}>
+                                <button
+                                    type="button"
+                                    onClick={() => { setOpenPriceDropdown((o) => !o); setOpenCatDropdown(false); setOpenLocDropdown(false) }}
+                                    className={`flex items-center gap-1.5 px-2.5 sm:px-4 py-2.5 transition ${
+                                        priceIsActive ? 'text-emerald-700 font-medium' : 'text-slate-700 hover:text-slate-900'
+                                    }`}
+                                >
+                                    <Tag size={14} className="shrink-0" />
+                                    <span className="truncate max-w-[6rem] sm:max-w-[8rem]">{priceLabel}</span>
+                                    {priceIsActive && (
+                                        <span
+                                            role="button"
+                                            tabIndex={0}
+                                            aria-label="Clear price filter"
+                                            onClick={(e) => { e.stopPropagation(); clearPrice() }}
+                                            onKeyDown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); clearPrice() } }}
+                                            className="size-4 rounded-full hover:bg-emerald-100 inline-flex items-center justify-center cursor-pointer"
+                                        >
+                                            <X size={11} />
+                                        </span>
+                                    )}
+                                    <ChevronDown size={14} className={`shrink-0 transition ${openPriceDropdown ? 'rotate-180' : ''}`} />
+                                </button>
+                                {openPriceDropdown && (
+                                    <div className="absolute top-full left-0 mt-2 z-50 w-64 bg-white rounded-xl shadow-lg ring-1 ring-slate-200 py-1.5">
+                                        {!showPriceCustom ? (
+                                            <>
+                                                {PRICE_PRESETS.map((p) => {
+                                                    const active = p.id === pricePresetId
+                                                    return (
+                                                        <button
+                                                            key={p.id}
+                                                            type="button"
+                                                            onClick={() => pickPricePreset(p)}
+                                                            className={`w-full flex items-center justify-between px-4 py-2 text-sm text-left transition ${
+                                                                active ? 'bg-emerald-50 text-emerald-800 font-semibold' : 'text-slate-700 hover:bg-slate-50'
+                                                            }`}
+                                                        >
+                                                            <span>{p.label}</span>
+                                                            {active && <Check size={14} />}
+                                                        </button>
+                                                    )
+                                                })}
+                                                <div className="border-t border-slate-100 mt-1 pt-1">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => { setShowPriceCustom(true); setCustomMinInput(priceMin || ''); setCustomMaxInput(priceMax || '') }}
+                                                        className={`w-full text-left px-4 py-2 text-sm transition ${
+                                                            pricePresetId === 'custom' ? 'bg-emerald-50 text-emerald-800 font-semibold' : 'text-slate-700 hover:bg-slate-50'
+                                                        }`}
+                                                    >
+                                                        Custom range…
+                                                    </button>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="px-4 py-3 space-y-3">
+                                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Custom range</p>
+                                                <div className="flex items-center gap-2">
+                                                    <label className="flex-1 flex flex-col gap-1">
+                                                        <span className="text-[10px] text-slate-500">Min ₦</span>
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            inputMode="numeric"
+                                                            value={customMinInput}
+                                                            onChange={(e) => setCustomMinInput(e.target.value)}
+                                                            placeholder="0"
+                                                            className="text-sm bg-slate-50 ring-1 ring-slate-200 rounded px-2.5 py-1.5 outline-none focus:ring-slate-400 transition w-full"
+                                                        />
+                                                    </label>
+                                                    <span className="text-slate-400 mt-4">–</span>
+                                                    <label className="flex-1 flex flex-col gap-1">
+                                                        <span className="text-[10px] text-slate-500">Max ₦</span>
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            inputMode="numeric"
+                                                            value={customMaxInput}
+                                                            onChange={(e) => setCustomMaxInput(e.target.value)}
+                                                            placeholder="∞"
+                                                            className="text-sm bg-slate-50 ring-1 ring-slate-200 rounded px-2.5 py-1.5 outline-none focus:ring-slate-400 transition w-full"
+                                                        />
+                                                    </label>
+                                                </div>
+                                                <div className="flex justify-end gap-2 pt-1">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowPriceCustom(false)}
+                                                        className="text-xs text-slate-600 hover:text-slate-900 px-2 py-1 transition"
+                                                    >
+                                                        Back
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={applyPriceCustom}
+                                                        className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-full px-3 py-1.5 transition"
+                                                    >
+                                                        Set
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>

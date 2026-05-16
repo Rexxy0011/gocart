@@ -58,10 +58,19 @@ export const DeliveryAvailableTag = ({ size = 'md' }) => (
 )
 
 const CONDITION_LABEL = {
-    'new':    'New',
-    'as-new': 'As good as new',
-    'good':   'Good condition',
-    'fair':   'Fair condition',
+    'new':           'New',
+    'as-new':        'As good as new',
+    'good':          'Good condition',
+    'fair':          'Fair condition',
+    // Vehicle-specific (Nigerian market vocabulary).
+    'foreign-used':  'Foreign used',
+    'nigerian-used': 'Nigerian used',
+    // Phone-specific.
+    'new-sealed':    'Brand new (sealed)',
+    'open-box':      'Open box',
+    'uk-used':       'UK used',
+    'us-used':       'US used',
+    'refurbished':   'Refurbished',
 }
 
 export const ConditionTag = ({ condition, size = 'md' }) => {

@@ -37,8 +37,8 @@ export default async function ConversationPage({ params }) {
     const listingHref = listing?.service ? `/service/${listing.id}` : `/product/${listing?.id}`
 
     // Buyer-side avatar click destination:
-    //   service convo → seller's /shop/[username] (the provider profile —
-    //                   reviews, badge, full service catalogue)
+    //   service convo → /provider/[username] (provider-only profile —
+    //                   service catalogue, service reviews, badge)
     //   product convo → /product/[id] (the listing itself; products are
     //                   one-off classifieds, the seller has no real brand
     //                   page to land on)
@@ -52,7 +52,7 @@ export default async function ConversationPage({ params }) {
                 .select('username')
                 .eq('user_id', conversation.seller_id)
                 .maybeSingle()
-            if (sellerStore?.username) otherProfileHref = `/shop/${sellerStore.username}`
+            if (sellerStore?.username) otherProfileHref = `/provider/${sellerStore.username}`
         } else {
             otherProfileHref = `/product/${listing.id}`
         }

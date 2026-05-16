@@ -1,15 +1,16 @@
 import { createClient } from "@/lib/supabase/server"
 import { isAdminAuthenticated } from "@/lib/auth/admin-pass"
 import { PRODUCT_WITH_STORE_SELECT, mapProductRow, mapStoreRow } from "@/lib/supabase/mappers"
-import StoreShopView from "./StoreShopView"
+import StoreShopView from "../../shop/[username]/StoreShopView"
 
-export default async function StoreShop({ params, searchParams }) {
+// Provider profile — strict mirror of /shop/[username] but scoped to
+// services only. Reviews on services, banner pointing at /pro, "Add a
+// service" CTA. Sellers' products live at /shop/[username] and never
+// leak in here.
+export default async function ProviderShop({ params, searchParams }) {
 
     const { username } = await params
     const sp = (await searchParams) || {}
-    // ?preview=buyer lets the owner see exactly what visitors see — same
-    // page, no owner banner, no per-listing edit/boost/delete strip.
-    // The view-mode itself adds a floating "exit preview" bar.
     const buyerPreview = sp.preview === 'buyer'
     const supabase = await createClient()
 
@@ -25,46 +26,32 @@ export default async function StoreShop({ params, searchParams }) {
     if (!storeRow) {
         return (
             <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-6">
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Seller not found</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Provider not found</h1>
                 <p className="text-sm text-slate-600 mt-2 max-w-md">
-                    No GoCart seller exists at <span className="font-mono text-slate-900">/shop/{username}</span>. Check the link or browse all listings instead.
+                    No GoCart provider exists at <span className="font-mono text-slate-900">/provider/{username}</span>. Check the link or browse all services instead.
                 </p>
-                <a href="/shop" className="mt-6 inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-full px-5 py-2.5 transition">
-                    Browse all listings
+                <a href="/services" className="mt-6 inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-full px-5 py-2.5 transition">
+                    Browse all services
                 </a>
             </div>
         )
     }
 
-    // Seller profile = products only. Services live at /provider/[username]
-    // so a user who's both has two strictly-separate surfaces, each tied
-    // to its own dashboard (/store vs /pro).
-    const { data: productRows } = await supabase
+    // Provider profile = services only.
+    const { data: serviceRows } = await supabase
         .from('products')
         .select(PRODUCT_WITH_STORE_SELECT)
         .eq('store_id', storeRow.id)
         .eq('review_status', 'approved')
-        .is('service', null)
+        .not('service', 'is', null)
         .is('removed_at', null)
         .order('featured', { ascending: false })
         .order('bumped_at', { ascending: false, nullsFirst: false })
         .order('created_at', { ascending: false })
 
-    // Does this seller also have services? Drives the "Also offers
-    // services" cross-link to /provider/[username].
-    const { count: serviceCount } = await supabase
-        .from('products')
-        .select('id', { count: 'exact', head: true })
-        .eq('store_id', storeRow.id)
-        .eq('review_status', 'approved')
-        .not('service', 'is', null)
-        .is('removed_at', null)
-
-    const products = (productRows || []).map(mapProductRow)
+    const products = (serviceRows || []).map(mapProductRow)
     const productIds = products.map(p => p.id)
 
-    // Pull every review on this seller's listings, joined with the
-    // reviewer's profile for display. Sorted newest-first.
     let reviews = []
     if (productIds.length) {
         const { data: ratingRows } = await supabase
@@ -83,28 +70,28 @@ export default async function StoreShop({ params, searchParams }) {
             createdAt: r.created_at,
             productId: r.product_id,
             user: r.user,
-            // Verified-job flag — true only when the rating is tied to
-            // a deal that actually reached the verified state.
             verifiedJob: r.deal?.status === 'verified',
             productName: products.find(p => p.id === r.product_id)?.name || '',
         }))
     }
 
-    // Identify the viewer so we can hide the "Leave a review" CTA on
-    // the seller's own profile.
+    // Does this provider also sell products? Drives the cross-link.
+    const { count: productCount } = await supabase
+        .from('products')
+        .select('id', { count: 'exact', head: true })
+        .eq('store_id', storeRow.id)
+        .eq('review_status', 'approved')
+        .is('service', null)
+        .is('removed_at', null)
+
     const { data: { user: viewer } } = await supabase.auth.getUser()
-    // Admin context — the password cookie is the admin signal, not the
-    // Supabase user. An admin who *also* happens to be Supabase-signed-in
-    // as the listing's seller should still see the buyer view; admins
-    // don't sell. They review.
+    // Admins reviewing a provider's profile should always see the buyer
+    // view, even if their browser is also Supabase-signed-in as that
+    // provider. Admin role is separate from buyer/seller/provider.
     const adminAuthed = await isAdminAuthenticated()
     const isOwner = !adminAuthed && viewer?.id === storeRow.user_id
-    // Owner can self-toggle into buyer preview via ?preview=buyer.
     const viewerIsSelf = isOwner && !buyerPreview
 
-    // Provider verification — separate from store-approval. KYC-approved
-    // providers carry the badge even if their store status is something
-    // else, and vice versa.
     const { data: providerApp } = await supabase
         .from('provider_applications')
         .select('status')
@@ -122,9 +109,9 @@ export default async function StoreShop({ params, searchParams }) {
             viewerIsSelf={viewerIsSelf}
             viewerSignedIn={!!viewer}
             providerVerified={providerVerified}
-            profileMode="seller"
-            crossProfileHref={serviceCount ? `/provider/${username}` : null}
-            crossProfileLabel="Also offers services"
+            profileMode="provider"
+            crossProfileHref={productCount ? `/shop/${username}` : null}
+            crossProfileLabel="Also sells products"
             ownerPreviewing={isOwner && buyerPreview}
         />
     )

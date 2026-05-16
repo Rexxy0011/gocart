@@ -74,7 +74,7 @@ export default async function HotPage() {
                                     </span>
                                     <span className='text-xs text-slate-500'>{featuredItems.length} {featuredItems.length === 1 ? 'listing' : 'listings'}</span>
                                 </div>
-                                <div className='grid grid-cols-2 sm:flex flex-wrap gap-6 xl:gap-8'>
+                                <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6'>
                                     {featuredItems.map((p) => <ProductCard key={p.id} product={p} />)}
                                 </div>
                             </section>
@@ -87,7 +87,7 @@ export default async function HotPage() {
                                     </span>
                                     <span className='text-xs text-slate-500'>{urgentItems.length} {urgentItems.length === 1 ? 'listing' : 'listings'}</span>
                                 </div>
-                                <div className='grid grid-cols-2 sm:flex flex-wrap gap-6 xl:gap-8'>
+                                <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6'>
                                     {urgentItems.map((p) => <ProductCard key={p.id} product={p} />)}
                                 </div>
                             </section>
@@ -100,7 +100,7 @@ export default async function HotPage() {
                                     </span>
                                     <span className='text-xs text-slate-500'>{bulkItems.length} {bulkItems.length === 1 ? 'listing' : 'listings'}</span>
                                 </div>
-                                <div className='grid grid-cols-2 sm:flex flex-wrap gap-6 xl:gap-8'>
+                                <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6'>
                                     {bulkItems.map((p) => <ProductCard key={p.id} product={p} />)}
                                 </div>
                             </section>
