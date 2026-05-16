@@ -2,11 +2,12 @@ import Link from 'next/link'
 import { Crown, Flame, Boxes } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PRODUCT_WITH_STORE_SELECT, mapProductRow } from '@/lib/supabase/mappers'
+import { activeBoostFilter } from '@/lib/boosts'
 import ProductCard from '@/components/ProductCard'
 
-export const metadata = { title: 'Hot listings — GoCart' }
+export const metadata = { title: 'Hot listings - GoCart' }
 
-// /hot — every paid placement in one place. Sellers who paid for the
+// /hot - every paid placement in one place. Sellers who paid for the
 // Featured ribbon, Urgent tag, or Bulk-sale tag all surface here. Three
 // sections; each empty bucket disappears so we never render a "no items"
 // placeholder.
@@ -23,6 +24,7 @@ export const metadata = { title: 'Hot listings — GoCart' }
 export default async function HotPage() {
 
     const supabase = await createClient()
+    const now = new Date().toISOString()
     const { data: rows } = await supabase
         .from('products')
         .select(PRODUCT_WITH_STORE_SELECT)
@@ -32,7 +34,9 @@ export default async function HotPage() {
         .eq('in_stock', true)
         .eq('store.status', 'approved')
         .eq('store.is_active', true)
-        .or('featured.eq.true,urgent.eq.true,bulk_sale.eq.true')
+        // Featured / Urgent / Bulk-sale with a future expiry only - Bumps
+        // don't surface here. Expired boosts drop off immediately.
+        .or(activeBoostFilter(now, ['featured_until', 'urgent_until', 'bulk_sale_until']))
         .order('featured', { ascending: false })
         .order('bumped_at', { ascending: false, nullsFirst: false })
         .order('created_at', { ascending: false })
@@ -55,7 +59,7 @@ export default async function HotPage() {
                     <div className='min-w-0'>
                         <h1 className='text-2xl sm:text-3xl font-bold text-slate-900'>Hot listings</h1>
                         <p className='text-sm text-slate-600 mt-1 max-w-2xl'>
-                            Sellers with a reason to move fast — Urgent tags and Bulk sales. These don&apos;t stay up for long.
+                            Sellers with a reason to move fast - Urgent tags and Bulk sales. These don&apos;t stay up for long.
                         </p>
                     </div>
                 </div>
@@ -114,7 +118,7 @@ export default async function HotPage() {
                     <div className='flex-1 min-w-0'>
                         <p className='font-semibold text-slate-900'>Need to sell fast?</p>
                         <p className='text-sm text-slate-600'>
-                            Boost your listing — Featured, Urgent or Bulk sale — to land here and reach buyers in a hurry.
+                            Boost your listing - Featured, Urgent or Bulk sale - to land here and reach buyers in a hurry.
                         </p>
                     </div>
                     <Link href='/store/manage-product' className='shrink-0 text-sm font-semibold text-sky-700 hover:underline'>

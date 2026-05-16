@@ -12,7 +12,7 @@ export const metadata = {
 // the seller hasn't posted their first listing yet, store will be null and
 // the sidebar shows a friendly placeholder.
 //
-// Store rows are created lazily by /store/add-product on first post — there
+// Store rows are created lazily by /store/add-product on first post - there
 // is intentionally no separate "shop setup" ceremony for individual sellers
 // (that experience is reserved for Tier-3 brand/business accounts).
 export default async function StoreRouteLayout({ children }) {

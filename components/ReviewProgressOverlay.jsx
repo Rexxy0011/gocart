@@ -3,16 +3,16 @@ import { useEffect, useState } from 'react'
 import { CheckCircle2, Loader2, Clock, ShieldCheck, BadgeCheck, ScanSearch } from 'lucide-react'
 
 // Shown briefly after a seller posts a listing. The DB trigger has already
-// decided pending vs approved by the time we render — we just animate the
+// decided pending vs approved by the time we render - we just animate the
 // pipeline so the seller feels the system actually did something. Mostly
 // UX padding (~2.5s total) so a successful auto-approve doesn't feel like
 // "wait, did anything happen?".
 //
 // Steps (visual only; the real work happened in the keyword pre-screen
 // before insert + the auto_review_listing trigger on insert):
-//   1. Content check — keyword scan
-//   2. Account check — your post history
-//   3. Risk assessment — category-weighted policy review
+//   1. Content check - keyword scan
+//   2. Account check - your post history
+//   3. Risk assessment - category-weighted policy review
 // Then a result panel with the actual outcome.
 const STEPS = [
     { key: 'content', label: 'Content check',       Icon: ScanSearch },
@@ -96,7 +96,7 @@ const ReviewProgressOverlay = ({ status, onComplete }) => {
                     })}
                 </ul>
 
-                {/* Result panel — appears once steps complete */}
+                {/* Result panel - appears once steps complete */}
                 {allDone && (
                     <div className={`mt-5 p-4 rounded-xl ring-1 transition-opacity duration-300 ${
                         isApproved
@@ -118,7 +118,7 @@ const ReviewProgressOverlay = ({ status, onComplete }) => {
                                 <p className={`text-xs mt-0.5 leading-relaxed ${isApproved ? 'text-emerald-800/80' : 'text-amber-800/80'}`}>
                                     {isApproved
                                         ? 'Your listing is published and visible to buyers.'
-                                        : 'New seller — your first listings get a quick admin look. We\'ll notify you when it\'s live (usually under a day).'}
+                                        : 'New seller - your first listings get a quick admin look. We\'ll notify you when it\'s live (usually under a day).'}
                                 </p>
                             </div>
                         </div>

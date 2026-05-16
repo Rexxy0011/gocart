@@ -1,9 +1,9 @@
 import { ChevronRight } from "lucide-react"
 
 export const metadata = {
-    title: 'Terms of Use — GoCart',
+    title: 'Terms of Use - GoCart',
     description:
-        "GoCart's Terms of Use — user responsibilities, prohibited activities, " +
+        "GoCart's Terms of Use - user responsibilities, prohibited activities, " +
         "moderation, transactions, enforcement, and limitations.",
 }
 
@@ -64,7 +64,7 @@ const DashList = ({ items }) => (
     <ul className="space-y-2">
         {items.map((item) => (
             <li key={item} className="flex gap-3">
-                <span className="text-slate-400 select-none">—</span>
+                <span className="text-slate-400 select-none">-</span>
                 <span>{item}</span>
             </li>
         ))}
@@ -103,7 +103,7 @@ export default function TermsPage() {
     return (
         <main className="bg-white min-h-screen">
 
-            {/* Hero — big bold title + eyebrow, then the welcome intro
+            {/* Hero - big bold title + eyebrow, then the welcome intro
                 visible above the accordion (collapsed sections shouldn't
                 hide the very first thing a reader needs to see). */}
             <section className="max-w-4xl mx-auto px-6 pt-16 sm:pt-20 pb-10">
@@ -131,7 +131,7 @@ export default function TermsPage() {
                 </div>
             </section>
 
-            {/* Accordion — each row collapsed by default. No client JS;
+            {/* Accordion - each row collapsed by default. No client JS;
                 <details>/<summary> handles toggling natively. */}
             <section className="max-w-4xl mx-auto px-6 border-t border-slate-200">
 
@@ -235,7 +235,7 @@ export default function TermsPage() {
             {/* Closing tagline */}
             <div className="max-w-4xl mx-auto px-6 py-12">
                 <p className="text-xs sm:text-sm uppercase tracking-[0.18em] text-slate-500">
-                    GoCart — Building a safer and more trusted marketplace experience.
+                    GoCart - Building a safer and more trusted marketplace experience.
                 </p>
             </div>
         </main>

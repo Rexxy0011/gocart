@@ -12,9 +12,9 @@ import ReviewModal from '@/components/ReviewModal'
 //
 // Five rendered states:
 //   open                       → "Mark job done" button (either side)
-//   pending_<other>            → "You marked done — awaiting <other>"  + Reset isn't supported in MVP
-//   pending_<me>               → "<other> marked done — confirm or dispute"
-//   verified                   → "Verified job — leave a review" (buyer only)
+//   pending_<other>            → "You marked done - awaiting <other>"  + Reset isn't supported in MVP
+//   pending_<me>               → "<other> marked done - confirm or dispute"
+//   verified                   → "Verified job - leave a review" (buyer only)
 //   disputed                   → "Disputed: <reason>" (terminal)
 const DealBanner = ({ deal, conversationId, viewerIsBuyer, otherPartyName, listing }) => {
 
@@ -38,7 +38,7 @@ const DealBanner = ({ deal, conversationId, viewerIsBuyer, otherPartyName, listi
         try {
             const result = await markDealDone({ conversationId })
             if (result?.error) toast.error(result.error)
-            else if (result?.deal?.status === 'verified') toast.success('Deal verified — review on the way.')
+            else if (result?.deal?.status === 'verified') toast.success('Deal verified - review on the way.')
             else toast.success('Marked as done. Waiting for the other side to confirm.')
         } finally {
             setSubmitting(false)
@@ -129,7 +129,7 @@ const DealBanner = ({ deal, conversationId, viewerIsBuyer, otherPartyName, listi
                         <div className='flex-1 min-w-0'>
                             <p className='font-semibold text-amber-900'>{otherPartyName} marked this deal done</p>
                             <p className='text-sm text-amber-900/80 mt-0.5'>
-                                Confirm if it really happened — that unlocks a verified review.
+                                Confirm if it really happened - that unlocks a verified review.
                             </p>
                             <div className='flex flex-wrap gap-2 mt-3'>
                                 <button
@@ -174,7 +174,7 @@ const DealBanner = ({ deal, conversationId, viewerIsBuyer, otherPartyName, listi
                             </div>
                             <div className='px-5 py-5 space-y-4'>
                                 <p className='text-sm text-slate-600 leading-relaxed'>
-                                    Tell us briefly why you&apos;re rejecting this. A dispute is final — no review will be left.
+                                    Tell us briefly why you&apos;re rejecting this. A dispute is final - no review will be left.
                                 </p>
                                 <textarea
                                     rows={4}

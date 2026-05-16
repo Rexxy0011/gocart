@@ -5,7 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { isAdminAuthenticated, clearAdminCookie } from '@/lib/auth/admin-pass'
 
 // Server action for the admin approval queue. Called from /admin/approve.
-// Re-checks the admin password cookie server-side — middleware already
+// Re-checks the admin password cookie server-side - middleware already
 // gates the route, but a server action is callable directly so we
 // double-check before mutating.
 //
@@ -110,7 +110,7 @@ export async function setProductReviewStatus(productId, status, reason = '') {
     return { ok: true }
 }
 
-// Sign out of the admin panel — clears the gc_admin cookie and bounces
+// Sign out of the admin panel - clears the gc_admin cookie and bounces
 // back to /admin (which then renders the login form because the cookie
 // is gone). Called from a small form/button in AdminNavbar.
 export async function adminSignOut() {

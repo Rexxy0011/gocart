@@ -24,7 +24,7 @@ export default async function RootLayout({ children }) {
 
     // Pre-fetch favorite product IDs on the server so the Redux slice
     // hydrates with correct heart-icon state on first paint. Empty for
-    // signed-out users — they'll see all hearts unfilled, which is right.
+    // signed-out users - they'll see all hearts unfilled, which is right.
     let favoriteIds = []
     if (user) {
         const { data } = await supabase.from('favorites').select('product_id')

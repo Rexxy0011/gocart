@@ -7,7 +7,7 @@ export default async function StoreShop({ params, searchParams }) {
 
     const { username } = await params
     const sp = (await searchParams) || {}
-    // ?preview=buyer lets the owner see exactly what visitors see — same
+    // ?preview=buyer lets the owner see exactly what visitors see - same
     // page, no owner banner, no per-listing edit/boost/delete strip.
     // The view-mode itself adds a floating "exit preview" bar.
     const buyerPreview = sp.preview === 'buyer'
@@ -46,8 +46,6 @@ export default async function StoreShop({ params, searchParams }) {
         .eq('review_status', 'approved')
         .is('service', null)
         .is('removed_at', null)
-        .order('featured', { ascending: false })
-        .order('bumped_at', { ascending: false, nullsFirst: false })
         .order('created_at', { ascending: false })
 
     // Does this seller also have services? Drives the "Also offers
@@ -83,7 +81,7 @@ export default async function StoreShop({ params, searchParams }) {
             createdAt: r.created_at,
             productId: r.product_id,
             user: r.user,
-            // Verified-job flag — true only when the rating is tied to
+            // Verified-job flag - true only when the rating is tied to
             // a deal that actually reached the verified state.
             verifiedJob: r.deal?.status === 'verified',
             productName: products.find(p => p.id === r.product_id)?.name || '',
@@ -93,7 +91,7 @@ export default async function StoreShop({ params, searchParams }) {
     // Identify the viewer so we can hide the "Leave a review" CTA on
     // the seller's own profile.
     const { data: { user: viewer } } = await supabase.auth.getUser()
-    // Admin context — the password cookie is the admin signal, not the
+    // Admin context - the password cookie is the admin signal, not the
     // Supabase user. An admin who *also* happens to be Supabase-signed-in
     // as the listing's seller should still see the buyer view; admins
     // don't sell. They review.
@@ -102,7 +100,7 @@ export default async function StoreShop({ params, searchParams }) {
     // Owner can self-toggle into buyer preview via ?preview=buyer.
     const viewerIsSelf = isOwner && !buyerPreview
 
-    // Provider verification — separate from store-approval. KYC-approved
+    // Provider verification - separate from store-approval. KYC-approved
     // providers carry the badge even if their store status is something
     // else, and vice versa.
     const { data: providerApp } = await supabase

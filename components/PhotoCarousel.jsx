@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-// Reusable image carousel. Designed for hero / gallery surfaces — not
+// Reusable image carousel. Designed for hero / gallery surfaces - not
 // the listing image gallery (that one already lives in ProductDetails).
 //
 // Behaviour:
@@ -11,7 +11,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 //   - Pause on hover (desktop)
 //   - Swipe left/right (mobile)
 //   - Manual prev/next chevrons (only visible on hover)
-//   - Dot indicators at the bottom — click to jump
+//   - Dot indicators at the bottom - click to jump
 //
 // `images` is an array of { src, alt?, caption? }. `src` can be a static
 // import (for /assets) or a remote URL (Unsplash / Supabase / etc).

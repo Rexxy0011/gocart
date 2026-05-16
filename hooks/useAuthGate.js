@@ -9,7 +9,7 @@ import { openAuthModal } from '@/lib/features/ui/uiSlice'
 //   <button onClick={() => requireAuth(() => save(id), 'Sign in to save this listing')}>
 //
 // If signed in, runs the callback immediately. If not, opens the AuthModal
-// with the given prompt. After login the user has to click the action again —
+// with the given prompt. After login the user has to click the action again -
 // no deferred-callback magic, since storing functions in state is fragile and
 // re-clicking is the standard Gumtree-style behaviour.
 export const useAuthGate = () => {

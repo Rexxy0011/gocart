@@ -3,7 +3,7 @@ import { Lock } from 'lucide-react'
 import { checkAdminPassword, setAdminCookie } from '@/lib/auth/admin-pass'
 
 // Login UI for the admin panel. Mounted inline on /admin when the
-// password cookie isn't valid — same URL handles both the gate and the
+// password cookie isn't valid - same URL handles both the gate and the
 // dashboard, so sharing a single link with a teammate "just works".
 
 async function loginAction(formData) {
@@ -15,7 +15,7 @@ async function loginAction(formData) {
         redirect(`/admin?${params.toString()}`)
     }
     await setAdminCookie()
-    // Open-redirect guard — only allow internal paths.
+    // Open-redirect guard - only allow internal paths.
     redirect(next.startsWith('/') ? next : '/admin')
 }
 

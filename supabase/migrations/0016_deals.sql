@@ -3,13 +3,13 @@
 -- Every conversation between a buyer and seller can carry one "deal".
 -- Either side can claim "this is done"; the other side then confirms,
 -- disputes, or stays silent. Only when BOTH sides confirm does the
--- deal flip to `verified` — at which point the buyer gets prompted to
+-- deal flip to `verified` - at which point the buyer gets prompted to
 -- leave a review, and that review carries a "Verified job" badge that
 -- drive-by reviews don't have.
 --
 -- Why this matters: drive-by reviews from drive-by accounts are easy
 -- to spam. A bilateral confirmation requires the seller to actively
--- agree the deal happened — much harder to fake at scale, and disputes
+-- agree the deal happened - much harder to fake at scale, and disputes
 -- (one says yes, other says no) become a clear signal we can surface.
 
 -- 1. deals table -----------------------------------------------------------

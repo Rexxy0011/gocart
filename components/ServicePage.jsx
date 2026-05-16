@@ -33,7 +33,7 @@ const formatPriceRange = (service) => {
     const symbol = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
     const u = unit === 'hour' ? '/hr' : unit === 'job' ? '/job' : ''
     if (min == null && max == null) return 'Quote on request'
-    if (min != null && max != null) return `${symbol}${min.toLocaleString()} – ${symbol}${max.toLocaleString()}${u}`
+    if (min != null && max != null) return `${symbol}${min.toLocaleString()} - ${symbol}${max.toLocaleString()}${u}`
     return `from ${symbol}${(min ?? max).toLocaleString()}${u}`
 }
 
@@ -77,7 +77,7 @@ const ServicePage = ({ product }) => {
         if (thisMid > marketMid * 1.25) tone = 'above'
         else if (thisMid < marketMid * 0.8) tone = 'below'
         return {
-            label: `${symbol}${avgMin.toLocaleString()} – ${symbol}${avgMax.toLocaleString()}`,
+            label: `${symbol}${avgMin.toLocaleString()} - ${symbol}${avgMax.toLocaleString()}`,
             peerCount: peers.length,
             tone,
         }
@@ -99,7 +99,7 @@ const ServicePage = ({ product }) => {
         const estMin = Math.round(min * sizeMultiplier)
         const estMax = Math.round(max * sizeMultiplier * 0.8)
         const symbol = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
-        return `${symbol}${estMin.toLocaleString()} – ${symbol}${estMax.toLocaleString()}`
+        return `${symbol}${estMin.toLocaleString()} - ${symbol}${estMax.toLocaleString()}`
     }, [isCourier, service.priceRange, service.currency, pickup, dropoff, parcelSize])
 
     const [message, setMessage] = useState(
@@ -111,7 +111,7 @@ const ServicePage = ({ product }) => {
     const productId = product.id
     const firstName = sellerName.split(' ')[0]
 
-    // Gated phone reveal — same pattern as the product page. Hidden
+    // Gated phone reveal - same pattern as the product page. Hidden
     // until the buyer signs in, then visible for the rest of the session.
     const sellerContact = product.store?.contact?.trim()
     const [contactRevealed, setContactRevealed] = useState(false)
@@ -120,7 +120,7 @@ const ServicePage = ({ product }) => {
         `Sign in to view ${firstName}'s phone number.`
     )
 
-    // Portfolio lightbox — clicking a thumbnail opens the full image
+    // Portfolio lightbox - clicking a thumbnail opens the full image
     // with prev/next + escape navigation. Buyers want to actually see
     // a plumber's past work, not just postage-stamp thumbnails.
     const [lightboxIndex, setLightboxIndex] = useState(-1)  // -1 = closed
@@ -148,7 +148,7 @@ const ServicePage = ({ product }) => {
     // Single primary action: "Book this service" opens a conversation
     // with the seller and uses the buyer's typed note as the first
     // message (or a polite default if empty). Anything else the buyer
-    // wants to say — quote questions, scheduling — continues in that
+    // wants to say - quote questions, scheduling - continues in that
     // same chat thread once it's open.
     const handleBook = () => {
         const note = message.trim()
@@ -207,9 +207,9 @@ const ServicePage = ({ product }) => {
                     {/* LEFT */}
                     <div className='lg:col-span-8 min-w-0 space-y-8'>
 
-                        {/* Stats banner — 2x2 on phones, single row on sm+.
+                        {/* Stats banner - 2x2 on phones, single row on sm+.
                             Mobile padding/font is tightened so the price
-                            range string ("₦50,000 – ₦300,000") doesn't
+                            range string ("₦50,000 - ₦300,000") doesn't
                             wrap mid-number on small screens. */}
                         <div className='grid grid-cols-2 sm:grid-cols-4 divide-x divide-y sm:divide-y-0 divide-slate-200 border border-slate-200 rounded-xl bg-white overflow-hidden'>
                             <div className='p-2.5 sm:p-4'>
@@ -235,7 +235,7 @@ const ServicePage = ({ product }) => {
                                 <p className='text-[10px] sm:text-xs text-slate-500'>Response</p>
                                 <p className='inline-flex items-center gap-1 sm:gap-1.5 text-[13px] sm:text-lg font-bold text-slate-900 mt-0.5 sm:mt-1 leading-tight'>
                                     <Clock size={13} className='shrink-0 text-slate-500 sm:size-4' />
-                                    <span className='truncate'>{service.responseTime || '—'}</span>
+                                    <span className='truncate'>{service.responseTime || '-'}</span>
                                 </p>
                             </div>
                         </div>
@@ -273,7 +273,7 @@ const ServicePage = ({ product }) => {
                             </div>
                         )}
 
-                        {/* Portfolio — click any thumbnail to open the
+                        {/* Portfolio - click any thumbnail to open the
                             lightbox below. Cursor flips to zoom-in to
                             signal interactivity. */}
                         {portfolio.length > 0 && (
@@ -493,7 +493,7 @@ const ServicePage = ({ product }) => {
                                     <CalendarClock size={18} /> {isCourier ? 'Book courier' : 'Book this service'}
                                 </Button>
 
-                                {/* Gated phone reveal — buyers who'd rather
+                                {/* Gated phone reveal - buyers who'd rather
                                     just call instead of message. Number is
                                     hidden until sign-in to keep scrapers
                                     away from a public listing page. */}

@@ -15,7 +15,7 @@ const ReportsQueue = ({ groups: initialGroups }) => {
 
     const onResolve = async (reportIds, listingId, action) => {
         // For action='remove-listing' we close every open report on the
-        // same listing in a single server-side update — but we identify
+        // same listing in a single server-side update - but we identify
         // the call by the *first* report id so the user-visible loading
         // state only attaches to the row they actually clicked.
         const headId = reportIds[0]
@@ -27,7 +27,7 @@ const ReportsQueue = ({ groups: initialGroups }) => {
             return
         }
 
-        // Drop the whole group when admin removes the listing — every report
+        // Drop the whole group when admin removes the listing - every report
         // on it is now resolved. For 'dismiss' just drop the single report
         // they acted on.
         setGroups((gs) => gs
@@ -137,7 +137,7 @@ const ReportsQueue = ({ groups: initialGroups }) => {
                                         value={notes[headId] || ''}
                                         onChange={(e) => setNotes((n) => ({ ...n, [headId]: e.target.value }))}
                                         rows={2}
-                                        placeholder='Optional admin note (private — for audit only).'
+                                        placeholder='Optional admin note (private - for audit only).'
                                         className='w-full text-sm bg-slate-50 ring-1 ring-slate-200 rounded p-2 outline-none focus:ring-slate-400 transition'
                                     />
                                     <div className='flex flex-wrap gap-2 justify-end'>

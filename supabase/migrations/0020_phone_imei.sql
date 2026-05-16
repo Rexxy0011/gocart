@@ -56,7 +56,7 @@ create table if not exists public.phone_history (
     imei            text not null
         check (length(imei) = 15 and imei ~ '^[0-9]{15}$'),
     listing_id      uuid references public.products(id) on delete set null,
-    -- Condition the seller claimed at this listing — useful when a phone
+    -- Condition the seller claimed at this listing - useful when a phone
     -- is re-listed: a "Brand new (sealed)" today after a "Nigerian used"
     -- six months ago is a red flag.
     claimed_condition text,

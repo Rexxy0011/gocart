@@ -11,7 +11,7 @@ const SAFETY_TIPS = [
     {
         Icon: MapPin,
         title: 'Meet in a public place',
-        body: 'A petrol station forecourt, a busy shopping centre, the lobby of a bank — somewhere with people and CCTV. Never agree to meet at an empty address. Bring someone with you for high-value items.',
+        body: 'A petrol station forecourt, a busy shopping centre, the lobby of a bank - somewhere with people and CCTV. Never agree to meet at an empty address. Bring someone with you for high-value items.',
     },
     {
         Icon: Eye,
@@ -26,7 +26,7 @@ const SAFETY_TIPS = [
     {
         Icon: ShieldAlert,
         title: 'No deposits to strangers',
-        body: "A seller who insists on a transfer before you've seen the item is the single most common scam pattern. Pay on the spot, in person, after inspection. Verified-tick businesses are different — those have been reviewed.",
+        body: "A seller who insists on a transfer before you've seen the item is the single most common scam pattern. Pay on the spot, in person, after inspection. Verified-tick businesses are different - those have been reviewed.",
     },
     {
         Icon: Flag,
@@ -40,7 +40,7 @@ export const SafetyContent = () => (
         <h1 className='text-2xl sm:text-3xl font-semibold text-slate-900'>Stay safe on GoCart</h1>
         <p className='text-slate-600 mt-3 leading-relaxed text-sm sm:text-base'>
             The vast majority of trades on GoCart are honest neighbours doing honest deals. Five rules cover almost every
-            situation that goes wrong. Read them once — they take a minute and they&apos;ll save you a headache.
+            situation that goes wrong. Read them once - they take a minute and they&apos;ll save you a headache.
         </p>
         <ol className='mt-8 space-y-4'>
             {SAFETY_TIPS.map(({ Icon, title, body }, i) => (
@@ -84,10 +84,10 @@ export const TermsContent = () => (
         <h2 className='text-base font-semibold text-slate-900 mt-7'>3. Posting rules</h2>
         <ul className='mt-2 text-sm text-slate-700 list-disc pl-6 space-y-1.5 leading-relaxed'>
             <li>List only items you own or are authorised to sell.</li>
-            <li>Be accurate — condition, photos, mileage, year. Fraudulent listings get removed and accounts suspended.</li>
+            <li>Be accurate - condition, photos, mileage, year. Fraudulent listings get removed and accounts suspended.</li>
             <li>No prohibited goods: stolen items, weapons outside legal channels, counterfeit goods, recreational drugs, live animals beyond legal pet trade, human-trafficking content.</li>
             <li>One listing per item. Duplicate-flooding is treated as spam.</li>
-            <li>Boosts (Bump, Featured, Urgent, Bulk sale, Bundle) are visibility products — we do not refund unused time.</li>
+            <li>Boosts (Bump, Featured, Urgent, Bulk sale, Bundle) are visibility products - we do not refund unused time.</li>
         </ul>
 
         <h2 className='text-base font-semibold text-slate-900 mt-7'>4. Conduct between users</h2>
@@ -145,12 +145,12 @@ export const PrivacyContent = () => (
         <h2 className='text-base font-semibold text-slate-900 mt-7'>2. Why we collect it</h2>
         <p className='mt-2 text-sm text-slate-700 leading-relaxed'>
             To run the platform, prevent fraud, and meet our legal obligations. ID documents are processed under your
-            explicit consent (the box you ticked when applying for verification) — that&apos;s our lawful basis under NDPA.
+            explicit consent (the box you ticked when applying for verification) - that&apos;s our lawful basis under NDPA.
         </p>
 
         <h2 className='text-base font-semibold text-slate-900 mt-7'>3. Who we share it with</h2>
         <ul className='mt-2 text-sm text-slate-700 list-disc pl-6 space-y-1.5 leading-relaxed'>
-            <li><strong>Other users:</strong> anything you put on a public listing or in a message — that&apos;s the point.</li>
+            <li><strong>Other users:</strong> anything you put on a public listing or in a message - that&apos;s the point.</li>
             <li><strong>Paystack:</strong> the minimum needed to process a boost payment. We never see your card details.</li>
             <li><strong>Supabase:</strong> our database, storage, and auth provider.</li>
             <li><strong>Resend:</strong> handles transactional email (e.g. boost-expiry reminders).</li>
@@ -174,7 +174,7 @@ export const PrivacyContent = () => (
         <h2 className='text-base font-semibold text-slate-900 mt-7'>4a. Cookies</h2>
         <p className='mt-2 text-sm text-slate-700 leading-relaxed'>
             We use a small number of cookies for login sessions and basic analytics. You can clear or block them in your browser
-            — login sessions won&apos;t survive that.
+            - login sessions won&apos;t survive that.
         </p>
 
         <h2 className='text-base font-semibold text-slate-900 mt-7'>5. Your rights</h2>

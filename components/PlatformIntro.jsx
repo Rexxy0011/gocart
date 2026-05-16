@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Check, ArrowRight } from 'lucide-react'
 
-// Hero photos live in /public — drop new files there and update this
+// Hero photos live in /public - drop new files there and update this
 // list. Path is absolute from the site root, so the assets.js static
 // imports aren't needed for these.
 const slides = [
@@ -32,7 +32,7 @@ const PlatformIntro = () => {
         <section className='px-6 mt-10 mb-30 max-w-6xl mx-auto'>
             <div className='relative bg-white/50 rounded-3xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[260px] sm:min-h-[400px] lg:min-h-[460px] shadow-md'>
 
-                {/* Left — write-up panel */}
+                {/* Left - write-up panel */}
                 <div className='lg:col-span-3 relative z-10 px-6 sm:px-8 py-10 lg:py-14 flex flex-col justify-center gap-5'>
                     <div className='flex flex-col gap-2'>
                         <h2 className='text-lg sm:text-xl font-bold text-slate-800 whitespace-nowrap'>
@@ -45,7 +45,7 @@ const PlatformIntro = () => {
 
                     <ul className='flex flex-col gap-2.5'>
                         {[
-                            'Free to list — no commissions',
+                            'Free to list - no commissions',
                             'Chat directly with sellers',
                             'Verified profiles',
                             'Trusted by 30k daily users · 50k+ live ads',
@@ -65,7 +65,7 @@ const PlatformIntro = () => {
                     </Link>
                 </div>
 
-                {/* Right — slider with slanted left edge (lg+) */}
+                {/* Right - slider with slanted left edge (lg+) */}
                 <div className='lg:col-span-9 relative min-h-[260px] sm:min-h-[400px] lg:min-h-full lg:[clip-path:polygon(18%_0%,_100%_0%,_100%_100%,_0%_100%)]'>
                     {slides.map((s, i) => (
                         <div

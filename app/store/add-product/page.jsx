@@ -15,6 +15,7 @@ import { checkListingContent } from "@/lib/moderation"
 import ReviewProgressOverlay from "@/components/ReviewProgressOverlay"
 import { runVinCheck } from "@/app/actions/vin"
 import { runImeiCheck } from "@/app/actions/imei"
+import { createListing } from "@/app/actions/listings"
 
 const VEHICLE_NUMERIC_FIELDS = new Set([
     'year', 'mileage', 'seats', 'doors', 'luggageCapacity',
@@ -29,7 +30,7 @@ const serviceSet = new Set(categoryGroups.find(g => g.name === SERVICES_GROUP_NA
 // items (Bicycles, Heavy equipment, Car tyres, Car batteries, Parts &
 // accessories). Only the motor-vehicle subset has a 17-char VIN, an
 // engine, mileage, transmission, etc. Bicycles and parts post as plain
-// products — no VIN banner, no vehicle-spec form, no vehicle JSONB.
+// products - no VIN banner, no vehicle-spec form, no vehicle JSONB.
 const MOTOR_VEHICLE_CATEGORIES = new Set([
     'Sedans', 'SUVs', 'Buses', 'Trucks', 'Motorcycles', 'Tricycles',
 ])
@@ -41,8 +42,8 @@ const CONDITIONS = [
     { value: 'fair',   label: 'Fair condition' },
 ]
 
-// Nigerian vehicle market uses its own vocabulary — "Tokunbo / Foreign used"
-// vs. "Naija used" — and the generic as-new/good/fair scale doesn't map.
+// Nigerian vehicle market uses its own vocabulary - "Tokunbo / Foreign used"
+// vs. "Naija used" - and the generic as-new/good/fair scale doesn't map.
 // When the chosen category is a vehicle, we swap to this list instead.
 const VEHICLE_CONDITIONS = [
     { value: 'new',           label: 'New' },
@@ -62,7 +63,7 @@ const PHONE_CONDITIONS = [
 ]
 
 // IMEI verification only runs for conditions where there's something
-// real to verify against — used / refurbished phones. New-sealed phones
+// real to verify against - used / refurbished phones. New-sealed phones
 // don't need it (and the seller shouldn't break the seal to read it).
 const PHONE_CONDITIONS_NEEDING_IMEI = new Set([
     'uk-used', 'us-used', 'nigerian-used', 'refurbished',
@@ -184,8 +185,10 @@ export default function StoreAddProduct() {
         areaCovered: [],
         locationState: "",
         locationArea: "",
-        phone: "",
-        // Vehicle-specific — only filled when category is a vehicle.
+        // Seller's contact phone (string). Distinct from the `phone` spec
+        // object below - they used to collide under the same key.
+        contactPhone: "",
+        // Vehicle-specific - only filled when category is a vehicle.
         // Mirrors the fields rendered by VehicleSpecs on the product detail page.
         vehicle: {
             vin: "",
@@ -195,12 +198,12 @@ export default function StoreAddProduct() {
             fuelType: "", enginePower: "", engineSize: "", topSpeed: "", acceleration: "",
             fuelConsumption: "", fuelCapacity: "", insuranceGroup: "", co2Emissions: "", euroEmissions: "",
         },
-        // Phone-specific — only filled when category is iPhones / Androids.
+        // Phone-specific - only filled when category is iPhones / Androids.
         phone: {
             imei: "",
             brand: "", model: "",
             storage: "", ram: "", colour: "",
-            batteryHealth: "",                  // iPhones especially — null for non-iOS
+            batteryHealth: "",                  // iPhones especially - null for non-iOS
             networkLock: "",
             accessories: [],                    // multi-select chips
             warranty: "",                       // free text
@@ -318,7 +321,7 @@ export default function StoreAddProduct() {
 
     // Resolve the seller's store, creating one on first post if it doesn't
     // exist. Individual sellers don't go through a separate "shop setup"
-    // ceremony — their /shop/[username] profile is born the moment they
+    // ceremony - their /shop/[username] profile is born the moment they
     // post their first listing.
     const resolveOrCreateStore = async () => {
         const existing = await supabase
@@ -337,14 +340,14 @@ export default function StoreAddProduct() {
                 user_id: user.id,
                 name: displayName,
                 username: generateUsername(displayName),
-                // NOT NULL columns we don't yet collect — sensible empty
+                // NOT NULL columns we don't yet collect - sensible empty
                 // defaults; user can edit later in /store profile.
                 description: '',
                 address: isServiceMode
                     ? productInfo.locationState
                     : `${productInfo.locationState} · ${productInfo.locationArea}`,
                 email: user.email || '',
-                contact: productInfo.phone || '',
+                contact: productInfo.contactPhone || '',
                 logo: '',
                 // Admin reviews each shop once via /admin/approve. Until then
                 // status stays 'pending' (the DB default) and listings carry
@@ -386,7 +389,7 @@ export default function StoreAddProduct() {
             return
         }
 
-        // For services we lock the title to the chosen category — buyers
+        // For services we lock the title to the chosen category - buyers
         // can't be misled by the headline because we wrote it. For products,
         // we run the user-typed title through the keyword screen.
         const effectiveName = isService ? productInfo.category : productInfo.name
@@ -400,21 +403,21 @@ export default function StoreAddProduct() {
             return
         }
 
-        // 1. Require state + area — area is a primary search filter, so
+        // 1. Require state + area - area is a primary search filter, so
         // unspecified locations would dilute every neighborhood's feed.
         if (!productInfo.locationState) {
             toast.error('Pick a state.')
             return
         }
         if (!isServiceMode && !productInfo.locationArea) {
-            toast.error('Pick the area within the state — buyers filter by neighborhood.')
+            toast.error('Pick the area within the state - buyers filter by neighborhood.')
             return
         }
-        // Services use the portfolio gallery as their visual identity —
+        // Services use the portfolio gallery as their visual identity -
         // first image becomes the cover. Without one, the listing card
         // would render an empty placeholder.
         if (isService && portfolioImages.length === 0) {
-            toast.error('Add at least one photo of past work — the first becomes your cover.')
+            toast.error('Add at least one photo of past work - the first becomes your cover.')
             return
         }
 
@@ -466,7 +469,7 @@ export default function StoreAddProduct() {
 
         // 3. Run the VIN check inline before insert. Decoded fields fill any
         // gaps the seller didn't type. We never block the listing on a flaky
-        // NHTSA call — failure here just skips the auto-fill and leaves
+        // NHTSA call - failure here just skips the auto-fill and leaves
         // payload.vin set so the report can populate later. (The product
         // page reads vin_reports lazily when it first renders, but doing it
         // here means by the time the buyer arrives the row is already cached.)
@@ -483,7 +486,7 @@ export default function StoreAddProduct() {
             }
         }
 
-        // Same idea for phones — runs only when the condition warrants
+        // Same idea for phones - runs only when the condition warrants
         // verification (new sealed / open box are skipped).
         const imeiTyped = (productInfo.phone.imei || '').replace(/\D/g, '')
         if (phoneNeedsImei && imeiTyped.length === 15) {
@@ -491,7 +494,7 @@ export default function StoreAddProduct() {
                 const result = await runImeiCheck({ imei: imeiTyped })
                 if (result?.error) {
                     // A bad Luhn here means the seller mistyped the IMEI.
-                    // Block submission so they can fix it — unlike VIN
+                    // Block submission so they can fix it - unlike VIN
                     // failures (network blips), Luhn is deterministic and
                     // a bad IMEI is the seller's typo, not a flaky API.
                     toast.error(result.error)
@@ -499,7 +502,7 @@ export default function StoreAddProduct() {
                     return
                 }
             } catch {
-                // External API blip is non-fatal — Luhn already ran, the
+                // External API blip is non-fatal - Luhn already ran, the
                 // product can post and the report will populate next time.
             }
         }
@@ -516,7 +519,7 @@ export default function StoreAddProduct() {
             images: imageUrls,
             in_stock: true,
 
-            // Pricing — services with quote-on-request leave price null.
+            // Pricing - services with quote-on-request leave price null.
             free: productInfo.free,
             price: productInfo.free
                 ? 0
@@ -530,7 +533,7 @@ export default function StoreAddProduct() {
             delivery_available: productInfo.deliveryAvailable,
 
             // Phone-specific blob and IMEI. IMEI is only attached if the
-            // condition warrants verification — new sealed phones get to
+            // condition warrants verification - new sealed phones get to
             // skip the entire flow (and shouldn't be forced to break a
             // factory seal to read the IMEI sticker).
             phone: isPhone ? {
@@ -554,55 +557,30 @@ export default function StoreAddProduct() {
             vin:     (isVehicle && vinTyped.length === 17) ? vinTyped : null,
         }
 
-        // Pull review_status back so we can tell the seller whether the
-        // listing is live or held in admin queue. The auto_review_listing
-        // trigger may have flipped it from 'pending' → 'approved' if the
-        // seller has 3+ prior approved listings.
-        const { data: inserted, error: insertErr } = await supabase
-            .from('products')
-            .insert(payload)
-            .select('id, review_status')
-            .single()
+        // Insert through the createListing server action - the only
+        // products-insert path (raw PostgREST inserts are revoked, see
+        // migration 0023). It whitelists fields, re-runs the content
+        // screen, and returns review_status so we can tell the seller
+        // whether the listing is live or held in the admin queue (the
+        // auto_review_listing trigger may flip 'pending' → 'approved').
+        const result = await createListing(payload)
 
         setLoading(false)
 
-        if (insertErr) {
-            toast.error(insertErr.message || 'Could not post listing.')
+        if (result.error) {
+            toast.error(result.error || 'Could not post listing.')
             return
         }
 
-        // Append the VIN + declared mileage to vehicle_history so future
-        // listings of this same VIN can prove no rollback. Fire-and-forget
-        // — failure here doesn't block the listing from publishing.
-        if (payload.vin) {
-            const mileageMiles = productInfo.vehicle.mileage !== ''
-                ? parseInt(productInfo.vehicle.mileage, 10) || null
-                : null
-            const { recordVehicleHistory } = await import('@/app/actions/vin')
-            recordVehicleHistory({
-                vin: payload.vin,
-                listingId: inserted.id,
-                mileageMiles,
-            })
-        }
-
-        // Phone re-listing trail — same shape as vehicle_history.
-        if (payload.imei) {
-            const { recordPhoneHistory } = await import('@/app/actions/imei')
-            recordPhoneHistory({
-                imei: payload.imei,
-                listingId: inserted.id,
-                claimedCondition: payload.condition,
-            })
-        }
-
         // Show the animated review overlay. It auto-routes to
-        // /store/manage-product once the animation finishes.
-        setReviewState(inserted.review_status)
+        // /store/manage-product once the animation finishes. The VIN /
+        // phone re-listing trails are recorded inside createListing,
+        // server-side, so they survive this component unmounting.
+        setReviewState(result.reviewStatus)
     }
 
-    // On /pro/add-service we *always* show service copy — even before a
-    // category is picked — because the route itself committed the user to
+    // On /pro/add-service we *always* show service copy - even before a
+    // category is picked - because the route itself committed the user to
     // posting a service. On /store/add-product the copy follows whatever
     // category they actually choose. `isServiceMode` is the unified flag.
     const isServiceMode = isProviderRoute || isService
@@ -615,7 +593,7 @@ export default function StoreAddProduct() {
 
     return (
         <>
-            {/* Review-pipeline overlay — appears for ~2.5s after a successful
+            {/* Review-pipeline overlay - appears for ~2.5s after a successful
                 post, then routes to /store/manage-product. */}
             {reviewState && (
                 <ReviewProgressOverlay
@@ -632,16 +610,16 @@ export default function StoreAddProduct() {
                 {/* Header */}
                 <h1 className="text-2xl text-slate-900 font-semibold">{headerTitle}</h1>
 
-            {/* How it works — sets the classifieds expectation */}
+            {/* How it works - sets the classifieds expectation */}
             <div className="mt-4 mb-7 bg-slate-50 ring-1 ring-slate-200 rounded-lg p-4 flex items-start gap-3">
                 <Info size={16} className="text-slate-500 mt-0.5 shrink-0" />
                 <p className="text-sm text-slate-600">
                     <span className="font-semibold text-slate-900">How it works:</span>{' '}
-                    Buyers contact you directly through GoCart messaging. We don&apos;t take any cut on offline sales — listing is free and stays free.
+                    Buyers contact you directly through GoCart messaging. We don&apos;t take any cut on offline sales - listing is free and stays free.
                 </p>
             </div>
 
-            {/* Category — first, because it drives everything else */}
+            {/* Category - first, because it drives everything else */}
             <label className="flex flex-col gap-2 my-6">
                 <span className="text-slate-700 font-medium">Category</span>
                 <select onChange={onCategoryChange} value={productInfo.category} className="w-full max-w-sm p-2 px-4 outline-none border border-slate-200 rounded" required>
@@ -655,11 +633,11 @@ export default function StoreAddProduct() {
                     ))}
                 </select>
                 {isService && (
-                    <span className="text-xs text-emerald-700">This is a service listing — provider-specific fields appear below.</span>
+                    <span className="text-xs text-emerald-700">This is a service listing - provider-specific fields appear below.</span>
                 )}
             </label>
 
-            {/* Vehicle perk — Free VIN check */}
+            {/* Vehicle perk - Free VIN check */}
             {isVehicle && (
                 <div className="mb-6 bg-emerald-50 ring-1 ring-emerald-200 rounded-xl p-4 max-w-xl">
                     <div className="flex items-start gap-3">
@@ -669,7 +647,7 @@ export default function StoreAddProduct() {
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-emerald-900">Want to be more transparent and sell quicker?</p>
                             <p className="text-xs text-emerald-900/80 mt-0.5">
-                                Add your car&apos;s VIN and we&apos;ll attach a free history report (mileage, accidents, ownership) to your ad — buyers trust faster.
+                                Add your car&apos;s VIN and we&apos;ll attach a free history report (mileage, accidents, ownership) to your ad - buyers trust faster.
                             </p>
                             <input
                                 value={productInfo.vehicle.vin}
@@ -689,7 +667,7 @@ export default function StoreAddProduct() {
                 </div>
             )}
 
-            {/* Phone perk — Free IMEI check (only for used / refurbished
+            {/* Phone perk - Free IMEI check (only for used / refurbished
                 phones; new sealed phones don't need it). */}
             {phoneNeedsImei && (
                 <div className="mb-6 bg-emerald-50 ring-1 ring-emerald-200 rounded-xl p-4 max-w-xl">
@@ -700,7 +678,7 @@ export default function StoreAddProduct() {
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-emerald-900">Sell quicker with a verified IMEI</p>
                             <p className="text-xs text-emerald-900/80 mt-0.5">
-                                Add the IMEI (dial *#06# on the phone) and we&apos;ll attach a free verification — brand match, checksum, and any past listings on GoCart — to your ad. Buyers trust verified used phones faster.
+                                Add the IMEI (dial *#06# on the phone) and we&apos;ll attach a free verification - brand match, checksum, and any past listings on GoCart - to your ad. Buyers trust verified used phones faster.
                             </p>
                             <input
                                 value={productInfo.phone.imei}
@@ -858,13 +836,13 @@ export default function StoreAddProduct() {
                 </div>
             )}
 
-            {/* Photos — products only. For services the "Showcase past
+            {/* Photos - products only. For services the "Showcase past
                 work" portfolio block (further down) drives both the cover
                 and the gallery, so we don't show this section there. */}
             {!isServiceMode && (
                 <div className="my-6">
                     <p className="text-slate-700 font-medium">Photos</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Add up to 4 — first photo is the cover. Clear photos = more replies.</p>
+                    <p className="text-xs text-slate-500 mt-0.5">Add up to 4 - first photo is the cover. Clear photos = more replies.</p>
                     <div className="flex gap-3 mt-3">
                         {Object.keys(images).map((key) => (
                             <label key={key} htmlFor={`images${key}`}>
@@ -876,7 +854,7 @@ export default function StoreAddProduct() {
                 </div>
             )}
 
-            {/* Title — products only. Free-form input lets sellers
+            {/* Title - products only. Free-form input lets sellers
                 describe the item. Services use a fixed, derived title
                 (the chosen category) to prevent misuse / spammy
                 self-promotion / clickbait headlines. */}
@@ -888,11 +866,11 @@ export default function StoreAddProduct() {
                         name="name"
                         onChange={onChangeHandler}
                         value={productInfo.name}
-                        placeholder='e.g. iPhone 13 Pro 256GB, Pacific Blue — like new'
+                        placeholder='e.g. iPhone 13 Pro 256GB, Pacific Blue - like new'
                         className="w-full max-w-xl p-2 px-4 outline-none border border-slate-200 rounded"
                         required
                     />
-                    <span className="text-xs text-slate-400">Short and specific — what it is, key feature, condition.</span>
+                    <span className="text-xs text-slate-400">Short and specific - what it is, key feature, condition.</span>
                 </label>
             )}
             {isService && productInfo.category && (
@@ -946,7 +924,7 @@ export default function StoreAddProduct() {
                 </div>
             )}
 
-            {/* PRICE — products */}
+            {/* PRICE - products */}
             {!isServiceMode && (
                 <>
                     <label className="flex items-center gap-3 my-6 cursor-pointer max-w-xl">
@@ -966,7 +944,7 @@ export default function StoreAddProduct() {
 
                     {productInfo.free ? (
                         <div className="bg-emerald-50 ring-1 ring-emerald-200 rounded-lg p-3 max-w-xl mb-6 text-sm text-emerald-900">
-                            Listed as <span className="font-semibold">Free</span> — buyers see a green FREE tag. Pricing and Sell-quicker boosts don&apos;t apply to giveaways.
+                            Listed as <span className="font-semibold">Free</span> - buyers see a green FREE tag. Pricing and Sell-quicker boosts don&apos;t apply to giveaways.
                         </div>
                     ) : (
                         <div className="my-6 max-w-xl">
@@ -984,7 +962,7 @@ export default function StoreAddProduct() {
                                     />
                                 </label>
                                 <label className="flex flex-col gap-2">
-                                    <span className="text-slate-500 text-sm">Was ({currency}) <span className="text-slate-400">— optional</span></span>
+                                    <span className="text-slate-500 text-sm">Was ({currency}) <span className="text-slate-400">- optional</span></span>
                                     <input
                                         type="number"
                                         name="wasPrice"
@@ -1001,7 +979,7 @@ export default function StoreAddProduct() {
                         </div>
                     )}
 
-                    {/* Vehicle specs — only when category is in the Vehicles group */}
+                    {/* Vehicle specs - only when category is in the Vehicles group */}
                     {isVehicle && (
                         <section className="my-8 max-w-2xl">
                             <div className="flex items-center gap-2 mb-1">
@@ -1009,10 +987,10 @@ export default function StoreAddProduct() {
                                 <h3 className="text-sm font-semibold text-slate-900">Vehicle details</h3>
                             </div>
                             <p className="text-xs text-slate-500 mb-5">
-                                These show up in the spec tabs (Overview / Performance / Running Costs) on the listing. Only Make, Model, Year, Mileage, Body, Transmission and Fuel are required — fill what you know.
+                                These show up in the spec tabs (Overview / Performance / Running Costs) on the listing. Only Make, Model, Year, Mileage, Body, Transmission and Fuel are required - fill what you know.
                             </p>
 
-                            {/* Make + Model — most important identifiers; come
+                            {/* Make + Model - most important identifiers; come
                                 first so the rest of the form feels natural.
                                 Changing make resets model so we never end up
                                 with Toyota Accord. */}
@@ -1182,7 +1160,7 @@ export default function StoreAddProduct() {
                                     />
                                 </label>
                                 <label className="flex flex-col gap-1.5 sm:col-span-2">
-                                    <span className="text-xs text-slate-600">Acceleration 0–62 mph (seconds)</span>
+                                    <span className="text-xs text-slate-600">Acceleration 0-62 mph (seconds)</span>
                                     <input
                                         type="number"
                                         min="0"
@@ -1196,7 +1174,7 @@ export default function StoreAddProduct() {
                             </div>
 
                             {/* Running costs */}
-                            <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mt-6 mb-3">Running costs <span className="text-slate-400 font-normal normal-case">— optional</span></p>
+                            <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mt-6 mb-3">Running costs <span className="text-slate-400 font-normal normal-case">- optional</span></p>
                             <div className="grid sm:grid-cols-2 gap-3">
                                 <label className="flex flex-col gap-1.5">
                                     <span className="text-xs text-slate-600">Fuel consumption (mpg)</span>
@@ -1255,7 +1233,7 @@ export default function StoreAddProduct() {
                         </section>
                     )}
 
-                    {/* Boost teaser — actual purchase happens from the dashboard
+                    {/* Boost teaser - actual purchase happens from the dashboard
                         once the listing is posted, so we don't take payment in
                         the same flow as the post-an-ad form. */}
                     {!productInfo.free && (
@@ -1264,7 +1242,7 @@ export default function StoreAddProduct() {
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium text-slate-900">Sell quicker with boosts</p>
                                 <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                                    Once your ad is posted, you can boost it from your dashboard — Bump up, Featured, Urgent, Bulk sale, or the Boost bundle. Listing itself is free.
+                                    Once your ad is posted, you can boost it from your dashboard - Bump up, Featured, Urgent, Bulk sale, or the Boost bundle. Listing itself is free.
                                 </p>
                             </div>
                         </section>
@@ -1276,7 +1254,7 @@ export default function StoreAddProduct() {
             {isService && (
                 <div className="my-6 max-w-xl">
                     <span className="text-slate-700 font-medium">Price range</span>
-                    <p className="text-xs text-slate-400 mb-2">Buyers see this as &quot;from {currency}X – {currency}Y&quot;. Use a wide range if jobs vary.</p>
+                    <p className="text-xs text-slate-400 mb-2">Buyers see this as &quot;from {currency}X - {currency}Y&quot;. Use a wide range if jobs vary.</p>
                     <div className="flex flex-wrap gap-3 items-end">
                         <label className="flex flex-col gap-1 text-sm">
                             <span className="text-xs text-slate-500">From ({currency})</span>
@@ -1298,10 +1276,10 @@ export default function StoreAddProduct() {
                 </div>
             )}
 
-            {/* Location — Jiji-style state + area picker. Area depends on
+            {/* Location - Jiji-style state + area picker. Area depends on
                 state: changing state resets area so we never end up with a
                 Lagos · Wuse mismatch.
-                Services skip the per-listing Area picker entirely — the
+                Services skip the per-listing Area picker entirely - the
                 "Areas you cover" multi-select (right below) handles their
                 geography instead. State sits directly above Areas-you-cover
                 so the dependency reads naturally: pick state → pick areas. */}
@@ -1332,7 +1310,7 @@ export default function StoreAddProduct() {
 
             {/* SERVICE-ONLY: Areas covered + Response time. Areas are
                 limited to neighborhoods inside the locationState selected
-                above — buyers filtering by neighborhood expect a service to
+                above - buyers filtering by neighborhood expect a service to
                 actually serve there. Cap of 4 keeps providers honest. */}
             {isService && (
                 <div className="grid sm:grid-cols-2 gap-4 my-6 max-w-xl">
@@ -1388,15 +1366,15 @@ export default function StoreAddProduct() {
             <div className="my-6 max-w-xl">
                 <label className="flex flex-col gap-2">
                     <span className="text-slate-700 font-medium">
-                        Phone <span className="text-slate-400 font-normal text-sm">— optional</span>
+                        Phone <span className="text-slate-400 font-normal text-sm">- optional</span>
                     </span>
                     <div className="flex items-center gap-2 bg-white ring-1 ring-slate-200 rounded-full px-4 py-2 focus-within:ring-slate-400 transition max-w-sm">
                         <Phone size={15} className="text-slate-400 shrink-0" />
                         <input
                             type="tel"
-                            name="phone"
+                            name="contactPhone"
                             onChange={onChangeHandler}
-                            value={productInfo.phone}
+                            value={productInfo.contactPhone}
                             placeholder="e.g. +234 802 000 0000"
                             className="flex-1 text-sm bg-transparent outline-none placeholder-slate-400 min-w-0"
                             autoComplete="tel"

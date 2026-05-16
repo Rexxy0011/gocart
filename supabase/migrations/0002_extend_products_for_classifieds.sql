@@ -26,7 +26,7 @@ alter table public.products
     -- Service listings (plumber, mechanic, etc.)
     add column if not exists service            jsonb,
 
-    -- Vehicle listings — Year, Mileage, Body, Transmission, Fuel, etc.
+    -- Vehicle listings - Year, Mileage, Body, Transmission, Fuel, etc.
     add column if not exists vehicle            jsonb;
 
 -- 2. Make price + mrp nullable --------------------------------------------
@@ -38,7 +38,7 @@ alter table public.products
     alter column mrp   drop not null,
     alter column description drop not null;
 
--- mrp is e-commerce vocabulary we no longer use — was_price covers the
+-- mrp is e-commerce vocabulary we no longer use - was_price covers the
 -- strikethrough case. Keep mrp column for now (don't drop in case any test
 -- data depends on it), just stop populating it.
 

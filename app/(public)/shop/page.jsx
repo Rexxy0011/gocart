@@ -13,10 +13,11 @@ const GROUP_TO_ITEMS = Object.fromEntries(
 )
 
 // Browse-everyone view. Reads only listings whose shop has been admin-approved
-// AND is active. Services are excluded (they live on /services). Sort order:
-// featured first, then most-recently-bumped, then newest.
+// AND is active. Services are excluded (they live on /services). Sort order is
+// pure recency (newest first) - paid boosts buy placement in the "Top listings"
+// home section and /hot, not a pin in this browse feed.
 //
-// Server component so the initial render is the actual filtered set — no
+// Server component so the initial render is the actual filtered set - no
 // loading flash. The header / search-back affordance is a tiny client child.
 export default async function Shop({ searchParams }) {
 
@@ -24,7 +25,7 @@ export default async function Shop({ searchParams }) {
     const search = (params?.search || '').toString().trim()
     const category = (params?.category || '').toString().trim()
     const location = (params?.location || '').toString().trim()
-    // Price filters — `min` / `max` are inclusive bounds, `free=true`
+    // Price filters - `min` / `max` are inclusive bounds, `free=true`
     // narrows to free-only listings (overrides min/max when both arrive).
     const minRaw = parseInt((params?.min || '').toString(), 10)
     const maxRaw = parseInt((params?.max || '').toString(), 10)
@@ -42,8 +43,6 @@ export default async function Shop({ searchParams }) {
         .eq('review_status', 'approved')
         .eq('store.status', 'approved')
         .eq('store.is_active', true)
-        .order('featured', { ascending: false })
-        .order('bumped_at', { ascending: false, nullsFirst: false })
         .order('created_at', { ascending: false })
         .limit(60)
 
@@ -56,7 +55,7 @@ export default async function Shop({ searchParams }) {
         if (items) query = query.in('category', items)
         else        query = query.eq('category', category)
     }
-    // Prefix match — listings store "State · Area"; filtering by "Lagos"
+    // Prefix match - listings store "State · Area"; filtering by "Lagos"
     // should still surface every Lagos area, not just bare-state listings.
     if (location) query = query.ilike('location', `${location}%`)
     // Price gates. `free` short-circuits min/max because those don't
@@ -83,8 +82,8 @@ export default async function Shop({ searchParams }) {
                         <h2 className="text-lg font-semibold text-slate-900">No listings match</h2>
                         <p className="text-sm text-slate-600 mt-2">
                             {search || category || location
-                                ? 'Try widening your search — clear filters or pick a different category.'
-                                : 'Be the first — post an ad and it shows up here once reviewed.'}
+                                ? 'Try widening your search - clear filters or pick a different category.'
+                                : 'Be the first - post an ad and it shows up here once reviewed.'}
                         </p>
                     </div>
                 ) : (

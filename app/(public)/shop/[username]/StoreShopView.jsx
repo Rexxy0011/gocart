@@ -94,7 +94,7 @@ const StoreShopView = ({
     return (
         <div className="min-h-[70vh]">
 
-            {/* Owner banner — only the signed-in owner (and not in buyer
+            {/* Owner banner - only the signed-in owner (and not in buyer
                 preview) sees this strip. Mirrors Jiji's blend: profile
                 management lives where buyers see the profile, not behind
                 a separate route. */}
@@ -129,7 +129,7 @@ const StoreShopView = ({
                 </section>
             )}
 
-            {/* Owner-in-preview bar — slim slate strip above the profile so
+            {/* Owner-in-preview bar - slim slate strip above the profile so
                 the owner remembers they're looking at the buyer's view and
                 can hop back to owner mode in one click. */}
             {ownerPreviewing && (
@@ -194,7 +194,7 @@ const StoreShopView = ({
                                 Email address verified
                             </p>
 
-                            {/* Leave-a-review CTA — hidden on the seller's
+                            {/* Leave-a-review CTA - hidden on the seller's
                                 own profile. Buyers who haven't signed in
                                 yet still see the button; clicking goes
                                 through useAuthGate and redirects them. */}
@@ -208,7 +208,7 @@ const StoreShopView = ({
                                 </button>
                             )}
 
-                            {/* Edit-profile CTA — only the owner sees this. */}
+                            {/* Edit-profile CTA - only the owner sees this. */}
                             {viewerIsSelf && (
                                 <button
                                     type="button"
@@ -224,7 +224,7 @@ const StoreShopView = ({
             </section>
 
             <div className="max-w-7xl mx-auto px-6 py-8">
-                {/* Cross-profile link — when this person also has the
+                {/* Cross-profile link - when this person also has the
                     other identity, surface it as a small strip so buyers
                     can hop without having to guess. Each profile stays
                     strictly its own surface; the link is the only bridge. */}
@@ -397,14 +397,14 @@ const StoreShopView = ({
                 )}
             </div>
 
-            {/* Review modal — listings prop scopes the picker to this seller */}
+            {/* Review modal - listings prop scopes the picker to this seller */}
             <ReviewModal
                 open={reviewOpen}
                 onClose={() => setReviewOpen(false)}
                 listings={products.map(p => ({ id: p.id, name: p.name }))}
             />
 
-            {/* Edit-profile modal — owner only */}
+            {/* Edit-profile modal - owner only */}
             {viewerIsSelf && (
                 <EditProfileModal
                     open={editOpen}

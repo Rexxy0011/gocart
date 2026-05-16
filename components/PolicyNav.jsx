@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 // Pill-tab navigator across GoCart's policy pages. Sits between the
-// app navbar and a policy page's hero — same visual rhythm as the
+// app navbar and a policy page's hero - same visual rhythm as the
 // reference (Skilltwins-style). The active pill goes white on dark;
 // the rest stay translucent.
 const POLICY_TABS = [

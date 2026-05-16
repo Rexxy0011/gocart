@@ -1,7 +1,7 @@
 -- Reports can now carry up to 5 image URLs as evidence. Reporters upload
 -- the files to the existing product-images bucket under their own folder
 -- (path: "<userId>/report-<ts>-<rand>.<ext>") so the existing storage RLS
--- — owner-write, public read — already covers them. Admins viewing the
+-- - owner-write, public read - already covers them. Admins viewing the
 -- reports queue see the URLs and can click through.
 --
 -- Cap at 5 is arbitrary but stops a single report from becoming a photo

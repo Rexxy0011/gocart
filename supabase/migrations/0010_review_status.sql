@@ -7,7 +7,7 @@
 --
 -- New listings default to 'pending'. The auto_review_listing() trigger
 -- below auto-flips them to 'approved' if the seller already has 3+
--- approved listings — Jiji-style account-age gate. New accounts spend
+-- approved listings - Jiji-style account-age gate. New accounts spend
 -- their first three listings in admin review, then auto-publish.
 --
 -- Shop-level approval is deprecated. Existing pending shops are flipped
@@ -40,7 +40,7 @@ create index if not exists products_review_status_idx
 -- First-time and second-time posters get held for review.
 --
 -- Counts include any listing in any of the seller's stores (in case we
--- ever support multi-store accounts) — the join chain is product → store
+-- ever support multi-store accounts) - the join chain is product → store
 -- → user_id.
 
 create or replace function public.auto_review_listing()

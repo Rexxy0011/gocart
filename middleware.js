@@ -6,17 +6,17 @@ import { isAdminCookieValid, ADMIN_COOKIE_NAME } from '@/lib/auth/admin-pass'
 // hitting any of these get bounced to /login?next=<original-path>; on
 // successful login we send them back to where they were going.
 //
-// /pro/apply is included — anyone offering a service must have an account so
+// /pro/apply is included - anyone offering a service must have an account so
 // the provider record can attach to a real user_id when verified.
 //
 // /admin is NOT in this list: admin uses a separate shared-password gate
 // (see admin-pass.js) and doesn't need a Supabase user session at all.
-const PROTECTED_PREFIXES = ['/store', '/pro', '/orders', '/messages']
+const PROTECTED_PREFIXES = ['/store', '/pro', '/messages']
 
 // Routes that require *full* Tier-1 verification (email + phone). Subset of
 // PROTECTED_PREFIXES. /verify itself stays reachable so users can complete
 // verification, /admin stays gated only on the allowlist.
-const VERIFIED_PREFIXES = ['/store', '/pro', '/orders', '/messages']
+const VERIFIED_PREFIXES = ['/store', '/pro', '/messages']
 
 const isProtected = (pathname) => PROTECTED_PREFIXES.some(p =>
     pathname === p || pathname.startsWith(p + '/')
@@ -67,7 +67,7 @@ export async function middleware(request) {
         return NextResponse.redirect(loginUrl)
     }
 
-    // Tier-1 verification gate. Off by default — flip VERIFICATION_REQUIRED
+    // Tier-1 verification gate. Off by default - flip VERIFICATION_REQUIRED
     // to "true" once Twilio + email confirmation are wired in the Supabase
     // dashboard, otherwise this page just bounces every signed-in user to a
     // /verify page that can't actually send OTPs yet.
@@ -110,7 +110,7 @@ export async function middleware(request) {
 
 export const config = {
     matcher: [
-        // Skip Next.js internals + image/static asset endpoints — auth not relevant on those.
+        // Skip Next.js internals + image/static asset endpoints - auth not relevant on those.
         '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
 }

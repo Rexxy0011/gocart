@@ -5,7 +5,7 @@
 --   action  → mark the listing removed (products.removed_at = now()) +
 --             close the report. Buyer-facing queries filter this out.
 --
--- We don't auto-remove on N reports — admin always decides. Keeps moderation
+-- We don't auto-remove on N reports - admin always decides. Keeps moderation
 -- bias-free and avoids report-bombing as a takedown vector.
 
 -- 1. Reports table --------------------------------------------------------

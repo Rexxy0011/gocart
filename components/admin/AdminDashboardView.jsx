@@ -10,7 +10,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 //   5. Active boosts now            → products with any *_until > now()
 //   6. New signups (last 7d)        → growth signal
 //
-// All counts use the service-role admin client — RLS would otherwise
+// All counts use the service-role admin client - RLS would otherwise
 // hide most of these from a session-less server component.
 const formatNaira = (kobo) => `₦${Math.round((kobo || 0) / 100).toLocaleString()}`
 
@@ -48,7 +48,7 @@ const AdminDashboardView = async () => {
     const sevenDaysAgo  = new Date(now.getTime() -  7 * 24 * 60 * 60 * 1000).toISOString()
     const nowIso = now.toISOString()
 
-    // Run independent counts in parallel — the dashboard's blocking on
+    // Run independent counts in parallel - the dashboard's blocking on
     // the slowest of these otherwise.
     const [
         pendingListings,

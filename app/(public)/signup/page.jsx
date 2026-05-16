@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { notifyAuthEvent } from '@/app/actions/auth-notify'
 
 const safeNext = (raw) => (raw && raw.startsWith('/') && !raw.startsWith('//')) ? raw : '/'
 
@@ -40,7 +41,7 @@ function SignupForm() {
         }
 
         // If "Confirm email" is enabled in Supabase, signUp returns no session
-        // — the user has to click the email link before logging in. Tell them
+        // - the user has to click the email link before logging in. Tell them
         // that explicitly instead of dumping them on a still-signed-out page.
         if (!data.session) {
             toast.success('Check your email to confirm your account, then sign in.')
@@ -48,9 +49,12 @@ function SignupForm() {
             return
         }
 
-        // Auto-signed in (email confirmation disabled). Full page nav so the
-        // freshly-written auth cookie is sent on the next request.
+        // Auto-signed in (email confirmation disabled). Send the welcome +
+        // admin-alert emails, then full page nav so the freshly-written auth
+        // cookie is sent on the next request. (With confirm-email on there's
+        // no session here - the welcome fires on the user's first sign-in.)
         toast.success('Welcome to GoCart.')
+        await notifyAuthEvent('signup')
         window.location.assign(next)
     }
 

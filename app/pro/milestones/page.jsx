@@ -1,10 +1,6 @@
-'use client'
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { Trophy, ShieldCheck } from 'lucide-react'
+import { createClient } from '@/lib/supabase/server'
 import MilestoneBadge, { getMilestone } from '@/components/MilestoneBadge'
-
-const PROVIDER_STORE_ID = 'store_2'
 
 const TIERS = [
     { min: 5,   label: '5+ jobs',   tone: 'from-orange-200 to-amber-400' },
@@ -13,14 +9,20 @@ const TIERS = [
     { min: 500, label: '500+ jobs', tone: 'from-indigo-500 to-violet-600' },
 ]
 
-export default function ProMilestones() {
+export default async function ProMilestones() {
 
-    const allProducts = useSelector(state => state.product.list)
-    const totalJobs = useMemo(() => {
-        return allProducts
-            .filter(p => p.storeId === PROVIDER_STORE_ID && p.service)
-            .reduce((s, p) => s + (p.service?.jobsCompleted || 0), 0)
-    }, [allProducts])
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return null
+
+    // Verified jobs = deals both sides confirmed. Same metric the /pro
+    // dashboard's "Jobs done" stat uses.
+    const { count } = await supabase
+        .from('deals')
+        .select('id', { count: 'exact', head: true })
+        .eq('seller_id', user.id)
+        .eq('status', 'verified')
+    const totalJobs = count || 0
 
     const current = getMilestone(totalJobs)
     const nextTier = TIERS.find(t => t.min > totalJobs)

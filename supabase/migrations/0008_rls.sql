@@ -5,7 +5,7 @@
 --
 -- Run this AFTER 0006 (adds products.removed_at) AND 0007 (boost_orders).
 -- Once applied, the anon key (which ships in the browser bundle) can no
--- longer read or write arbitrary rows — every query has to satisfy a
+-- longer read or write arbitrary rows - every query has to satisfy a
 -- policy below.
 --
 -- Convention used here:
@@ -43,7 +43,7 @@ create policy profiles_delete_own on public.profiles
 -- =====================================================================
 -- Public sees approved + active stores. Owner sees their own at any
 -- status (so the dashboard can show a pending banner). Insert is the
--- lazy-create flow on first post — must claim your own user_id. Status
+-- lazy-create flow on first post - must claim your own user_id. Status
 -- field can only be flipped by service-role (admin approval).
 alter table public.stores enable row level security;
 
@@ -323,7 +323,7 @@ create policy reports_insert_signed_in on public.reports
 -- boost_orders
 -- =====================================================================
 -- Owner-only. Insert happens in the server action, callback updates by
--- reference using the user's session — both go through these policies.
+-- reference using the user's session - both go through these policies.
 alter table public.boost_orders enable row level security;
 
 drop policy if exists boost_orders_select_own on public.boost_orders;

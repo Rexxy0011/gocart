@@ -1,15 +1,15 @@
 -- KYC data minimisation. Two changes:
 --
--- 1. consent_given_at — explicit timestamp of when the applicant ticked
+-- 1. consent_given_at - explicit timestamp of when the applicant ticked
 --    the "I consent to processing this ID" checkbox on /pro/apply. NDPA
 --    requires explicit consent at collection time; this gives us a
 --    legal record we can produce if a regulator ever asks.
 --
--- 2. purge_old_kyc() + pg_cron job — auto-deletes the ID document + selfie
+-- 2. purge_old_kyc() + pg_cron job - auto-deletes the ID document + selfie
 --    from the provider-docs Storage bucket 30 days after approval/rejection.
 --    The application row itself stays (we still need the "verified" fact),
 --    but the sensitive raw documents stop existing in our infra. NDPA
---    "storage limitation" — keep no longer than necessary.
+--    "storage limitation" - keep no longer than necessary.
 --
 -- Together these shrink the window during which we hold government IDs
 -- from "forever" to "max 30 days post-decision". That's the difference
@@ -63,7 +63,7 @@ end;
 $$;
 
 -- 3. Schedule -------------------------------------------------------------
--- Daily at 03:00 UTC (04:00 Lagos) — quiet hour, no contention with the
+-- Daily at 03:00 UTC (04:00 Lagos) - quiet hour, no contention with the
 -- 09:00 boost-reminder cron or the 10-min boost-expiry sweeper.
 do $$
 begin

@@ -10,7 +10,7 @@ export default async function Product({ params }) {
     const { productId } = await params
     const supabase = await createClient()
 
-    // Don't filter on review_status here — RLS already enforces "approved
+    // Don't filter on review_status here - RLS already enforces "approved
     // OR own" at the row level. That way the owner can view their own
     // pending listing (preview / share-link), but buyers still get a 404.
     const { data: row } = await supabase
@@ -27,7 +27,7 @@ export default async function Product({ params }) {
     // under review is fine UX. RLS will tighten this down later.
     const product = mapProductRow(row)
 
-    // Free VIN report — only fetched for vehicles that have a VIN. Reads
+    // Free VIN report - only fetched for vehicles that have a VIN. Reads
     // from the cached vin_reports table (populated when the seller ran
     // the check; if they skipped it, we have no report and the section
     // simply doesn't render).
@@ -53,7 +53,7 @@ export default async function Product({ params }) {
         }
     }
 
-    // Same shape for phones — fetch the IMEI report + history when this
+    // Same shape for phones - fetch the IMEI report + history when this
     // listing has an IMEI. Sealed-new phones won't have one and skip.
     let imeiReport = null
     if (product.imei) {

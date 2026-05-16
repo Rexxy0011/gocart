@@ -32,7 +32,7 @@ const VerifyClient = ({ email, emailVerified: initialEmailVerified, phone: initi
     const [completing, setCompleting] = useState(false)
 
     // Poll Supabase for email confirmation. The user clicks the link in
-    // their inbox on whatever device — this page just refreshes the local
+    // their inbox on whatever device - this page just refreshes the local
     // view so they see green without manually reloading.
     useEffect(() => {
         if (emailVerified) return
@@ -126,7 +126,7 @@ const VerifyClient = ({ email, emailVerified: initialEmailVerified, phone: initi
             <div className="mb-8">
                 <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5">
                     <span>{progress}% complete</span>
-                    {bothDone && <span className="text-emerald-600 font-medium">All set — redirecting…</span>}
+                    {bothDone && <span className="text-emerald-600 font-medium">All set - redirecting…</span>}
                 </div>
                 <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
                     <div
@@ -150,7 +150,7 @@ const VerifyClient = ({ email, emailVerified: initialEmailVerified, phone: initi
                         ) : (
                             <>
                                 <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                                    We sent a confirmation link. Click it from your inbox — this page updates automatically.
+                                    We sent a confirmation link. Click it from your inbox - this page updates automatically.
                                 </p>
                                 <button
                                     type="button"

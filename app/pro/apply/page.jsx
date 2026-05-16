@@ -47,17 +47,17 @@ export default function ProviderApply() {
         yearsExperience: '',
         bio: '',
         certifications: '',
-        // NDPA — explicit consent ticked at submit. Stamped into
+        // NDPA - explicit consent ticked at submit. Stamped into
         // provider_applications.consent_given_at so we have a record.
         consent: false,
     })
     const [submitting, setSubmitting] = useState(false)
 
-    // Existing application status — drives the banner and whether the form
+    // Existing application status - drives the banner and whether the form
     // is editable. Fetched once on mount via the client SDK.
     const [existing, setExisting] = useState(null)
     const [loadingExisting, setLoadingExisting] = useState(true)
-    // 'safety' | 'terms' | null — opens the matching PolicyModal so the
+    // 'safety' | 'terms' | null - opens the matching PolicyModal so the
     // applicant can read inline without losing form state.
     const [policyOpen, setPolicyOpen] = useState(null)
 
@@ -124,7 +124,7 @@ export default function ProviderApply() {
 
         try {
             // 1. Upload ID + selfie to the private provider-docs bucket. Paths
-            // (not public URLs) are stored — admin generates signed URLs at
+            // (not public URLs) are stored - admin generates signed URLs at
             // view time. Skip uploads if the user reused a re-submit and
             // didn't pick new files; we'll keep whatever was already there.
             let idDocPath = null
@@ -163,7 +163,7 @@ export default function ProviderApply() {
 
             if (error) throw error
 
-            toast.success('Application submitted — admin will review within 24 hours.')
+            toast.success('Application submitted - admin will review within 24 hours.')
             router.push('/pro')
             router.refresh()
         } catch (err) {
@@ -184,7 +184,7 @@ export default function ProviderApply() {
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Become a verified provider</h1>
                     <p className="text-sm text-slate-600 mt-1 max-w-xl">
-                        Quick verification so buyers can trust you. Free, takes about 5 minutes — usually approved within 24 hours.
+                        Quick verification so buyers can trust you. Free, takes about 5 minutes - usually approved within 24 hours.
                     </p>
                 </div>
             </div>
@@ -221,7 +221,7 @@ export default function ProviderApply() {
                     <div className="flex-1">
                         <p className="text-sm font-semibold text-amber-900">Application under review</p>
                         <p className="text-sm text-amber-800 mt-0.5">
-                            Submitted — admin is reviewing your details. Usually approved within 24 hours. You can&apos;t edit while it&apos;s pending; reach out to support if you need to change something urgent.
+                            Submitted - admin is reviewing your details. Usually approved within 24 hours. You can&apos;t edit while it&apos;s pending; reach out to support if you need to change something urgent.
                         </p>
                     </div>
                 </div>
@@ -237,7 +237,7 @@ export default function ProviderApply() {
                             </p>
                         )}
                         <p className="text-xs text-rose-700 mt-2">
-                            Edit the details below and resubmit — your form is pre-filled with what you submitted last time.
+                            Edit the details below and resubmit - your form is pre-filled with what you submitted last time.
                         </p>
                     </div>
                 </div>
@@ -417,7 +417,7 @@ export default function ProviderApply() {
 
                     <label className="flex flex-col gap-2 mt-4">
                         <span className="text-slate-700 font-medium text-sm">
-                            Certifications &amp; references <span className="text-slate-400 font-normal">— optional</span>
+                            Certifications &amp; references <span className="text-slate-400 font-normal">- optional</span>
                         </span>
                         <textarea
                             rows={3}
@@ -429,7 +429,7 @@ export default function ProviderApply() {
                     </label>
                 </section>
 
-                {/* Consent — explicit lawful basis for processing the ID
+                {/* Consent - explicit lawful basis for processing the ID
                     (NDPA). Required before submit. Worded plainly so a
                     real human can understand what they're agreeing to. */}
                 <label className="flex items-start gap-3 p-4 bg-slate-50 ring-1 ring-slate-200 rounded-xl cursor-pointer">

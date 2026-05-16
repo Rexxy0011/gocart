@@ -7,7 +7,7 @@ export default async function StoreManageProducts() {
     const { data: { user } } = await supabase.auth.getUser()
 
     // Resolve the seller's store, then their listings. The layout doesn't
-    // bounce missing-store sellers any more (no setup ceremony) — sellers
+    // bounce missing-store sellers any more (no setup ceremony) - sellers
     // who haven't posted yet just see an empty state.
     const { data: store } = await supabase
         .from('stores')
@@ -23,10 +23,7 @@ export default async function StoreManageProducts() {
         const { data } = await supabase
             .from('products')
             .select(`id, name, images, price, in_stock, created_at, free, category, service, review_status, reviewed_at,
-                     bumped_at, bumped_until,
-                     featured, featured_until,
-                     urgent, urgent_until,
-                     bulk_sale, bulk_sale_until`)
+                     bumped_until, featured_until, urgent_until, bulk_sale_until`)
             .eq('store_id', store.id)
             .is('service', null)
             .order('created_at', { ascending: false })

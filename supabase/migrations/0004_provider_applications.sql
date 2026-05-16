@@ -1,9 +1,9 @@
--- Provider verification applications. One row per user max — submitting
+-- Provider verification applications. One row per user max - submitting
 -- the /pro/apply form inserts here, admin reviews via /admin/providers,
 -- and the row's status drives whether /pro dashboard unlocks for that user.
 --
 -- Storage: id_document_url and selfie_url point at the private provider-docs
--- Storage bucket. They're paths within the bucket, not public URLs — admins
+-- Storage bucket. They're paths within the bucket, not public URLs - admins
 -- generate signed URLs server-side at view time.
 
 create table if not exists public.provider_applications (

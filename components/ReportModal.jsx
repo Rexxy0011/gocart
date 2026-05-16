@@ -106,7 +106,7 @@ const ReportModal = ({ open, onClose, listingId, listingName }) => {
                 }
                 evidenceUrls = await uploadReportEvidence(files, user.id)
             } catch (err) {
-                toast.error(err?.message || 'Couldn\'t upload your evidence — try again.')
+                toast.error(err?.message || 'Couldn\'t upload your evidence - try again.')
                 setSubmitting(false)
                 return
             }
@@ -118,7 +118,7 @@ const ReportModal = ({ open, onClose, listingId, listingName }) => {
             toast.error(result.error)
             return
         }
-        toast.success('Report submitted — our team will review.')
+        toast.success('Report submitted - our team will review.')
         onClose()
     }
 
@@ -183,10 +183,10 @@ const ReportModal = ({ open, onClose, listingId, listingName }) => {
                             />
                         </label>
 
-                        {/* Evidence uploads — up to 5 image attachments. */}
+                        {/* Evidence uploads - up to 5 image attachments. */}
                         <div>
                             <p className='text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2'>
-                                Picture evidence <span className='text-slate-400 font-normal normal-case'>— optional, up to {MAX_EVIDENCE}</span>
+                                Picture evidence <span className='text-slate-400 font-normal normal-case'>- optional, up to {MAX_EVIDENCE}</span>
                             </p>
                             <div className='grid grid-cols-4 gap-2'>
                                 {previews.map((src, i) => (

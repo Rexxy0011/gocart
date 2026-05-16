@@ -62,7 +62,7 @@ const ImeiReportSection = ({ imeiReport, claimedCondition }) => {
                         <p className='font-semibold text-slate-900'>{brandModel}</p>
                     ) : (
                         <p className='text-slate-500 text-xs italic'>
-                            Public database didn&apos;t recognise this TAC — common for older or unindexed phones. Buyer should still cross-check the box.
+                            Public database didn&apos;t recognise this TAC - common for older or unindexed phones. Buyer should still cross-check the box.
                         </p>
                     )}
                 </div>
@@ -86,7 +86,7 @@ const ImeiReportSection = ({ imeiReport, claimedCondition }) => {
                         </ul>
                         {claimedCondition === 'new-sealed' && history.length > 1 && (
                             <p className='mt-2 inline-flex items-center gap-1 text-xs font-medium text-amber-700'>
-                                <AlertTriangle size={12} /> This IMEI has been listed before — &quot;Brand new (sealed)&quot; is unusual for a previously-listed device.
+                                <AlertTriangle size={12} /> This IMEI has been listed before - &quot;Brand new (sealed)&quot; is unusual for a previously-listed device.
                             </p>
                         )}
                     </div>

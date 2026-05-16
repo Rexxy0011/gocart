@@ -7,7 +7,7 @@ import { formatLocation } from '@/lib/format-location'
 
 const MAX_ITEMS = 4
 
-// "You may also like" — fetches a small pool from the same category as the
+// "You may also like" - fetches a small pool from the same category as the
 // current product, excluding it. Same listing type (services don't bleed
 // into product pages and vice versa). Approved + active shops only.
 const RelatedListings = async ({ product }) => {

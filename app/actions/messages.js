@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/server'
 // of `listingId`, or creates a new one. Optionally posts the first message
 // in the same call. Returns the conversation id (and redirects if requested).
 //
-// Used by /product/[id] "Send Message" — buyers shouldn't have to think
+// Used by /product/[id] "Send Message" - buyers shouldn't have to think
 // about whether the conversation already exists.
 export async function startConversation({ listingId, message, redirectAfter = true }) {
 
@@ -59,8 +59,8 @@ export async function startConversation({ listingId, message, redirectAfter = tr
     }
 
     // 3. Post the initial templated message ONLY for brand-new conversations.
-    // Otherwise returning buyers — clicking "Book this service" or "Send
-    // Message" again from the listing — would spam the seller with copies
+    // Otherwise returning buyers - clicking "Book this service" or "Send
+    // Message" again from the listing - would spam the seller with copies
     // of the same opener every visit. They just land in the existing
     // thread instead, where any further conversation is human-typed.
     if (isNewConversation && message?.trim()) {
@@ -79,7 +79,7 @@ export async function startConversation({ listingId, message, redirectAfter = tr
     return { conversationId }
 }
 
-// Plain message send — used by the thread view's send-form.
+// Plain message send - used by the thread view's send-form.
 export async function sendMessage({ conversationId, body }) {
     if (!body?.trim()) return { error: 'Empty message' }
 

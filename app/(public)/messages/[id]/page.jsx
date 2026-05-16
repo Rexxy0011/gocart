@@ -26,7 +26,7 @@ export default async function ConversationPage({ params }) {
 
     if (!conversation) notFound()
     if (conversation.buyer_id !== user.id && conversation.seller_id !== user.id) {
-        // User isn't a participant — bounce them home rather than 404 to
+        // User isn't a participant - bounce them home rather than 404 to
         // avoid leaking conversation existence.
         redirect('/messages')
     }
@@ -37,12 +37,12 @@ export default async function ConversationPage({ params }) {
     const listingHref = listing?.service ? `/service/${listing.id}` : `/product/${listing?.id}`
 
     // Buyer-side avatar click destination:
-    //   service convo → /provider/[username] (provider-only profile —
+    //   service convo → /provider/[username] (provider-only profile -
     //                   service catalogue, service reviews, badge)
     //   product convo → /product/[id] (the listing itself; products are
     //                   one-off classifieds, the seller has no real brand
     //                   page to land on)
-    // Seller-side header stays a plain block — the buyer's other identities
+    // Seller-side header stays a plain block - the buyer's other identities
     // shouldn't leak out of this private thread.
     let otherProfileHref = null
     if (isBuyer && listing) {
@@ -58,15 +58,12 @@ export default async function ConversationPage({ params }) {
         }
     }
 
-    // Mark this side's read receipt on every render — opening the thread
-    // clears it from the navbar's unread count. Fire-and-forget; if the
-    // update fails the badge just stays a beat longer.
-    await supabase
-        .from('conversations')
-        .update(isBuyer
-            ? { buyer_last_read_at:  new Date().toISOString() }
-            : { seller_last_read_at: new Date().toISOString() })
-        .eq('id', id)
+    // Mark this side's read receipt on every render - opening the thread
+    // clears it from the navbar's unread count. Goes through a SECURITY
+    // DEFINER RPC (see 0021) because `conversations` has no UPDATE RLS
+    // policy; the RPC derives buyer-vs-seller from auth.uid() server-side.
+    // Fire-and-forget; if it fails the badge just stays a beat longer.
+    await supabase.rpc('mark_conversation_read', { p_conversation_id: id })
 
     const { data: initialMessages } = await supabase
         .from('messages')
@@ -96,7 +93,7 @@ export default async function ConversationPage({ params }) {
                             <p className="text-sm font-semibold text-slate-900 line-clamp-1">{listing.name}</p>
                         </div>
                         <p className="text-sm font-semibold text-slate-700 shrink-0">
-                            {listing.free ? 'FREE' : (listing.price != null ? `₦${Number(listing.price).toLocaleString()}` : '—')}
+                            {listing.free ? 'FREE' : (listing.price != null ? `₦${Number(listing.price).toLocaleString()}` : '-')}
                         </p>
                     </Link>
                 )}

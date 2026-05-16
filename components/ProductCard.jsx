@@ -32,7 +32,7 @@ const ProductCard = ({ product }) => {
                     sizes='(min-width: 1024px) 240px, 50vw'
                     className={`object-contain p-6 group-hover:scale-105 transition duration-500 ${product.inStock === false ? 'opacity-60' : ''}`}
                 />
-                {/* Sold overlay — desaturates the image and stamps a banner */}
+                {/* Sold overlay - desaturates the image and stamps a banner */}
                 {product.inStock === false && (
                     <div className='absolute inset-0 z-20 flex items-center justify-center pointer-events-none'>
                         <span className='bg-slate-900/85 text-white font-bold uppercase tracking-widest text-xs sm:text-sm px-4 py-1.5 rounded-sm rotate-[-8deg] shadow-lg'>
@@ -40,7 +40,7 @@ const ProductCard = ({ product }) => {
                         </span>
                     </div>
                 )}
-                {/* Top-left: Featured (means seller has Power sub — top placement perk) */}
+                {/* Top-left: Featured (means seller has Power sub - top placement perk) */}
                 {product.featured && (
                     <div className='absolute top-2.5 left-2.5 z-10'>
                         <FeaturedRibbon size='sm' />

@@ -44,7 +44,7 @@ const VinReportSection = ({ vinReport, listingMileage }) => {
                 {/* Decoded ID */}
                 <div className='bg-white rounded-lg p-3 ring-1 ring-emerald-100'>
                     <p className='text-[10px] font-bold uppercase tracking-wide text-slate-500 mb-1'>VIN decode</p>
-                    <p className='font-semibold text-slate-900'>{yearMakeModel || '—'}</p>
+                    <p className='font-semibold text-slate-900'>{yearMakeModel || '-'}</p>
                     {(decoded.bodyClass || decoded.engineL || decoded.transmission) && (
                         <p className='text-xs text-slate-600 mt-1'>
                             {[
@@ -98,7 +98,7 @@ const VinReportSection = ({ vinReport, listingMileage }) => {
                     </div>
                 )}
 
-                {/* GoCart history — only meaningful if this VIN appeared before */}
+                {/* GoCart history - only meaningful if this VIN appeared before */}
                 {history.length > 1 && (
                     <div className='bg-white rounded-lg p-3 ring-1 ring-emerald-100'>
                         <p className='text-[10px] font-bold uppercase tracking-wide text-slate-500 mb-1'>Past listings on GoCart</p>

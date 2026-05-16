@@ -7,12 +7,12 @@ import ProductCard from '@/components/ProductCard'
 import ServiceCard from '@/components/ServiceCard'
 import SavedTabs from './SavedTabs'
 
-// Saved listings page (still routed at /cart for legacy URL stability —
+// Saved listings page (still routed at /cart for legacy URL stability -
 // the cart slice was repurposed as the favorites store way back). Reads
 // the user's favorites joined to products, filters out anything that's
 // no longer publicly visible (rejected, removed, or pulled by the store
 // going inactive), and renders the same ProductCard buyers see on /shop.
-export const metadata = { title: 'Saved listings — GoCart' }
+export const metadata = { title: 'Saved listings - GoCart' }
 
 export default async function SavedListings() {
 
@@ -25,7 +25,7 @@ export default async function SavedListings() {
 
     // PostgREST embedded filter: pull favorites and the joined product +
     // store. The product join carries our usual approved-and-visible
-    // rules — listings the user saved that have since been rejected /
+    // rules - listings the user saved that have since been rejected /
     // removed / their store deactivated drop out of the result.
     const { data: rows } = await supabase
         .from('favorites')

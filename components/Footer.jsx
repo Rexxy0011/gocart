@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Apple, Facebook, Instagram, Play, Twitter, Youtube } from "lucide-react";
 
-// Every link below points to a route that actually resolves — either an
+// Every link below points to a route that actually resolves - either an
 // existing page (auth-gated routes redirect to /login, that's fine) or a
 // stub policy page in (public)/. Avoid adding links to pages that 404.
 const linkColumns = [
@@ -67,7 +67,7 @@ const Footer = () => {
                     <div>
                         <h3 className="text-base font-bold text-slate-100 mb-4">Mobile Apps</h3>
                         <p className="text-xs text-slate-400 mb-4 leading-relaxed">
-                            Native apps coming soon — meanwhile GoCart works great on mobile browsers.
+                            Native apps coming soon - meanwhile GoCart works great on mobile browsers.
                         </p>
                         <div className="space-y-3">
                             <span
@@ -113,7 +113,7 @@ const Footer = () => {
 
                 {/* Legal block */}
                 <div className="border-t border-slate-700/40 mt-8 pt-8 max-w-3xl mx-auto text-center text-xs text-slate-400 leading-relaxed space-y-4">
-                    <p>© 2025–2026 GoCart Limited. All rights reserved.</p>
+                    <p>© 2025-2026 GoCart Limited. All rights reserved.</p>
 
                     <p>
                         GoCart is a classifieds marketplace. We facilitate connections between buyers and sellers but are not a party to

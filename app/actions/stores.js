@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 
 // Update editable fields on the current user's store profile. Username,
-// status, and email are intentionally NOT editable here — they're either
+// status, and email are intentionally NOT editable here - they're either
 // admin-controlled (status) or have side-effects (username changes break
 // /shop/<old-username> URLs and existing inbound links).
 //

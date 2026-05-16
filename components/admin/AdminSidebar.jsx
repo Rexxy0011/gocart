@@ -8,7 +8,7 @@ const AdminSidebar = () => {
 
     const pathname = usePathname()
 
-    // Tight nav — every link maps to actual daily work.
+    // Tight nav - every link maps to actual daily work.
     // Stores auto-approve via DB default; coupons don't apply to a
     // classifieds model. If we ever add boost-discount codes those'd
     // come back in here.

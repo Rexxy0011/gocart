@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { initializeTransaction } from '@/lib/paystack'
 import { BOOST_CATALOG } from '@/lib/boosts'
 
-// Derive the public origin from the actual request — works on localhost,
+// Derive the public origin from the actual request - works on localhost,
 // preview deploys, and prod without needing NEXT_PUBLIC_SITE_URL to be
 // set correctly per-environment. Falls back to the env var, then localhost.
 const resolveSiteUrl = async () => {
@@ -20,7 +20,7 @@ const resolveSiteUrl = async () => {
 
 // Initiates a boost purchase. Inserts a pending boost_orders row, asks
 // Paystack for an authorization URL, and returns it. The CLIENT then
-// does window.location.assign(url) — Next.js server-action redirect() to
+// does window.location.assign(url) - Next.js server-action redirect() to
 // a cross-origin URL is unreliable in 15.x and silently no-ops.
 // On payment completion Paystack returns the user to /api/paystack/callback,
 // which verifies + applies the boost.
@@ -31,11 +31,11 @@ export async function initBoostPayment({ listingId, boostKey }) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return { error: 'You need to be signed in to boost a listing.' }
-    if (!user.email) return { error: 'Your account has no email — Paystack needs one.' }
+    if (!user.email) return { error: 'Your account has no email - Paystack needs one.' }
 
     // Verify the listing belongs to the user AND check whether it already
     // has an active boost. Policy: one boost at a time. If a boost is
-    // active and more than 24h from expiry, refuse — the seller can buy
+    // active and more than 24h from expiry, refuse - the seller can buy
     // again only inside the renewal window (matches the T-24h reminder
     // mail). RLS would handle ownership in a tight setup; until we wire
     // it, check explicitly.
@@ -57,7 +57,7 @@ export async function initBoostPayment({ listingId, boostKey }) {
         return { error: 'This listing is already boosted. You can renew within 24 hours of expiry.' }
     }
 
-    // Generate a reference — short, prefixed, includes the boost key for
+    // Generate a reference - short, prefixed, includes the boost key for
     // grep-ability in the Paystack dashboard.
     const reference = `gc_${boostKey}_${randomUUID().replace(/-/g, '').slice(0, 16)}`
     const amountKobo = boost.price * 100

@@ -104,13 +104,13 @@ const ApproveQueue = ({ products: initialProducts }) => {
 
                                         <div className="flex items-center gap-3 text-xs text-slate-500 mt-1.5 flex-wrap">
                                             <span className="inline-flex items-center gap-1"><Tag size={11} /> {product.category}</span>
-                                            <span className="inline-flex items-center gap-1"><MapPin size={11} /> {product.location || '—'}</span>
+                                            <span className="inline-flex items-center gap-1"><MapPin size={11} /> {product.location || '-'}</span>
                                             <span className="font-semibold text-slate-700">
                                                 {product.free
                                                     ? 'FREE'
                                                     : product.price != null
                                                         ? `${currency} ${Number(product.price).toLocaleString()}`
-                                                        : product.service ? 'Quote' : '—'}
+                                                        : product.service ? 'Quote' : '-'}
                                             </span>
                                         </div>
 
@@ -129,10 +129,10 @@ const ApproveQueue = ({ products: initialProducts }) => {
                                             )}
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-slate-700 font-medium truncate">
-                                                    {seller?.name || '—'}
+                                                    {seller?.name || '-'}
                                                 </p>
                                                 <p className="text-slate-500 truncate flex items-center gap-3">
-                                                    <span className="inline-flex items-center gap-1"><Mail size={10} /> {seller?.email || '—'}</span>
+                                                    <span className="inline-flex items-center gap-1"><Mail size={10} /> {seller?.email || '-'}</span>
                                                     {sellerJoinedAgo && <span className="inline-flex items-center gap-1"><Calendar size={10} /> joined {sellerJoinedAgo}</span>}
                                                 </p>
                                             </div>

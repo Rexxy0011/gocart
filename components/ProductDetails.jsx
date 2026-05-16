@@ -25,7 +25,7 @@ import { formatLocation } from "@/lib/format-location"
 import { toast } from "react-hot-toast"
 import { startConversation } from "@/app/actions/messages"
 // Modal is dynamic-imported because it's only mounted on demand and only by
-// signed-in users — no need to ship its JS on first paint.
+// signed-in users - no need to ship its JS on first paint.
 const ReportModal = dynamic(() => import("@/components/ReportModal"), { ssr: false })
 
 const CONDITION_LABEL = {
@@ -64,7 +64,7 @@ const ProductDetails = ({ product, vinReport = null, imeiReport = null }) => {
     const isService = !!product.service
     const isVehicle = VEHICLE_CATEGORIES.has(product.category) && product.vehicle
 
-    // Stable 10-digit reference derived from product.id — buyers quote this when reporting.
+    // Stable 10-digit reference derived from product.id - buyers quote this when reporting.
     const adId = `15${((parseInt(productId.replace(/\D/g, ''), 10) || 0) * 1357 + 4571).toString().padStart(8, '0')}`
     const postedDate = product.createdAt ? new Date(product.createdAt) : null
     const conditionLabel = CONDITION_LABEL[product.condition]
@@ -101,7 +101,7 @@ const ProductDetails = ({ product, vinReport = null, imeiReport = null }) => {
             if (result?.error) {
                 toast.error(result.error)
             }
-            // On success, startConversation redirects via next/navigation —
+            // On success, startConversation redirects via next/navigation -
             // no further action needed here.
         }, `Sign in to message ${sellerName.split(' ')[0]}.`)
     }
@@ -142,7 +142,7 @@ const ProductDetails = ({ product, vinReport = null, imeiReport = null }) => {
                 )}
             </div>
 
-            {/* Sold banner — replaces the whole badge row when the seller
+            {/* Sold banner - replaces the whole badge row when the seller
                 has marked the listing unavailable. */}
             {product.inStock === false ? (
                 <div className='mb-4 flex items-center gap-3 bg-slate-900 text-white rounded-xl px-4 py-3'>
@@ -172,7 +172,7 @@ const ProductDetails = ({ product, vinReport = null, imeiReport = null }) => {
 
             <div className='grid lg:grid-cols-12 gap-6 mt-4'>
 
-                {/* LEFT — Tabs + Image gallery */}
+                {/* LEFT - Tabs + Image gallery */}
                 <div className='lg:col-span-8 min-w-0'>
                     {/* Tabs */}
                     <div className='grid grid-cols-2 border-b-2 border-slate-200'>
@@ -232,11 +232,11 @@ const ProductDetails = ({ product, vinReport = null, imeiReport = null }) => {
                         </div>
                     ) : (
                         <div className='aspect-[4/3] bg-slate-100 border border-t-0 border-slate-200 overflow-hidden relative'>
-                            {/* Google Maps embed — no API key needed for the
+                            {/* Google Maps embed - no API key needed for the
                                 ?q= search variant. Location is "State · Area"
                                 (or just "State"); we append ", Nigeria" so
                                 the search disambiguates. We never render the
-                                seller's exact address — only the area-level
+                                seller's exact address - only the area-level
                                 pin they chose at posting time. */}
                             <iframe
                                 title={`Map of ${location}`}
@@ -250,11 +250,11 @@ const ProductDetails = ({ product, vinReport = null, imeiReport = null }) => {
                     )}
                 </div>
 
-                {/* RIGHT — Seller / Contact card */}
+                {/* RIGHT - Seller / Contact card */}
                 <div className='lg:col-span-4 min-w-0'>
                     <div className='border border-slate-200 rounded p-5 bg-white'>
 
-                        {/* Seller header — links to the seller's full shop
+                        {/* Seller header - links to the seller's full shop
                             page so anyone (buyer or the poster themselves)
                             can browse all their listings. */}
                         <Link
@@ -309,7 +309,7 @@ const ProductDetails = ({ product, vinReport = null, imeiReport = null }) => {
                                 Send Message
                             </Button>
 
-                            {/* Gated contact reveal — phone is hidden behind a
+                            {/* Gated contact reveal - phone is hidden behind a
                                 sign-in wall to discourage harvesting. Once the
                                 buyer is signed in and clicks once, the number
                                 renders as a tap-to-call link. */}
@@ -377,7 +377,7 @@ const ProductDetails = ({ product, vinReport = null, imeiReport = null }) => {
 
                     {isVehicle && <VehicleSpecs vehicle={product.vehicle} />}
 
-                    {/* Free VIN history report — only renders when the seller
+                    {/* Free VIN history report - only renders when the seller
                         ran the VIN check at listing time (vin_reports has a
                         cached row). Pre-fetched server-side so display is
                         instant. */}
@@ -388,7 +388,7 @@ const ProductDetails = ({ product, vinReport = null, imeiReport = null }) => {
                         />
                     )}
 
-                    {/* Phone-spec block + free IMEI report — same pattern. */}
+                    {/* Phone-spec block + free IMEI report - same pattern. */}
                     {isPhone && product.phone && <PhoneSpecs phone={product.phone} />}
                     {isPhone && imeiReport && (
                         <ImeiReportSection
@@ -397,7 +397,7 @@ const ProductDetails = ({ product, vinReport = null, imeiReport = null }) => {
                         />
                     )}
 
-                    {/* Specs — universal facts. Vehicle-specific specs live in VehicleSpecs above. */}
+                    {/* Specs - universal facts. Vehicle-specific specs live in VehicleSpecs above. */}
                     <section>
                         <h2 className='text-lg font-semibold text-slate-900 mb-3'>Specs</h2>
                         <dl className='grid grid-cols-1 sm:grid-cols-2 gap-x-8 text-sm'>

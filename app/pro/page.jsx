@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/server'
 import AvatarPrompt from '@/components/AvatarPrompt'
 import VerifiedCheck from '@/components/VerifiedCheck'
 
-// Provider dashboard — real data only. Lead alerts, quote requests, and
+// Provider dashboard - real data only. Lead alerts, quote requests, and
 // upcoming jobs are intentionally not here yet; those features aren't
 // built. We add them back when there's something real to show.
 export default async function ProviderDashboard() {
@@ -20,7 +20,7 @@ export default async function ProviderDashboard() {
 
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
 
-    // Profile image — drives the AvatarPrompt (banner self-hides if set).
+    // Profile image - drives the AvatarPrompt (banner self-hides if set).
     const { data: profile } = await supabase
         .from('profiles')
         .select('image')
@@ -52,7 +52,7 @@ export default async function ProviderDashboard() {
         listingIds = listings.map(l => l.id)
 
         // Conversations opened on this provider's store in the last 7 days
-        // — same metric the /store dashboard uses.
+        // - same metric the /store dashboard uses.
         const { count } = await supabase
             .from('conversations')
             .select('id', { count: 'exact', head: true })
@@ -69,7 +69,7 @@ export default async function ProviderDashboard() {
             ratings = ratingRows || []
         }
 
-        // Jobs both sides confirmed — drives the "Jobs done" stat.
+        // Jobs both sides confirmed - drives the "Jobs done" stat.
         const { count: verifiedCount } = await supabase
             .from('deals')
             .select('id', { count: 'exact', head: true })
@@ -126,7 +126,7 @@ export default async function ProviderDashboard() {
     return (
         <div className='text-slate-700 mb-28 max-w-5xl'>
 
-            {/* Public profile picture nudge — explicitly separate from
+            {/* Public profile picture nudge - explicitly separate from
                 the KYC selfie, which is private and purged after 30 days. */}
             <AvatarPrompt userId={user.id} currentImage={profile?.image} />
 
@@ -166,7 +166,7 @@ export default async function ProviderDashboard() {
                 </div>
             </section>
 
-            {/* Stats — real data, no mocks */}
+            {/* Stats - real data, no mocks */}
             <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8'>
                 {stats.map((card) => (
                     <div key={card.title} className='bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-sm transition'>

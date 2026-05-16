@@ -21,7 +21,7 @@ const StickyTOC = ({ items = [] }) => {
         const observer = new IntersectionObserver(
             (entries) => {
                 // Pick the entry that's most visible in the upper half of
-                // the viewport — keeps the highlight in sync with what the
+                // the viewport - keeps the highlight in sync with what the
                 // reader is actually looking at, not whatever the bottom
                 // edge of the viewport just clipped.
                 const visible = entries

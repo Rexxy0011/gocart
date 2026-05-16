@@ -27,7 +27,7 @@ export default async function VerifyPage({ searchParams }) {
     const emailVerified = !!user.email_confirmed_at
     const phoneVerified = !!user.phone_confirmed_at
 
-    // Already fully verified — they got here by accident, send them on.
+    // Already fully verified - they got here by accident, send them on.
     if (emailVerified && phoneVerified) {
         redirect(nextUrl)
     }

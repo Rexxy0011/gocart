@@ -22,9 +22,9 @@ import AvatarPrompt from '@/components/AvatarPrompt'
 //   - Top listings by inquiry count
 //
 // Things we deliberately DON'T fake:
-//   - Listing views — we don't track views yet, so the card shows "—"
+//   - Listing views - we don't track views yet, so the card shows "-"
 //     with a "coming soon" hint instead of a fabricated number.
-//   - Review counts — empty until the ratings system is wired.
+//   - Review counts - empty until the ratings system is wired.
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000
 
@@ -53,7 +53,7 @@ export default async function Dashboard() {
     const phoneVerified = !!user.phone_confirmed_at
     const isVerified = emailVerified && phoneVerified
 
-    // No store yet → empty-state CTA. Skip all the analytics — there's
+    // No store yet → empty-state CTA. Skip all the analytics - there's
     // nothing to show.
     if (!store) {
         return (
@@ -64,7 +64,7 @@ export default async function Dashboard() {
                         Hi {sellerName.split(' ')[0]}
                     </h1>
                     <p className="text-sm text-slate-600 mt-2 max-w-md">
-                        Your shop is empty. Post your first ad — buyers reach you directly through GoCart messaging. Free, no commission on offline sales.
+                        Your shop is empty. Post your first ad - buyers reach you directly through GoCart messaging. Free, no commission on offline sales.
                     </p>
                     <Link
                         href="/store/add-product"
@@ -85,7 +85,7 @@ export default async function Dashboard() {
         pendingReviewRes,
         newInquiriesRes,
     ] = await Promise.all([
-        // Services (.service is non-null) are scoped to /pro — exclude
+        // Services (.service is non-null) are scoped to /pro - exclude
         // them so a seller-and-provider account sees product-only stats
         // here, not a mixed total.
         supabase
@@ -144,7 +144,7 @@ export default async function Dashboard() {
 
     // Reviews ------------------------------------------------------------
     // Pulls ratings whose product belongs to this store. Will be empty
-    // until the ratings/jobs flow is wired — the empty state below
+    // until the ratings/jobs flow is wired - the empty state below
     // explains that to the seller.
     const { data: ratings } = await supabase
         .from('ratings')
@@ -181,10 +181,10 @@ export default async function Dashboard() {
         },
         {
             title: 'Listing views',
-            value: '—',
+            value: '-',
             icon: Eye,
             tone: 'bg-violet-50 text-violet-600 ring-violet-200',
-            hint: 'View tracking — coming soon',
+            hint: 'View tracking - coming soon',
         },
         {
             title: 'Rating',
@@ -212,7 +212,7 @@ export default async function Dashboard() {
                             {isVerified && <VerifiedCheck size={20} className="-ml-0.5" />}
                         </h1>
                         <p className="text-sm text-slate-600 mt-1">
-                            Listings, inquiries, and reviews — all in one place.
+                            Listings, inquiries, and reviews - all in one place.
                         </p>
                     </div>
                 </div>
@@ -236,7 +236,7 @@ export default async function Dashboard() {
                 ))}
             </section>
 
-            {/* Listing insights — products only. Service-side metrics live in /pro. */}
+            {/* Listing insights - products only. Service-side metrics live in /pro. */}
             <section className="mt-8 bg-white border border-slate-200 rounded-2xl overflow-hidden">
                 <div className="p-5 border-b border-slate-100 flex items-center justify-between gap-3 flex-wrap">
                     <div className="flex items-center gap-3 min-w-0">
@@ -245,7 +245,7 @@ export default async function Dashboard() {
                         </span>
                         <div className="min-w-0">
                             <p className="font-semibold text-slate-900">Listing insights</p>
-                            <p className="text-xs text-slate-500">Your top listings — ranked by buyer inquiries.</p>
+                            <p className="text-xs text-slate-500">Your top listings - ranked by buyer inquiries.</p>
                         </div>
                     </div>
                     <Link href="/store/manage-product" className="text-xs font-semibold text-sky-700 hover:underline shrink-0">
@@ -255,7 +255,7 @@ export default async function Dashboard() {
                 <ul className="divide-y divide-slate-100">
                     {topByInquiries.length === 0 ? (
                         <li className="p-8 text-center text-sm text-slate-500">
-                            No live listings yet — post your first ad to see insights.
+                            No live listings yet - post your first ad to see insights.
                         </li>
                     ) : topByInquiries.map((p) => {
                         const firstImage = p.images?.[0]
@@ -318,7 +318,7 @@ export default async function Dashboard() {
                             <Plus size={16} />
                         </span>
                         <p className="font-semibold mt-3">Post an ad</p>
-                        <p className="text-xs text-slate-300 mt-0.5">Free — buyers contact you directly.</p>
+                        <p className="text-xs text-slate-300 mt-0.5">Free - buyers contact you directly.</p>
                     </div>
                     <ArrowUpRight size={18} className="opacity-60 group-hover:opacity-100 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition" />
                 </Link>
@@ -373,7 +373,7 @@ export default async function Dashboard() {
                 {ratingsList.length === 0 ? (
                     <div className="border border-dashed border-slate-300 bg-slate-50/60 rounded-xl p-10 text-center">
                         <Star size={22} className="mx-auto text-slate-300" />
-                        <p className="text-sm text-slate-500 mt-2">No reviews yet — they appear here once a buyer confirms a job.</p>
+                        <p className="text-sm text-slate-500 mt-2">No reviews yet - they appear here once a buyer confirms a job.</p>
                     </div>
                 ) : (
                     <div className="space-y-3">

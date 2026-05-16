@@ -9,7 +9,7 @@ import { signOut } from "@/app/actions/auth";
 
 const ALL_LOCATIONS = 'All locations'
 
-// Price-filter presets — same set used to live in the on-page chip
+// Price-filter presets - same set used to live in the on-page chip
 // before we promoted it into the navbar. `max` null = no upper bound.
 const PRICE_PRESETS = [
     { id: 'any',   label: 'Any price',         min: null, max: null,   free: false },
@@ -40,7 +40,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
     const catDropdownRef = useRef(null)
     const locDropdownRef = useRef(null)
 
-    // Price filter — promoted from the on-page chip. Lives next to
+    // Price filter - promoted from the on-page chip. Lives next to
     // category/location and applies on the same form submit.
     const [pricePresetId, setPricePresetId] = useState('any')
     const [priceMin, setPriceMin] = useState(null)        // numeric or null
@@ -119,7 +119,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
         if (category !== 'All' && !isServiceCategory) params.set('category', category)
         if (isServiceCategory && category !== 'Repairs & Services') params.set('category', category)
 
-        // Price params — only attached when the user actually picked one,
+        // Price params - only attached when the user actually picked one,
         // and only meaningful on /shop. The /services route ignores them.
         if (priceFree) {
             params.set('free', 'true')
@@ -161,7 +161,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
 
     const priceLabel = (() => {
         if (pricePresetId === 'custom') {
-            return `${priceMin ? fmtNaira(priceMin) : '₦0'} – ${priceMax ? fmtNaira(priceMax) : '∞'}`
+            return `${priceMin ? fmtNaira(priceMin) : '₦0'} - ${priceMax ? fmtNaira(priceMax) : '∞'}`
         }
         return PRICE_PRESETS.find(p => p.id === pricePresetId)?.label || 'Any price'
     })()
@@ -286,7 +286,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
 
                             <span className="h-6 w-px bg-slate-300 shrink-0 hidden sm:inline-block" />
 
-                            {/* Price dropdown — sits between location and the
+                            {/* Price dropdown - sits between location and the
                                 search input on desktop. Hidden on mobile to
                                 keep the filter pill from wrapping awkwardly;
                                 mobile users get the same options inside the
@@ -363,7 +363,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                                                             className="text-sm bg-slate-50 ring-1 ring-slate-200 rounded px-2.5 py-1.5 outline-none focus:ring-slate-400 transition w-full"
                                                         />
                                                     </label>
-                                                    <span className="text-slate-400 mt-4">–</span>
+                                                    <span className="text-slate-400 mt-4">-</span>
                                                     <label className="flex-1 flex flex-col gap-1">
                                                         <span className="text-[10px] text-slate-500">Max ₦</span>
                                                         <input
@@ -414,7 +414,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                             </div>
                         </div>
 
-                        {/* External Search button — icon only on mobile to
+                        {/* External Search button - icon only on mobile to
                             keep the row narrow */}
                         <button
                             type="submit"
@@ -429,10 +429,10 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                     {/* Right-side icon cluster. On mobile: ml-auto pushes it
                         next to the logo on row 1 (search wraps below). Most
                         items are hidden on mobile and live inside the drawer
-                        instead — only [+ post] and [☰ menu] stay visible. */}
+                        instead - only [+ post] and [☰ menu] stay visible. */}
                     <div className="ml-auto sm:ml-0 sm:order-3 flex items-center gap-3 sm:gap-5 shrink-0">
 
-                        {/* Post an ad — always visible (primary action) */}
+                        {/* Post an ad - always visible (primary action) */}
                         <Link
                             href="/store/add-product"
                             aria-label="Post an ad"
@@ -444,7 +444,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                             <span className="hidden sm:inline text-xs leading-none">Post an ad</span>
                         </Link>
 
-                        {/* Provider dashboard / Offer-a-service — desktop only */}
+                        {/* Provider dashboard / Offer-a-service - desktop only */}
                         <Link
                             href={providerHref}
                             aria-label={providerLabel}
@@ -456,7 +456,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                             <span className="text-xs leading-none whitespace-nowrap">{providerLabel}</span>
                         </Link>
 
-                        {/* Messages — always visible. The unread pill is high-signal
+                        {/* Messages - always visible. The unread pill is high-signal
                             for a marketplace; hiding it on mobile defeats the point. */}
                         {user && (
                             <Link href="/messages" aria-label={unreadCount ? `Messages (${unreadCount} unread)` : 'Messages'} className="relative text-slate-600 hover:text-slate-900 transition">
@@ -469,7 +469,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                             </Link>
                         )}
 
-                        {/* Saved items — desktop only (mobile has it in the drawer) */}
+                        {/* Saved items - desktop only (mobile has it in the drawer) */}
                         <Link href="/cart" aria-label="Saved items" className="hidden sm:inline relative text-slate-600 hover:text-slate-900 transition">
                             <Heart size={22} />
                             {cartCount > 0 && (
@@ -479,7 +479,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                             )}
                         </Link>
 
-                        {/* Auth — desktop only. Mobile auth lives in the drawer. */}
+                        {/* Auth - desktop only. Mobile auth lives in the drawer. */}
                         {user ? (
                             <div className="hidden sm:block relative" ref={userMenuRef}>
                                 <button
@@ -509,7 +509,6 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                                                 </span>
                                             )}
                                         </Link>
-                                        <Link href="/orders" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">My orders</Link>
                                         <Link href="/cart" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Saved items</Link>
                                         <form action={signOut} className="border-t border-slate-100 mt-1 pt-1">
                                             <button type="submit" className="w-full inline-flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
@@ -539,7 +538,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                             </div>
                         )}
 
-                        {/* Hamburger — mobile only. Opens the drawer below. */}
+                        {/* Hamburger - mobile only. Opens the drawer below. */}
                         <button
                             type="button"
                             onClick={() => setOpenMobileMenu(true)}
@@ -558,19 +557,19 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
             </div>
             <hr className="border-gray-300" />
 
-            {/* Mobile drawer — slides in from the right. Always mounted so the
+            {/* Mobile drawer - slides in from the right. Always mounted so the
                 close animation can play on its way out. pointer-events-none
                 when closed so the invisible layer doesn't intercept taps. */}
             <div
                 className={`fixed inset-0 z-[60] sm:hidden ${openMobileMenu ? '' : 'pointer-events-none'}`}
                 aria-hidden={!openMobileMenu}
             >
-                {/* Backdrop — fades in/out */}
+                {/* Backdrop - fades in/out */}
                 <div
                     onClick={() => setOpenMobileMenu(false)}
                     className={`absolute inset-0 bg-black/40 transition-opacity duration-200 ${openMobileMenu ? 'opacity-100' : 'opacity-0'}`}
                 />
-                {/* Panel — slides in from the right */}
+                {/* Panel - slides in from the right */}
                 <div className={`absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col overflow-hidden transform transition-transform duration-300 ease-out ${openMobileMenu ? 'translate-x-0' : 'translate-x-full'}`}>
 
                         {/* Header */}
@@ -598,7 +597,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                             </button>
                         </div>
 
-                        {/* Body — scrollable */}
+                        {/* Body - scrollable */}
                         <div className="flex-1 overflow-y-auto py-3">
 
                             {/* Signed-out auth buttons up top */}
@@ -644,7 +643,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                                 </Link>
                             )}
 
-                            {/* Account — signed-in only */}
+                            {/* Account - signed-in only */}
                             {user && (
                                 <>
                                     <p className="px-5 pt-3 pb-1 text-[11px] font-bold uppercase tracking-wide text-slate-400 border-t border-slate-100 mt-2">Account</p>
@@ -668,9 +667,6 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                                             </span>
                                         )}
                                     </Link>
-                                    <Link href="/orders" onClick={() => setOpenMobileMenu(false)} className="flex items-center gap-3 px-5 py-3 text-sm text-slate-700 hover:bg-slate-50">
-                                        <ShoppingBag size={16} className="text-slate-500" /> My orders
-                                    </Link>
                                 </>
                             )}
 
@@ -687,7 +683,7 @@ const Navbar = ({ user = null, providerStatus = null, unreadCount = 0 }) => {
                             </Link>
                         </div>
 
-                        {/* Sign-out — pinned to bottom for signed-in users */}
+                        {/* Sign-out - pinned to bottom for signed-in users */}
                         {user && (
                             <form action={signOut} className="border-t border-slate-200 px-5 py-4">
                                 <button type="submit" className="w-full inline-flex items-center justify-center gap-2 text-sm font-medium text-slate-700 ring-1 ring-slate-300 hover:ring-slate-500 rounded-full py-2.5">

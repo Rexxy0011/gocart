@@ -3,7 +3,7 @@ import { isAdminAuthenticated } from "@/lib/auth/admin-pass"
 import { PRODUCT_WITH_STORE_SELECT, mapProductRow, mapStoreRow } from "@/lib/supabase/mappers"
 import StoreShopView from "../../shop/[username]/StoreShopView"
 
-// Provider profile — strict mirror of /shop/[username] but scoped to
+// Provider profile - strict mirror of /shop/[username] but scoped to
 // services only. Reviews on services, banner pointing at /pro, "Add a
 // service" CTA. Sellers' products live at /shop/[username] and never
 // leak in here.
@@ -45,8 +45,6 @@ export default async function ProviderShop({ params, searchParams }) {
         .eq('review_status', 'approved')
         .not('service', 'is', null)
         .is('removed_at', null)
-        .order('featured', { ascending: false })
-        .order('bumped_at', { ascending: false, nullsFirst: false })
         .order('created_at', { ascending: false })
 
     const products = (serviceRows || []).map(mapProductRow)

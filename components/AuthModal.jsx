@@ -1,18 +1,17 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { closeAuthModal, setAuthModalMode } from '@/lib/features/ui/uiSlice'
+import { notifyAuthEvent } from '@/app/actions/auth-notify'
 
 // Single component that toggles between login and signup tabs. Mounted once
 // in the public layout. Opens via dispatch(openAuthModal({...})), closes on
 // successful auth or when the user dismisses it.
 const AuthModal = () => {
 
-    const router = useRouter()
     const dispatch = useDispatch()
     const supabase = createClient()
     const { open, mode, message } = useSelector(state => state.ui.authModal)
@@ -60,7 +59,7 @@ const AuthModal = () => {
         const email = form.email.trim().toLowerCase()
         const password = form.password
 
-        const { error } = isSignup
+        const { data, error } = isSignup
             ? await supabase.auth.signUp({ email, password, options: { data: { name: form.name.trim() } } })
             : await supabase.auth.signInWithPassword({ email, password })
 
@@ -70,9 +69,24 @@ const AuthModal = () => {
             return
         }
 
-        toast.success(isSignup ? 'Account created — welcome.' : 'Welcome back.')
-        dispatch(closeAuthModal())
-        router.refresh()
+        // Signup with "Confirm email" enabled returns no session - the user
+        // must click the email link first. Don't reload; switch to the
+        // sign-in tab and tell them.
+        if (isSignup && !data?.session) {
+            setSubmitting(false)
+            toast.success('Account created - check your email to confirm, then sign in.')
+            dispatch(setAuthModalMode('login'))
+            return
+        }
+
+        // Session established. Fire the auth email (welcome on signup, sign-in
+        // alert on login), then a full-page reload - NOT router.refresh() - so
+        // the new auth cookie is read server-side. The cookie write is async
+        // and a client-side refresh races it, leaving protected routes and
+        // the navbar showing stale signed-out state.
+        toast.success(isSignup ? 'Account created - welcome.' : 'Welcome back.')
+        await notifyAuthEvent(isSignup ? 'signup' : 'signin')
+        window.location.reload()
     }
 
     return (

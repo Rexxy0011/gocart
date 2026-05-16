@@ -2,10 +2,10 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { isAdminEmail } from '@/lib/auth/admins'
+import { isAdminAuthenticated } from '@/lib/auth/admin-pass'
 
 // Anyone signed in can report a listing. Submission keeps the listing live
-// — only an admin's "action" decision actually removes it. Each report is
+// - only an admin's "action" decision actually removes it. Each report is
 // its own row, so 10 reports on one listing = 10 rows; admin sees them all
 // and decides once.
 export async function submitReport({ listingId, reason, description, evidenceUrls = [] }) {
@@ -13,7 +13,7 @@ export async function submitReport({ listingId, reason, description, evidenceUrl
         return { error: 'Pick a reason for the report.' }
     }
 
-    // Sanitise evidence list — must be http(s) URLs, capped at 5 to match
+    // Sanitise evidence list - must be http(s) URLs, capped at 5 to match
     // the column-level check constraint.
     const cleanEvidence = (Array.isArray(evidenceUrls) ? evidenceUrls : [])
         .filter(u => typeof u === 'string' && /^https?:\/\//.test(u))
@@ -23,7 +23,7 @@ export async function submitReport({ listingId, reason, description, evidenceUrl
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return { error: 'You need to be signed in to report a listing.' }
 
-    // Don't let users report their own listing — that's almost certainly a
+    // Don't let users report their own listing - that's almost certainly a
     // mistake or the wrong tool (they should edit/remove from /store).
     const { data: listing } = await supabase
         .from('products')
@@ -32,7 +32,7 @@ export async function submitReport({ listingId, reason, description, evidenceUrl
         .maybeSingle()
     if (!listing) return { error: 'Listing not found.' }
     if (listing.store.user_id === user.id) {
-        return { error: 'You can\'t report your own listing — edit or delete it from your dashboard instead.' }
+        return { error: 'You can\'t report your own listing - edit or delete it from your dashboard instead.' }
     }
 
     const { error } = await supabase
@@ -55,9 +55,9 @@ export async function adminResolveReport(reportId, action, adminNote = '') {
         return { error: 'Invalid action' }
     }
 
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user || !isAdminEmail(user.email)) {
+    // Re-check the admin password cookie - middleware gates /admin/reports
+    // but a server action is directly callable, so verify before mutating.
+    if (!(await isAdminAuthenticated())) {
         return { error: 'Not authorized' }
     }
 
@@ -97,7 +97,7 @@ export async function adminResolveReport(reportId, action, adminNote = '') {
             .eq('id', report.listing_id)
         if (listingErr) return { error: listingErr.message }
 
-        // Auto-close any other open reports on the same listing — they're
+        // Auto-close any other open reports on the same listing - they're
         // now redundant.
         await admin
             .from('reports')

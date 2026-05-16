@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { fetchConversationsForUser } from '@/lib/supabase/conversations'
 import ConversationList from '@/components/messages/ConversationList'
 
-// Provider-side inquiries — only conversations on the user's service
+// Provider-side inquiries - only conversations on the user's service
 // listings. Clicking a row drops them on /messages/[id], the same shared
 // thread view as the unified /messages inbox.
 export default async function ProInquiries() {
@@ -23,7 +23,7 @@ export default async function ProInquiries() {
                 </span>
                 <div>
                     <h1 className='text-2xl text-slate-900 font-semibold'>Inquiries</h1>
-                    <p className='text-sm text-slate-500'>Buyer messages on your service listings. Reply directly — GoCart never takes a cut on offline jobs.</p>
+                    <p className='text-sm text-slate-500'>Buyer messages on your service listings. Reply directly - GoCart never takes a cut on offline jobs.</p>
                 </div>
             </div>
 

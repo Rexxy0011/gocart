@@ -1,7 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin"
 import ReportsQueue from "./ReportsQueue"
 
-// Admin-only reports queue. Shows every open report grouped by listing —
+// Admin-only reports queue. Shows every open report grouped by listing -
 // many users can report the same listing, and admin should see all the
 // signal at once before deciding. Uses the service-role client so RLS
 // doesn't hide reports filed by other users or against other sellers.

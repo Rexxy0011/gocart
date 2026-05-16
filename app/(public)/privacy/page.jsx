@@ -1,5 +1,5 @@
 export const metadata = {
-    title: 'Privacy Notice — GoCart',
+    title: 'Privacy Notice - GoCart',
     description:
         "How GoCart collects, uses, stores, and protects your personal information. " +
         "Your data, your rights, our commitments.",
@@ -37,12 +37,12 @@ const USER_RIGHTS = [
     'Request account deletion, subject to legal and operational requirements',
 ]
 
-// Dash bullets — keeps lists feeling like prose, no chips or icons.
+// Dash bullets - keeps lists feeling like prose, no chips or icons.
 const DashList = ({ items }) => (
     <ul className="space-y-2">
         {items.map((item) => (
             <li key={item} className="flex gap-3">
-                <span className="text-slate-400 select-none">—</span>
+                <span className="text-slate-400 select-none">-</span>
                 <span>{item}</span>
             </li>
         ))}
@@ -65,7 +65,7 @@ export default function PrivacyPage() {
     return (
         <main className="bg-white min-h-screen">
 
-            {/* Hero — same big bold uppercase title from before, now on white */}
+            {/* Hero - same big bold uppercase title from before, now on white */}
             <section className="max-w-6xl mx-auto px-6 py-16 sm:py-20 border-b border-slate-200">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold uppercase text-slate-900 tracking-tight leading-[1]">
                     Privacy Notice
@@ -75,7 +75,7 @@ export default function PrivacyPage() {
                 </p>
             </section>
 
-            {/* Body — two-column rows */}
+            {/* Body - two-column rows */}
             <article className="max-w-6xl mx-auto px-6">
 
                 <Row title="Personal statement">
@@ -177,10 +177,10 @@ export default function PrivacyPage() {
                     </p>
                 </Row>
 
-                {/* Closing tagline — sits below the last row, no border */}
+                {/* Closing tagline - sits below the last row, no border */}
                 <div className="py-12">
                     <p className="text-xs sm:text-sm uppercase tracking-[0.18em] text-slate-500">
-                        GoCart — Building a safer and more trusted marketplace experience.
+                        GoCart - Building a safer and more trusted marketplace experience.
                     </p>
                 </div>
             </article>

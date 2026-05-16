@@ -1,5 +1,5 @@
 -- Paystack-backed boost purchases. Every "Bump", "Featured", "Urgent", etc.
--- click hits Paystack — we record the transaction here for idempotency and
+-- click hits Paystack - we record the transaction here for idempotency and
 -- audit. Boost is only applied to the listing after Paystack verifies the
 -- charge succeeded, so a half-paid attempt never silently activates.
 --

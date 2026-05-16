@@ -1,5 +1,5 @@
 export const metadata = {
-    title: 'About — GoCart',
+    title: 'About - GoCart',
     description:
         "GoCart is a next-generation Nigerian marketplace combining innovation, security, transparency, and simplicity. " +
         "Smarter marketplace. Safer transactions.",
@@ -72,7 +72,7 @@ export default function AboutPage() {
                     <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">About GoCart</h1>
                     <div className="mt-6 space-y-5">
                         <p>
-                            Welcome to GoCart — a next-generation Nigerian marketplace built to redefine how
+                            Welcome to GoCart - a next-generation Nigerian marketplace built to redefine how
                             people buy, sell, and connect online.
                         </p>
                         <p>
@@ -234,7 +234,7 @@ export default function AboutPage() {
                         <p className="text-lg font-semibold text-slate-900">GoCart is more than a marketplace.</p>
                         <p>
                             We are building a long-term digital commerce platform designed for the future of
-                            buying and selling in Nigeria — one that combines technology, trust, accessibility,
+                            buying and selling in Nigeria - one that combines technology, trust, accessibility,
                             and innovation into a single ecosystem that empowers both individuals and businesses.
                         </p>
                         <p>
@@ -258,7 +258,7 @@ export default function AboutPage() {
                             online, GoCart provides a smarter and safer platform built for modern Nigeria.
                         </p>
                         <p className="text-lg font-semibold text-slate-900 pt-2">
-                            GoCart — Smarter Marketplace. Safer Transactions.
+                            GoCart - Smarter Marketplace. Safer Transactions.
                         </p>
                     </div>
                 </section>

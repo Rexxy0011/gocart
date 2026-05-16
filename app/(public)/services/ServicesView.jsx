@@ -98,11 +98,11 @@ const ServicesView = ({ services = [], providerStatus = null }) => {
                     <div className='max-w-2xl'>
                         <h1 className='text-2xl sm:text-3xl font-bold text-slate-900'>Repairs &amp; Services</h1>
                         <p className='text-sm text-slate-600 mt-2'>
-                            Find trusted local providers — from picking up your latest GoCart purchase to fixing what&apos;s broken at home. Verified, rated, and paid only when the job is done.
+                            Find trusted local providers - from picking up your latest GoCart purchase to fixing what&apos;s broken at home. Verified, rated, and paid only when the job is done.
                         </p>
                     </div>
 
-                    {/* Provider CTA — three states */}
+                    {/* Provider CTA - three states */}
                     {providerStatus === 'approved' ? (
                         <Link
                             href='/pro'
@@ -245,7 +245,7 @@ const ServicesView = ({ services = [], providerStatus = null }) => {
                         <div className='text-center py-12 bg-slate-50 rounded-xl'>
                             <p className='text-sm text-slate-500'>
                                 {services.length === 0
-                                    ? 'No verified providers yet — be the first to offer a service.'
+                                    ? 'No verified providers yet - be the first to offer a service.'
                                     : 'No providers match your filters.'}
                             </p>
                             {hasFilters && (

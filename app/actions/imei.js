@@ -5,7 +5,7 @@ import { decodeImei, isImeiShape } from '@/lib/imei/lookup'
 
 const REFRESH_AFTER_DAYS = 90
 
-// Free IMEI check — runs at submit time when the seller types an IMEI
+// Free IMEI check - runs at submit time when the seller types an IMEI
 // AND the listing's condition warrants it (used / refurbished). New
 // sealed phones don't run this; nothing to verify against and the seller
 // shouldn't be forced to break the seal to read the IMEI sticker.
@@ -51,7 +51,7 @@ export async function runImeiCheck({ imei }) {
     }
 
     if (!decoded.luhnValid) {
-        return { error: 'IMEI checksum failed — double-check the digits you entered.' }
+        return { error: 'IMEI checksum failed - double-check the digits you entered.' }
     }
 
     const { error: upsertErr } = await admin
@@ -73,7 +73,7 @@ export async function runImeiCheck({ imei }) {
     }
 }
 
-// Append-only history log. Mirrors recordVehicleHistory — same IMEI listed
+// Append-only history log. Mirrors recordVehicleHistory - same IMEI listed
 // multiple times surfaces a re-listing audit trail on the product page.
 export async function recordPhoneHistory({ imei, listingId, claimedCondition }) {
     const cleaned = (imei || '').replace(/\D/g, '')

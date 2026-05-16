@@ -6,7 +6,7 @@ export const metadata = {
     description: 'GoCart. - Admin',
 }
 
-// Render bare children when the visitor is not yet authenticated — this is
+// Render bare children when the visitor is not yet authenticated - this is
 // what makes /admin double as the login page (no admin nav/sidebar around
 // the password form). Once the cookie is valid, wrap with the chrome.
 export default async function RootAdminLayout({ children }) {

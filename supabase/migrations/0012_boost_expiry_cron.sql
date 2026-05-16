@@ -1,6 +1,6 @@
 -- Boost expiry sweeper. Boost columns (featured / urgent / bulk_sale /
 -- bumped_at) are set to true + *_until timestamp on payment. Nothing
--- expires them automatically — without this job they'd stay "boosted"
+-- expires them automatically - without this job they'd stay "boosted"
 -- forever once paid for.
 --
 -- Strategy: pg_cron job runs every 10 min and flips expired flags off,
@@ -12,7 +12,7 @@
 
 create extension if not exists pg_cron;
 
--- Sweeper function. Single transaction, four UPDATEs — small batches
+-- Sweeper function. Single transaction, four UPDATEs - small batches
 -- because indexes on *_until are partial (where ... is not null) so the
 -- planner uses them tightly.
 create or replace function public.expire_boosts()
@@ -43,7 +43,7 @@ end;
 $$;
 
 -- Schedule. Re-running this migration replaces the schedule rather than
--- duplicating — unschedule first if it exists, then schedule fresh.
+-- duplicating - unschedule first if it exists, then schedule fresh.
 -- '*/10 * * * *' = every 10 minutes.
 do $$
 begin

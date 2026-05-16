@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Mail, MessageSquare, ShieldAlert } from "lucide-react"
 
-export const metadata = { title: 'Contact — GoCart' }
+export const metadata = { title: 'Contact - GoCart' }
 
 const CHANNELS = [
     {
@@ -21,7 +21,7 @@ const CHANNELS = [
     {
         Icon: Mail,
         title: 'Anything else',
-        body: 'Press, partnerships, payment problems, account recovery, GDPR/data requests — email us and we&apos;ll route it to a human.',
+        body: 'Press, partnerships, payment problems, account recovery, GDPR/data requests - email us and we&apos;ll route it to a human.',
         href: 'mailto:hello@gocart.ng',
         cta: 'hello@gocart.ng',
     },
@@ -32,7 +32,7 @@ export default function ContactPage() {
         <main className="max-w-3xl mx-auto px-6 py-14">
             <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">Get in touch</h1>
             <p className="text-slate-600 mt-4 leading-relaxed">
-                We&apos;re a small team. Pick the channel that fits — it gets to the right person faster than a generic helpdesk.
+                We&apos;re a small team. Pick the channel that fits - it gets to the right person faster than a generic helpdesk.
             </p>
 
             <div className="grid sm:grid-cols-1 gap-4 mt-10">

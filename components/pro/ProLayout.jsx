@@ -4,14 +4,14 @@ import StoreNavbar from "../store/StoreNavbar"
 import ProSidebar from "./ProSidebar"
 
 // Layout for /pro/*. Server-side parent already gates access on application
-// status — when we get here the user is either on /pro/apply (any state) or
+// status - when we get here the user is either on /pro/apply (any state) or
 // has an approved application (full dashboard).
 const ProLayout = ({ children, application }) => {
 
     const pathname = usePathname()
     const isApplyRoute = pathname?.startsWith('/pro/apply')
 
-    // /pro/apply uses a simpler shell — they're not yet fully a provider.
+    // /pro/apply uses a simpler shell - they're not yet fully a provider.
     if (isApplyRoute) {
         return (
             <div className="flex flex-col min-h-screen">

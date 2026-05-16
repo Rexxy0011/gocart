@@ -13,7 +13,7 @@ import { removeListing } from '@/app/actions/listings'
 // Actions:
 //   - Mark sold / Mark active : flips products.in_stock; optimistic update
 //   - Boost                   : routes to /store/manage-product (where the
-//                              BoostPicker UI lives) — inline boost picker
+//                              BoostPicker UI lives) - inline boost picker
 //                              would duplicate that component's state.
 //   - Edit                    : route to /store/manage-product (placeholder
 //                              for when a per-listing edit form exists).

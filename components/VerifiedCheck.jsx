@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-// Verified-seller credential — uses the user-provided badge image
+// Verified-seller credential - uses the user-provided badge image
 // (public/verified-badge.jpg). Square aspect: the image is 8000×8000,
 // scaled down by Next/Image to whatever `size` is passed.
 //

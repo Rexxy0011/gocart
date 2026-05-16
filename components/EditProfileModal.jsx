@@ -8,7 +8,7 @@ import { uploadAvatar } from '@/lib/supabase/storage'
 import { createClient } from '@/lib/supabase/client'
 
 // Inline edit-profile form for the owner of a /shop/[username] page.
-// Edits the four "soft" store fields — name, description, contact, logo.
+// Edits the four "soft" store fields - name, description, contact, logo.
 // Username, status, and email are deliberately NOT editable here.
 // Logo upload reuses the avatar uploader (product-images bucket, owner-
 // scoped path), so no new storage policy is needed.
@@ -67,7 +67,7 @@ const EditProfileModal = ({ open, onClose, initial }) => {
         if (logoPreview) URL.revokeObjectURL(logoPreview)
         setLogoFile(null)
         setLogoPreview('')
-        setLogoUrl('')   // explicit clear — server treats '' as "remove"
+        setLogoUrl('')   // explicit clear - server treats '' as "remove"
     }
 
     const onSubmit = async (e) => {

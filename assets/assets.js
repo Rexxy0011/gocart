@@ -41,7 +41,7 @@ export const assets = {
 
 export const categories = ["Headphones", "Speakers", "Watch", "Earbuds", "Mouse", "Decoration"];
 
-// Top-level groups are locked at five — these match what the homepage
+// Top-level groups are locked at five - these match what the homepage
 // "Top categories" tiles, navbar dropdown, and /shop filter all key off.
 // Only the leaf items inside each group expand over time, sourced from
 // listing-volume data on Jiji. Aim is ~15-20 items per group max so the
@@ -84,7 +84,7 @@ export const categoryGroups = [
     {
         name: "Pets & Lifestyle",
         items: [
-            // Pets (split out the Jiji way — Dogs is the biggest pet leaf)
+            // Pets (split out the Jiji way - Dogs is the biggest pet leaf)
             "Dogs", "Cats", "Birds", "Pet food",
             // Fashion (split by gender/category, no generic "Fashion")
             "Men's fashion", "Women's fashion", "Shoes", "Bags", "Watches", "Jewelry",
@@ -117,7 +117,7 @@ export const subCategories = categoryGroups.flatMap(g => g.items);
 
 // Curated, ordered roughly by listing volume on real Nigerian classifieds
 // (Jiji + Property24 reference). Lagos is the deepest because it's where
-// most GoCart listings will land — we split Lekki into phases + Oniru
+// most GoCart listings will land - we split Lekki into phases + Oniru
 // since that area alone moves a lot of housing/electronics inventory.
 export const stateAreas = {
     'Lagos': [
@@ -207,7 +207,7 @@ export const dummyStoreData = {
     id: "store_1",
     userId: "user_1",
     name: "Happy Shop",
-    description: "At Happy Shop, we believe shopping should be simple, smart, and satisfying. Whether you're hunting for the latest fashion trends, top-notch electronics, home essentials, or unique lifestyle products — we've got it all under one digital roof.",
+    description: "At Happy Shop, we believe shopping should be simple, smart, and satisfying. Whether you're hunting for the latest fashion trends, top-notch electronics, home essentials, or unique lifestyle products - we've got it all under one digital roof.",
     username: "happyshop",
     address: "3rd Floor, Happy Shop , New Building, 123 street , c sector , NY, US",
     status: "approved",
@@ -510,7 +510,7 @@ export const productDummyData = [
     {
         id: "prod_13",
         location: "Lagos",
-        name: "Fiat Punto 2014 — 43k miles, FSH, 1 year MOT",
+        name: "Fiat Punto 2014 - 43k miles, FSH, 1 year MOT",
         description: "FIAT PUNTO 2014\n1 YEAR MOT ✅\nFULL SERVICE HISTORY ✅\nTIMING CHAIN DONE AS PREVENTATIVE MAINTENANCE ✅\nGREAT FIRST CAR ✅\nGOOD TYRES ✅\nCLEAN INSIDE AND OUT ✅",
         mrp: 3500,
         price: 2975,
@@ -549,7 +549,7 @@ export const productDummyData = [
     {
         id: "prod_14",
         location: "Lagos",
-        name: "Reliable Plumber — leaks, fittings, emergencies",
+        name: "Reliable Plumber - leaks, fittings, emergencies",
         description: "Professional plumber serving Lagos and Ogun. Same-day callouts for emergencies. Full installations, repairs, fixture replacements, drainage. 8+ years on the job, fully insured.",
         mrp: null,
         price: 8000,
@@ -568,7 +568,7 @@ export const productDummyData = [
             responseTime: 'Within 2 hours',
             yearsExperience: 8,
             qualifications: ['Certified plumber', 'Fully insured', 'Same-day available'],
-            available: 'Mon–Sat, 8am–7pm',
+            available: 'Mon-Sat, 8am-7pm',
         },
         rating: [...dummyRatingsData],
         createdAt: 'Sat Jul 17 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -577,8 +577,8 @@ export const productDummyData = [
     {
         id: "prod_15",
         location: "Abuja",
-        name: "Mobile Mechanic — diagnostics, repairs at your location",
-        description: "I come to you. Engine diagnostics, brake jobs, oil changes, full servicing — all makes and models. 12+ years working on Toyota, Honda, Mercedes. Quote on request, no hidden fees.",
+        name: "Mobile Mechanic - diagnostics, repairs at your location",
+        description: "I come to you. Engine diagnostics, brake jobs, oil changes, full servicing - all makes and models. 12+ years working on Toyota, Honda, Mercedes. Quote on request, no hidden fees.",
         mrp: null,
         price: null,
         images: [hero_sedan],
@@ -596,7 +596,7 @@ export const productDummyData = [
             responseTime: 'Same day',
             yearsExperience: 12,
             qualifications: ['ASE-equivalent certified', 'All makes & models', 'Mobile callout'],
-            available: 'Mon–Sun, 7am–9pm',
+            available: 'Mon-Sun, 7am-9pm',
         },
         rating: [...dummyRatingsData, ...dummyRatingsData],
         createdAt: 'Sat Jul 16 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -605,7 +605,7 @@ export const productDummyData = [
     {
         id: "prod_16",
         location: "Port Harcourt",
-        name: "Electrician — wiring, repairs, generator hookups",
+        name: "Electrician - wiring, repairs, generator hookups",
         description: "Residential and small commercial electrical work. Rewiring, sockets, lighting, generator changeover panels, fault-finding. Quotes given before any work starts.",
         mrp: null,
         price: 6000,
@@ -624,7 +624,7 @@ export const productDummyData = [
             responseTime: 'Within 24 hours',
             yearsExperience: 5,
             qualifications: ['Trade-tested', 'References on request'],
-            available: 'Mon–Fri, 8am–6pm',
+            available: 'Mon-Fri, 8am-6pm',
         },
         rating: [...dummyRatingsData],
         createdAt: 'Sat Jul 15 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -633,7 +633,7 @@ export const productDummyData = [
     {
         id: "prod_17",
         location: "Lagos",
-        name: "Same-day courier — pick up your GoCart purchase",
+        name: "Same-day courier - pick up your GoCart purchase",
         description: "Last-mile pickup and delivery for items bought on GoCart. Bike for small parcels, van for furniture and appliances. Live tracking, photo proof of delivery.",
         mrp: null,
         price: 2500,
@@ -652,7 +652,7 @@ export const productDummyData = [
             responseTime: 'Within 30 mins',
             yearsExperience: 4,
             qualifications: ['Live GPS tracking', 'Photo proof of delivery', 'Insured up to ₦200k'],
-            available: 'Mon–Sun, 7am–10pm',
+            available: 'Mon-Sun, 7am-10pm',
         },
         rating: [...dummyRatingsData, ...dummyRatingsData],
         createdAt: 'Sat Jul 14 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -661,8 +661,8 @@ export const productDummyData = [
     {
         id: "prod_18",
         location: "Lagos",
-        name: "AC Repair Engineer — split, central, gas refill",
-        description: "Service, repair, and install all AC types — split units, central, ceiling cassettes. Gas refill, compressor replacement, deep cleaning. Free diagnostics within Lagos.",
+        name: "AC Repair Engineer - split, central, gas refill",
+        description: "Service, repair, and install all AC types - split units, central, ceiling cassettes. Gas refill, compressor replacement, deep cleaning. Free diagnostics within Lagos.",
         mrp: null,
         price: null,
         images: [product_img12],
@@ -680,7 +680,7 @@ export const productDummyData = [
             responseTime: 'Same day',
             yearsExperience: 7,
             qualifications: ['Certified HVAC technician', 'Free diagnostics', '90-day warranty on parts'],
-            available: 'Mon–Sat, 9am–6pm',
+            available: 'Mon-Sat, 9am-6pm',
         },
         rating: [...dummyRatingsData],
         createdAt: 'Sat Jul 13 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -689,7 +689,7 @@ export const productDummyData = [
     {
         id: "prod_19",
         location: "Lagos",
-        name: "Affordable plumber — quick fixes & callouts",
+        name: "Affordable plumber - quick fixes & callouts",
         description: "Solo plumber, 4 years on the job. Best for small fixes, blockages, and same-day callouts. Drop me a message and I'll quote within the hour.",
         mrp: null, price: 4000,
         images: [product_img2],
@@ -707,7 +707,7 @@ export const productDummyData = [
             responseTime: 'Within 1 hour',
             yearsExperience: 4,
             qualifications: ['References on request'],
-            available: 'Mon–Sun, 8am–8pm',
+            available: 'Mon-Sun, 8am-8pm',
         },
         rating: [...dummyRatingsData],
         createdAt: 'Sat Jul 12 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -734,7 +734,7 @@ export const productDummyData = [
             responseTime: 'Same week',
             yearsExperience: 18,
             qualifications: ['Mercedes-Benz factory-trained', 'Genuine parts only', '6-month warranty'],
-            available: 'Mon–Fri, 9am–5pm',
+            available: 'Mon-Fri, 9am-5pm',
         },
         rating: [...dummyRatingsData, ...dummyRatingsData],
         createdAt: 'Sat Jul 11 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -743,7 +743,7 @@ export const productDummyData = [
     {
         id: "prod_21",
         location: "Lagos",
-        name: "Budget bike courier — small parcels only",
+        name: "Budget bike courier - small parcels only",
         description: "Single-rider bike courier for small parcels and documents. Mainland only. Cheapest in town for sub-5kg deliveries.",
         mrp: null, price: 1200,
         images: [product_img9],
@@ -761,7 +761,7 @@ export const productDummyData = [
             responseTime: 'Within 45 mins',
             yearsExperience: 2,
             qualifications: ['Same-day only', 'Sub-5kg only'],
-            available: 'Mon–Sat, 8am–7pm',
+            available: 'Mon-Sat, 8am-7pm',
         },
         rating: [...dummyRatingsData],
         createdAt: 'Sat Jul 10 2025 14:51:25 GMT+0530 (India Standard Time)',
@@ -770,7 +770,7 @@ export const productDummyData = [
     {
         id: "prod_22",
         location: "Lagos",
-        name: "House clearance — relocating to UK in 2 weeks",
+        name: "House clearance - relocating to UK in 2 weeks",
         description: "Selling everything in my flat. 3-seater sofa, 32\" smart TV, mini fridge, dining set, cookware, gas cooker, decor. Take all for ₦750k or individual offers welcome. Must go before May 10.",
         mrp: 920000,
         price: 750000,
@@ -793,7 +793,7 @@ export const productDummyData = [
     {
         id: "prod_24",
         location: "Lagos",
-        name: "Old microwave — free to good home, must collect",
+        name: "Old microwave - free to good home, must collect",
         description: "Working microwave, just upgrading. First come first served. Pickup only from Yaba.",
         mrp: null,
         price: 0,
@@ -812,7 +812,7 @@ export const productDummyData = [
     {
         id: "prod_23",
         location: "Abuja",
-        name: "Closing my salon — equipment & furniture must go",
+        name: "Closing my salon - equipment & furniture must go",
         description: "After 6 years, closing my Wuse salon. Selling 4 styling chairs, mirrors, washing basin, dryers, and full inventory. Best offer takes everything. Closing on May 3.",
         mrp: 480000,
         price: 320000,
@@ -934,7 +934,7 @@ export const storesDummyData = [
         id: "cmemkqnzm000htat8u7n8cpte",
         userId: "user_31dQbH27HVtovbs13X2cmqefddM",
         name: "Happy Shop",
-        description: "At Happy Shop, we believe shopping should be simple, smart, and satisfying. Whether you're hunting for the latest fashion trends, top-notch electronics, home essentials, or unique lifestyle products — we've got it all under one digital roof.",
+        description: "At Happy Shop, we believe shopping should be simple, smart, and satisfying. Whether you're hunting for the latest fashion trends, top-notch electronics, home essentials, or unique lifestyle products - we've got it all under one digital roof.",
         username: "happyshop",
         address: "3rd Floor, Happy Shop , New Building, 123 street , c sector , NY, US",
         status: "approved",
@@ -980,7 +980,7 @@ export const dummyStoreDashboardData = {
     "totalProducts": 5
 }
 
-// All known stores keyed by username — used by /shop/[username] to resolve a profile.
+// All known stores keyed by username - used by /shop/[username] to resolve a profile.
 // When real auth lands, this comes from the `stores` table; the helper signature stays the same.
 const allStores = [
     dummyStoreData,

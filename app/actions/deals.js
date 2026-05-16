@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 
 // Fetch the deal row for a conversation. Lazy-creates one in `open`
-// state if none exists yet — every conversation conceptually has a
+// state if none exists yet - every conversation conceptually has a
 // deal; the row just gets materialized on first action.
 //
 // Returns the (sometimes-just-created) deal, or { error }. The caller
@@ -70,7 +70,7 @@ export async function markDealDone({ conversationId }) {
     const isSeller = deal.seller_id === user.id
     if (!isBuyer && !isSeller) return { error: 'Not a participant' }
 
-    // Terminal states — nothing to do.
+    // Terminal states - nothing to do.
     if (deal.status === 'verified' || deal.status === 'disputed') {
         return { ok: true, deal, noop: true }
     }
@@ -110,9 +110,9 @@ export async function markDealDone({ conversationId }) {
 }
 
 // Reject the other side's "marked done" claim. Only valid when the
-// status is pending_<me> — i.e. the other party has marked done and is
+// status is pending_<me> - i.e. the other party has marked done and is
 // waiting for me. Flips to `disputed` with a reason. Disputes are
-// terminal in this MVP (no re-open) — admin queue can review later.
+// terminal in this MVP (no re-open) - admin queue can review later.
 export async function disputeDeal({ conversationId, reason }) {
     const trimmed = (reason || '').trim()
     if (!trimmed) return { error: 'Tell us why you\'re disputing this.' }
@@ -137,7 +137,7 @@ export async function disputeDeal({ conversationId, reason }) {
         (deal.status === 'pending_seller' && isSeller)
 
     if (!canDispute) {
-        return { error: 'Nothing to dispute — the other side hasn\'t marked this done yet.' }
+        return { error: 'Nothing to dispute - the other side hasn\'t marked this done yet.' }
     }
 
     const { error } = await supabase
@@ -156,7 +156,7 @@ export async function disputeDeal({ conversationId, reason }) {
     return { ok: true }
 }
 
-// Read helper for the conversation page — fetches (or lazy-creates) the
+// Read helper for the conversation page - fetches (or lazy-creates) the
 // deal so the thread can render the right banner. Server-side only.
 export async function getDealForConversation(conversationId) {
     const supabase = await createClient()

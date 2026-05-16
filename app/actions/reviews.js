@@ -7,9 +7,9 @@ import { createClient } from '@/lib/supabase/server'
 // creating duplicates.
 //
 // Two paths into this action:
-//   1. Drive-by review from /shop/[username] — no dealId. Renders as a
+//   1. Drive-by review from /shop/[username] - no dealId. Renders as a
 //      plain review.
-//   2. Verified-job review from a conversation thread — dealId is set.
+//   2. Verified-job review from a conversation thread - dealId is set.
 //      The review carries a "Verified job" badge in the UI because we
 //      know both parties confirmed the deal.
 //
@@ -22,7 +22,7 @@ import { createClient } from '@/lib/supabase/server'
 export async function submitReview({ productId, rating, comment, dealId = null }) {
     const r = Number(rating)
     if (!Number.isInteger(r) || r < 1 || r > 5) {
-        return { error: 'Rating must be 1–5 stars.' }
+        return { error: 'Rating must be 1-5 stars.' }
     }
     const text = (comment || '').trim().slice(0, 1000) || null
 
@@ -54,7 +54,7 @@ export async function submitReview({ productId, rating, comment, dealId = null }
         if (deal.buyer_id !== user.id) return { error: 'Only the buyer can leave a verified review.' }
         if (deal.listing_id !== productId) return { error: 'Deal does not match listing.' }
         if (deal.status !== 'verified') {
-            return { error: "This deal isn't verified yet — both sides need to confirm first." }
+            return { error: "This deal isn't verified yet - both sides need to confirm first." }
         }
         validatedDealId = deal.id
     }

@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { fetchConversationsForUser } from '@/lib/supabase/conversations'
 import ConversationList from '@/components/messages/ConversationList'
 
-// Seller-side inquiries — only conversations on the user's product listings.
+// Seller-side inquiries - only conversations on the user's product listings.
 // Clicking a row drops them on /messages/[id] (the unified thread view).
 export default async function StoreInquiries() {
 
@@ -22,7 +22,7 @@ export default async function StoreInquiries() {
                 </span>
                 <div>
                     <h1 className='text-2xl text-slate-900 font-semibold'>Inquiries</h1>
-                    <p className='text-sm text-slate-500'>Buyer messages on your product listings. Reply directly — GoCart never takes a cut on offline sales.</p>
+                    <p className='text-sm text-slate-500'>Buyer messages on your product listings. Reply directly - GoCart never takes a cut on offline sales.</p>
                 </div>
             </div>
 

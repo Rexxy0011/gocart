@@ -20,16 +20,19 @@ const fmtLeft = (until) => {
     return '<1h left'
 }
 
-// Active boosts on a row, rendered as stacked pills. Reads from the *_until
-// columns since the cron sweeper may not have flipped a stale boolean yet.
+// Active boosts on a row, rendered as stacked pills. Visibility is derived
+// purely from the *_until timestamps - fmtLeft() returns null for a null or
+// past stamp, so a boost is "on" exactly when its *_until is in the future.
+// The legacy boolean columns aren't consulted (the cron sweeper may not
+// have flipped a stale one yet).
 const BoostBadges = ({ product }) => {
-    const featuredLeft = product.featured && fmtLeft(product.featured_until)
-    const urgentLeft   = product.urgent   && fmtLeft(product.urgent_until)
-    const bulkLeft     = product.bulk_sale && fmtLeft(product.bulk_sale_until)
-    const bumpLeft     = product.bumped_at && fmtLeft(product.bumped_until)
+    const featuredLeft = fmtLeft(product.featured_until)
+    const urgentLeft   = fmtLeft(product.urgent_until)
+    const bulkLeft     = fmtLeft(product.bulk_sale_until)
+    const bumpLeft     = fmtLeft(product.bumped_until)
 
     if (!featuredLeft && !urgentLeft && !bulkLeft && !bumpLeft) {
-        return <span className='text-slate-300 text-xs'>—</span>
+        return <span className='text-slate-300 text-xs'>-</span>
     }
 
     const pill = 'inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full ring-1 whitespace-nowrap'
@@ -91,22 +94,22 @@ const primaryActiveBoost = (p) => {
     return active[0] || null
 }
 
-// Each entry maps to a key in BOOST_CATALOG (lib/boosts.js) — keep in sync.
+// Each entry maps to a key in BOOST_CATALOG (lib/boosts.js) - keep in sync.
 const BOOSTS = [
     { key: 'bump',      label: 'Bump up',         price: 1500, duration: '7 days',  why: 'Auto-pushes your listing to the top of the feed once a day.' },
     { key: 'featured',  label: 'Featured ribbon', price: 3000, duration: '7 days',  why: 'Locks your listing at the top of its category and location.' },
-    { key: 'urgent',    label: 'Urgent tag',      price: 2000, duration: '7 days',  why: 'Yellow Urgent badge — pulls attention for time-sensitive sales.' },
-    { key: 'bulk_sale', label: 'Bulk sale',       price: 4000, duration: '14 days', why: 'Multi-item ad format — perfect for relocators and clear-outs.' },
+    { key: 'urgent',    label: 'Urgent tag',      price: 2000, duration: '7 days',  why: 'Yellow Urgent badge - pulls attention for time-sensitive sales.' },
+    { key: 'bulk_sale', label: 'Bulk sale',       price: 4000, duration: '14 days', why: 'Multi-item ad format - perfect for relocators and clear-outs.' },
     { key: 'bundle',    label: 'Boost bundle',    price: 5500, duration: '14 days', why: 'Featured + Urgent + 3 daily Bumps. Best value if you must sell.' },
 ]
 
 const BOOST_RESULT_TOASTS = {
-    ok:               { type: 'success', text: 'Boost applied — your listing is live and pushed to top.' },
-    failed:           { type: 'error',   text: 'Payment failed — try again or contact support.' },
-    abandoned:        { type: 'error',   text: 'Payment abandoned — boost not applied.' },
+    ok:               { type: 'success', text: 'Boost applied - your listing is live and pushed to top.' },
+    failed:           { type: 'error',   text: 'Payment failed - try again or contact support.' },
+    abandoned:        { type: 'error',   text: 'Payment abandoned - boost not applied.' },
     'verify-failed':  { type: 'error',   text: 'Could not verify payment. Try again.' },
-    'apply-failed':   { type: 'error',   text: 'Payment went through but boost failed to apply — support is on it.' },
-    mismatch:         { type: 'error',   text: 'Payment amount mismatched — please reach out to support.' },
+    'apply-failed':   { type: 'error',   text: 'Payment went through but boost failed to apply - support is on it.' },
+    mismatch:         { type: 'error',   text: 'Payment amount mismatched - please reach out to support.' },
     missing:          { type: 'error',   text: 'Payment reference missing.' },
     unknown:          { type: 'error',   text: 'Payment reference not recognised.' },
 }
@@ -138,7 +141,7 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
 
     const onPickBoost = async (productId, boostKey) => {
         setPaying({ productId, boostKey })
-        // Server action returns Paystack's authorization URL — we navigate
+        // Server action returns Paystack's authorization URL - we navigate
         // the browser there ourselves. Cross-origin redirect() from a server
         // action is unreliable in Next 15, so the client handles it.
         try {
@@ -164,7 +167,7 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
         const next = !current
         // Soft guard: marking a boosted listing sold doesn't refund the
         // boost, so warn the seller before we flip in-stock off. Going
-        // back IN stock never asks — that's always fine.
+        // back IN stock never asks - that's always fine.
         if (current && !next) {
             const product = products.find(p => p.id === productId)
             const active = product && primaryActiveBoost(product)
@@ -173,7 +176,7 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                 const desc = left ? `${active.label} · ${left}` : active.label
                 const ok = window.confirm(
                     `This listing is currently boosted (${desc}). ` +
-                    `Marking it sold won't refund the boost — continue?`
+                    `Marking it sold won't refund the boost - continue?`
                 )
                 if (!ok) return
             }
@@ -220,7 +223,7 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                         {hasStore ? 'No listings yet' : 'Your shop is empty'}
                     </h2>
                     <p className='text-sm text-slate-600 mt-2 max-w-md mx-auto'>
-                        Post your first ad — buyers reach you directly through GoCart messaging. Free, no commission on offline sales.
+                        Post your first ad - buyers reach you directly through GoCart messaging. Free, no commission on offline sales.
                     </p>
                     <div className='mt-6'>
                         <Link
@@ -282,7 +285,7 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                                             ? <span className='inline-flex items-center text-[10px] font-bold uppercase tracking-wide bg-emerald-500 text-white rounded px-2 py-0.5'>FREE</span>
                                             : product.price != null
                                                 ? `${currency} ${Number(product.price).toLocaleString()}`
-                                                : product.service ? <span className='text-slate-500'>Quote</span> : '—'}
+                                                : product.service ? <span className='text-slate-500'>Quote</span> : '-'}
                                     </td>
                                     <td className="px-4 py-3">
                                         <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
@@ -305,9 +308,9 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                                             const title = isFree
                                                 ? "Free listings can't be boosted"
                                                 : state === 'locked'
-                                                    ? 'Already boosted — renew within 24h of expiry'
+                                                    ? 'Already boosted - renew within 24h of expiry'
                                                     : state === 'renewable'
-                                                        ? 'Boost expires soon — renew now to stay at the top'
+                                                        ? 'Boost expires soon - renew now to stay at the top'
                                                         : 'Boost this listing'
                                             // Distinct styling per state so the lock is visually obvious:
                                             //  idle      → sky (call-to-action)
@@ -338,7 +341,7 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                 </table>
             )}
 
-            {/* Boost picker modal — opens when a row's Boost button is clicked.
+            {/* Boost picker modal - opens when a row's Boost button is clicked.
                 Each option triggers a Paystack redirect; control leaves this page
                 on success and the callback applies the boost server-side. */}
             {pickerFor && (
@@ -353,7 +356,7 @@ const ManageProductsTable = ({ products: initialProducts, hasStore }) => {
                         <div className="flex items-center justify-between mb-4">
                             <div>
                                 <h3 className="text-lg font-semibold text-slate-900">Boost this listing</h3>
-                                <p className="text-xs text-slate-500 mt-0.5">Pick one — pay once, runs for the duration shown.</p>
+                                <p className="text-xs text-slate-500 mt-0.5">Pick one - pay once, runs for the duration shown.</p>
                             </div>
                             <button
                                 type="button"

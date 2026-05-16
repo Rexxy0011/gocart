@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation"
 
 // Shared navbar for /store and /pro shells. Badge label flips based on
 // pathname so the provider dashboard reads "Pro" rather than "Store",
-// and the static "Hi, Seller" greeting is gone — each page's hero
+// and the static "Hi, Seller" greeting is gone - each page's hero
 // already greets the user by name, so duplicating here was just noise.
 const StoreNavbar = () => {
 

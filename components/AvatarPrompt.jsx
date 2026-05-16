@@ -8,7 +8,7 @@ import { uploadAvatar } from '@/lib/supabase/storage'
 
 // Soft, dismissible banner that appears in the seller dashboard when the
 // seller has no profile picture yet. EXPLICITLY separate from the KYC
-// selfie — copy and the helper it calls (uploadAvatar) target the public
+// selfie - copy and the helper it calls (uploadAvatar) target the public
 // product-images bucket, never the private provider-docs one. Dismissal
 // is stored in sessionStorage so it doesn't haunt the seller forever, but
 // also doesn't reappear on every page refresh in a single sit-down.
@@ -36,7 +36,7 @@ const AvatarPrompt = ({ userId, currentImage }) => {
             return
         }
         if (file.size > 5 * 1024 * 1024) {
-            toast.error('Image too large — keep it under 5 MB.')
+            toast.error('Image too large - keep it under 5 MB.')
             return
         }
 
@@ -50,7 +50,7 @@ const AvatarPrompt = ({ userId, currentImage }) => {
                 .eq('id', userId)
             if (error) throw error
             setHasImage(true)
-            toast.success('Profile picture set — looking good.')
+            toast.success('Profile picture set - looking good.')
             // Refresh server data so other surfaces (avatar in nav, in
             // listings) pick up the new image without a hard reload.
             router.refresh()
@@ -83,7 +83,7 @@ const AvatarPrompt = ({ userId, currentImage }) => {
                 <div className='flex-1 min-w-0'>
                     <p className='font-semibold text-slate-900'>Add a profile picture</p>
                     <p className='text-sm text-slate-600 mt-1 leading-relaxed'>
-                        Buyers see this on every listing — sellers with a real face get more replies. This is public and is{' '}
+                        Buyers see this on every listing - sellers with a real face get more replies. This is public and is{' '}
                         <strong>separate from any KYC selfie</strong> you may have uploaded for verification.
                     </p>
                     <div className='mt-3 flex items-center gap-3'>

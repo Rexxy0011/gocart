@@ -7,9 +7,9 @@ import {
 import StickyTOC from "@/components/StickyTOC"
 
 export const metadata = {
-    title: 'Safety Tips — GoCart',
+    title: 'Safety Tips - GoCart',
     description:
-        "How to stay safe on GoCart — meeting buyers and sellers, inspecting products, " +
+        "How to stay safe on GoCart - meeting buyers and sellers, inspecting products, " +
         "avoiding scams, protecting personal information, and reporting suspicious activity.",
 }
 
@@ -44,7 +44,7 @@ const SAFETY_INFRASTRUCTURE = ['Account verification systems','Automated fraud d
 
 // ── Reusable building blocks ─────────────────────────────────────────────
 
-// Two-column dot list. Tone controls bullet colour — emerald for
+// Two-column dot list. Tone controls bullet colour - emerald for
 // positive / actionable, rose for warnings / red flags.
 const DotList = ({ items, tone = 'emerald', columns = 2 }) => (
     <ul className={`grid ${columns === 2 ? 'sm:grid-cols-2' : ''} gap-x-6 gap-y-2`}>
@@ -85,7 +85,7 @@ const SectionHeader = ({ index, title, lead }) => (
 )
 
 // Critical-warning callout. Used for the "never share PIN/OTP" line and
-// the "always confirm payment" line — sentences that need to break the
+// the "always confirm payment" line - sentences that need to break the
 // reading rhythm.
 const CriticalCallout = ({ children }) => (
     <div className="my-2 flex items-start gap-3 bg-rose-50 ring-1 ring-rose-200 rounded-xl p-4">
@@ -96,7 +96,7 @@ const CriticalCallout = ({ children }) => (
     </div>
 )
 
-// Soft "did you know" callout — reinforces a positive practice in a way
+// Soft "did you know" callout - reinforces a positive practice in a way
 // that doesn't read as a warning.
 const Note = ({ children }) => (
     <div className="my-2 flex items-start gap-3 bg-emerald-50 ring-1 ring-emerald-200 rounded-xl p-4">
@@ -148,7 +148,7 @@ export default function SafetyPage() {
                 </div>
             </section>
 
-            {/* ─── Body — TOC sidebar + content ───────────────────── */}
+            {/* ─── Body - TOC sidebar + content ───────────────────── */}
             <div className="max-w-6xl mx-auto px-6 pt-16 grid lg:grid-cols-[14rem_minmax(0,1fr)] gap-10 lg:gap-16">
 
                 <StickyTOC items={TOC} />
@@ -356,7 +356,7 @@ export default function SafetyPage() {
                                     within the platform.
                                 </p>
                                 <p className="mt-5 text-emerald-300 font-bold text-lg">
-                                    GoCart — Building a safer marketplace for everyone.
+                                    GoCart - Building a safer marketplace for everyone.
                                 </p>
                             </div>
                         </div>

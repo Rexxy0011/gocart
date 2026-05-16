@@ -2,12 +2,17 @@ import Title from './Title'
 import ProductCard from './ProductCard'
 import { createClient } from '@/lib/supabase/server'
 import { PRODUCT_WITH_STORE_SELECT, mapProductRow } from '@/lib/supabase/mappers'
+import { activeBoostFilter } from '@/lib/boosts'
 
-// "Top listings" — only listings with an active paid boost. Sellers who
+// "Top listings" - only listings with an *active* paid boost. Sellers who
 // have paid for visibility (Featured, Urgent, Bulk sale, or Bump) get
 // surfaced here above the plain feed. Without boosts the home page has a
 // weaker signal but the section disappears entirely so we don't pad with
 // random listings and dilute the meaning of the badge.
+//
+// "Active" = the boost's *_until timestamp is still in the future. An
+// expired boost drops out of this section the moment its clock runs out,
+// independent of the cron sweeper - it then resurfaces in the recency feed.
 //
 // Order: Featured first (premium ribbon, top placement), then most
 // recently bumped, then newest.
@@ -16,6 +21,7 @@ const DISPLAY_QUANTITY = 8
 const LatestProducts = async () => {
 
     const supabase = await createClient()
+    const now = new Date().toISOString()
     const { data: rows } = await supabase
         .from('products')
         .select(PRODUCT_WITH_STORE_SELECT)
@@ -25,10 +31,9 @@ const LatestProducts = async () => {
         .eq('in_stock', true)
         .eq('store.status', 'approved')
         .eq('store.is_active', true)
-        // Any one of the four paid-boost markers qualifies the listing
-        // for the Top section. bumped_at-not-null = the seller paid for
-        // a Bump (we don't yet stamp bumped_until everywhere).
-        .or('featured.eq.true,urgent.eq.true,bulk_sale.eq.true,bumped_at.not.is.null')
+        // Any one of the four paid-boost markers with a future expiry
+        // qualifies the listing for the Top section.
+        .or(activeBoostFilter(now))
         .order('featured', { ascending: false })
         .order('bumped_at', { ascending: false, nullsFirst: false })
         .order('created_at', { ascending: false })

@@ -23,7 +23,7 @@ export const BulkSaleTag = ({ size = 'md' }) => (
     </span>
 )
 
-// Single combined badge — picks the most informative of {urgent, bulkSale, both}
+// Single combined badge - picks the most informative of {urgent, bulkSale, both}
 export const UrgentBulkTag = ({ urgent, bulkSale, size = 'md' }) => {
     if (urgent && bulkSale) {
         return (

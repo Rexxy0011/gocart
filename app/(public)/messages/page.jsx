@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { fetchConversationsForUser } from "@/lib/supabase/conversations"
 import ConversationList from "@/components/messages/ConversationList"
 
-// Unified inbox — every conversation the user is part of, on either side.
+// Unified inbox - every conversation the user is part of, on either side.
 export default async function MessagesInbox() {
 
     const supabase = await createClient()

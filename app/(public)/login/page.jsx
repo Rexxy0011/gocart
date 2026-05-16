@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { notifyAuthEvent } from '@/app/actions/auth-notify'
 
 // Only allow same-origin paths in `next` to avoid open-redirect attacks.
 const safeNext = (raw) => (raw && raw.startsWith('/') && !raw.startsWith('//')) ? raw : '/'
@@ -38,9 +39,12 @@ function LoginForm() {
         }
 
         toast.success('Welcome back.')
+        // Fire the sign-in security email before navigating - awaited so the
+        // request isn't cancelled by the page transition.
+        await notifyAuthEvent('signin')
         // Full page nav (not router.push) so the next HTTP request carries
         // the freshly-written auth cookie. router.refresh() races the cookie
-        // write on mobile Safari — the navbar then renders signed-out and
+        // write on mobile Safari - the navbar then renders signed-out and
         // protected routes bounce back to /login. window.location guarantees
         // the cookie is sent.
         window.location.assign(next)

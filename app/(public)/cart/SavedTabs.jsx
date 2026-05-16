@@ -2,12 +2,12 @@
 import { useState } from 'react'
 
 // Client island for the tab switcher on /cart. The grids themselves are
-// rendered by the server page and passed in as ReactNodes — that keeps
+// rendered by the server page and passed in as ReactNodes - that keeps
 // data-fetching server-side while the visual switch stays interactive.
 const SavedTabs = ({ productCount, serviceCount, productGrid, serviceGrid }) => {
 
     // Default to whichever side has saves; if both empty (shouldn't happen
-    // — empty state is handled in the parent) fall back to products.
+    // - empty state is handled in the parent) fall back to products.
     const [activeTab, setActiveTab] = useState(
         productCount === 0 && serviceCount > 0 ? 'services' : 'products',
     )

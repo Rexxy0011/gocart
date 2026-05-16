@@ -5,11 +5,11 @@ import { Star, X } from 'lucide-react'
 import { submitReview } from '@/app/actions/reviews'
 
 // Minimal review form. Picks a listing to review (if seller has more
-// than one), 1–5 star rating, optional 1000-char comment. Calls the
+// than one), 1-5 star rating, optional 1000-char comment. Calls the
 // server action then closes itself + refreshes the page so the new
 // review renders. Modal style matches BoostPicker / PolicyModal.
 // `dealId` (optional): when present, the resulting review is stamped
-// with it and renders as a "Verified job" — the buyer is reviewing
+// with it and renders as a "Verified job" - the buyer is reviewing
 // from a confirmed deal-confirmation flow rather than the open
 // /shop/[username] page. Passed straight through to submitReview.
 const ReviewModal = ({ open, onClose, listings = [], dealId = null }) => {
@@ -57,7 +57,7 @@ const ReviewModal = ({ open, onClose, listings = [], dealId = null }) => {
                 toast.error(result.error)
                 return
             }
-            toast.success('Review posted — thanks!')
+            toast.success('Review posted - thanks!')
             onClose()
         } finally {
             setSaving(false)
@@ -88,7 +88,7 @@ const ReviewModal = ({ open, onClose, listings = [], dealId = null }) => {
 
                 <div className='overflow-y-auto px-5 py-5 space-y-5'>
 
-                    {/* Listing picker — only shown when seller has >1 listing */}
+                    {/* Listing picker - only shown when seller has >1 listing */}
                     {listings.length > 1 && (
                         <label className='flex flex-col gap-2'>
                             <span className='text-sm font-medium text-slate-700'>Which listing?</span>
@@ -138,7 +138,7 @@ const ReviewModal = ({ open, onClose, listings = [], dealId = null }) => {
                     {/* Comment */}
                     <label className='flex flex-col gap-2'>
                         <span className='text-sm font-medium text-slate-700'>
-                            Comment <span className='text-slate-400 font-normal'>— optional</span>
+                            Comment <span className='text-slate-400 font-normal'>- optional</span>
                         </span>
                         <textarea
                             rows={4}

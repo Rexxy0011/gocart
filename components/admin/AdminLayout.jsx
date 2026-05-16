@@ -2,7 +2,7 @@ import AdminNavbar from "./AdminNavbar"
 import AdminSidebar from "./AdminSidebar"
 
 // Chrome wrapper for authenticated admin pages. The decision of whether
-// to render this at all happens in app/admin/layout.jsx — when the
+// to render this at all happens in app/admin/layout.jsx - when the
 // password cookie isn't valid, that layout returns bare children
 // instead, so the login form renders without admin nav around it.
 const AdminLayout = ({ children }) => (

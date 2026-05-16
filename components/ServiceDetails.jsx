@@ -7,7 +7,7 @@ const formatPriceRange = (service) => {
     const symbol = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '₦'
     const u = unit === 'hour' ? '/hr' : unit === 'job' ? '/job' : ''
     if (min == null && max == null) return 'Quote on request'
-    if (min != null && max != null) return `${symbol}${min.toLocaleString()} – ${symbol}${max.toLocaleString()}${u}`
+    if (min != null && max != null) return `${symbol}${min.toLocaleString()} - ${symbol}${max.toLocaleString()}${u}`
     return `from ${symbol}${(min ?? max).toLocaleString()}${u}`
 }
 

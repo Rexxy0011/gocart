@@ -1,4 +1,4 @@
--- Free VIN history report — phase 1.
+-- Free VIN history report - phase 1.
 --
 -- Three changes:
 --
@@ -41,13 +41,13 @@ create index if not exists vin_reports_checked_idx
 
 alter table public.vin_reports enable row level security;
 
--- Anyone can read VIN reports — they're attached to public listings.
+-- Anyone can read VIN reports - they're attached to public listings.
 drop policy if exists vin_reports_public_read on public.vin_reports;
 create policy vin_reports_public_read on public.vin_reports
     for select using (true);
 
 -- Writes go through the server action with admin client; no insert/update
--- policy means RLS denies direct client writes. Good — sellers shouldn't
+-- policy means RLS denies direct client writes. Good - sellers shouldn't
 -- forge a "0 recalls" report by writing the row themselves.
 
 -- 3. vehicle_history -----------------------------------------------------

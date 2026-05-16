@@ -7,7 +7,7 @@
 alter table public.boost_orders
     add column if not exists reminder_sent_at timestamptz;
 
--- Speeds up the cron sweep — most rows have already been reminded or are
+-- Speeds up the cron sweep - most rows have already been reminded or are
 -- pending/failed, so a partial index on the small "actionable" set is cheap.
 create index if not exists boost_orders_reminder_idx
     on public.boost_orders(paid_at)

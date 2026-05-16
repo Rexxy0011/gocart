@@ -4,7 +4,7 @@
 --
 --   ratings(user_id, product_id, order_id NOT NULL, review NOT NULL, ...)
 --
--- GoCart doesn't have orders — buyers and sellers transact off-platform
+-- GoCart doesn't have orders - buyers and sellers transact off-platform
 -- after messaging. We still want reviews (provider reputation is the
 -- moat), but they have to work without an order id and without forcing
 -- a written comment.
@@ -16,7 +16,7 @@
 --   2. review (text) → nullable. Some users only leave stars.
 --   3. New uniqueness: one rating per (user, product). The old constraint
 --      let a user re-rate the same product if attached to a different
---      order — now collapsed to one rating per user per listing. Re-rate
+--      order - now collapsed to one rating per user per listing. Re-rate
 --      = update the existing row.
 
 alter table public.ratings
